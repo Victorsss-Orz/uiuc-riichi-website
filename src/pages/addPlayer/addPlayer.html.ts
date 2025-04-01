@@ -12,7 +12,7 @@ export function addPlayer({
     resLocals,
     pageTitle: "Add User",
     content: `
-    <form id="addPlayerForm" action="/add_player" method="POST">
+    <form id="addPlayerForm" method="POST">
       <label for="playerName">Player Name:</label>
       <input type="text" id="playerName" name="playerName" required>
       <br>
@@ -36,7 +36,7 @@ export function addPlayer({
                 <td>${row.id}</td>
                 <td>${row.player_name}</td>
                 <td>
-                  <form name="removeUser${row.id}Form" action="/add_player" method="POST">
+                  <form name="removeUser${row.id}Form" method="POST">
                     <button
                     type="submit"
                     class="btn btn-primary"

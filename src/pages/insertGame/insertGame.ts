@@ -6,6 +6,7 @@ const router = express.Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
+    console.log(res.locals);
     res.send(insertGame(req, res));
   })
 );

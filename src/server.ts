@@ -1,22 +1,39 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
+import { isAuthenticated } from "./lib/auth.js";
+import session from "express-session";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 const PORT = 3001;
 
 async function setupRoutes() {
-  app.use((req, res, next) => {
-    res.locals.homeUrl = "/";
-    res.locals.count = 0;
-    next();
-  });
   app.use(
-    "/insert_game",
-    (await import("./pages/insertGame/insertGame.js")).default
+    session({
+      secret: "your-secret-key", // Change this to a secure, random string
+      resave: false, // Prevents saving unchanged sessions
+      saveUninitialized: false, // Prevents saving empty sessions
+      cookie: { secure: false }, // Set to true if using HTTPS
+    })
+  );
+
+  app.use(
+    "/admin",
+    isAuthenticated,
+    (await import("./pages/addPlayer/addPlayer.js")).default
+  );
+  app.use("/login", (await import("./pages/adminLogin/adminLogin.js")).default);
+
+  app.use(
+    "/admin/add_player",
+    (await import("./pages/addPlayer/addPlayer.js")).default
   );
   app.use(
-    "/add_player",
-    (await import("./pages/addPlayer/addPlayer.js")).default
+    "/admin/:semester([a-zA-Z0-9_-]+)/insert_game",
+    function (req: Request, res: Response, next: NextFunction) {
+      res.locals.semester = req.params.semester;
+      next();
+    },
+    (await import("./pages/insertGame/insertGame.js")).default
   );
 }
 
