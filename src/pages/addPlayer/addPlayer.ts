@@ -12,19 +12,26 @@ router.get(
   asyncHandler(async (req, res) => {
     const connection = await connectToDatabase();
     const [players] = await connection.query<PlayerType[]>(sql.select_players);
-    console.log(res.locals);
-    res.send(addPlayer(players));
+    // console.log(res.locals);
+    res.send(addPlayer({ players, resLocals: res.locals }));
   })
 );
 
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    const { playerName } = req.body;
-    const connection = await connectToDatabase();
-    await connection.query(sql.insert_player, [playerName]);
-    res.locals.count++;
-    res.redirect("back");
+    console.log(req.body);
+    if (req.body.__action === "add") {
+      const { playerName } = req.body;
+      const connection = await connectToDatabase();
+      await connection.query(sql.insert_player, [playerName]);
+      res.redirect("back");
+    } else {
+      const {playerToRemove} = req.body;
+      const connection = await connectToDatabase();
+      await connection.query(sql.remove_player, [playerToRemove]);
+      res.redirect("back");
+    }
   })
 );
 

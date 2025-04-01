@@ -9,3 +9,8 @@ SELECT
     *
 FROM
     players;
+
+-- BLOCK remove_player
+DELETE FROM players
+WHERE
+    id = (?);
