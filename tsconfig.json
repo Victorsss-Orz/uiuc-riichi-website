@@ -1,0 +1,25 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES6",
+//     "module": "NodeNext",
+//     "strict": true,
+//     "esModuleInterop": true,
+//     "moduleResolution": "NodeNext",
+//     "outDir": "./dist",
+//     "rootDir": "./src"
+//   },
+//   "include": ["src"]
+// }
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "strict": true
+  },
+  "include": ["src"]
+}
