@@ -15,7 +15,7 @@ export function insertGame({
     content: `
     <form id="addPlayerForm" method="POST">
       <label for="player1Name">Player1 Name:</label>
-      <select name="player1Name" id="player1Name">
+      <select name="player1Name" id="player1Name" style="width: 180px; overflow: hidden;">
 				${players.map((row) => `<option value=${row.id}>${row.player_name}</option>`).join("")}
 			</select>
       <br>

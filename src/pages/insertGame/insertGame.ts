@@ -12,7 +12,6 @@ router.get(
   asyncHandler(async (req, res) => {
     const connection = await connectToDatabase();
     const [players] = await connection.query<PlayerType[]>(sql.select_players);
-    console.log(players);
     res.send(insertGame({ players, resLocals: res.locals }));
   })
 );
