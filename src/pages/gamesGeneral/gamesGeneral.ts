@@ -6,15 +6,15 @@ import { loadSqlEquiv } from "../../lib/loader.js";
 import { PlayerType } from "../../lib/db-types.js";
 
 const router = express.Router();
-const sql = loadSqlEquiv(import.meta.url);
+// const sql = loadSqlEquiv(import.meta.url);
 
 router.get(
   "/",
   asyncHandler(async (req, res) => {
     // const connection = await connectToDatabase();
     // const [players] = await connection.query<PlayerType[]>(sql.select_players);
-    // console.log(res.locals);
-    res.send(gamesGeneral({ resLocals: res.locals }));
+    console.log(res.locals);
+    res.send(gamesGeneral({ players: [], resLocals: res.locals }));
   })
 );
 

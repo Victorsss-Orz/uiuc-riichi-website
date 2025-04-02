@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PageLayout } from "../../lib/pageLayout.html";
+import { PageLayout } from "../../lib/pageLayout.html.js";
 import { PlayerType } from "../../lib/db-types";
 
 export function insertGame({
@@ -15,10 +15,12 @@ export function insertGame({
     content: `
     <form id="addPlayerForm" method="POST">
       <label for="player1Name">Player1 Name:</label>
-      <input type="text" id="player1Name" name="playerName" required>
+      <select name="player1Name" id="player1Name">
+				${players.map((row) => `<option value=${row.id}>${row.player_name}</option>`).join("")}
+			</select>
       <br>
       <label for="player1Score">Player1 Score:</label>
-      <input type="number" id="player1Score" name="playerName required>
+      <input type="number" id="player1Score" name="player1Score" required>
       <label for="player1Score">00</label>
       <button type="submit" name="__action" value="add">Submit</button>
     </form>`,

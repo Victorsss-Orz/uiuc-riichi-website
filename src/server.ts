@@ -18,21 +18,17 @@ async function setupRoutes() {
 
   app.use(
     "/admin",
-    isAuthenticated,
+    // isAuthenticated, // TODO: remember to enable it back
     (await import("./pages/addPlayer/addPlayer.js")).default
   );
   app.use("/login", (await import("./pages/adminLogin/adminLogin.js")).default);
 
   app.use(
-    "/admin/add_player",
+    "/admin/players",
     (await import("./pages/addPlayer/addPlayer.js")).default
   );
   app.use(
-    "/admin/insert_game",
-    function (req: Request, res: Response, next: NextFunction) {
-      res.locals.semester = req.params.semester;
-      next();
-    },
+    "/admin/games",
     (await import("./pages/insertGame/insertGame.js")).default
   );
   app.use(

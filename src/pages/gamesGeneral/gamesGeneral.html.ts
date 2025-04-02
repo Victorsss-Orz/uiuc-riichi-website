@@ -5,13 +5,13 @@ export function gamesGeneral({
   players,
   resLocals,
 }: {
-  players?: PlayerType[];
+  players: PlayerType[];
   resLocals: Record<string, any>;
 }) {
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Add User",
-    content: ``,
+    content: `Here will be all the games for ${resLocals.semester}`,
   });
   return htmlContent;
 }
