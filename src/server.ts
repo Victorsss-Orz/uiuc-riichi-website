@@ -28,12 +28,20 @@ async function setupRoutes() {
     (await import("./pages/addPlayer/addPlayer.js")).default
   );
   app.use(
-    "/admin/:semester([a-zA-Z0-9_-]+)/insert_game",
+    "/admin/insert_game",
     function (req: Request, res: Response, next: NextFunction) {
       res.locals.semester = req.params.semester;
       next();
     },
     (await import("./pages/insertGame/insertGame.js")).default
+  );
+  app.use(
+    "/:semester([a-zA-Z0-9_-]+)/overview",
+    function (req: Request, res: Response, next: NextFunction) {
+      res.locals.semester = req.params.semester;
+      next();
+    },
+    (await import("./pages/gamesGeneral/gamesGeneral.js")).default
   );
 }
 

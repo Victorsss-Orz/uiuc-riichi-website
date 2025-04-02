@@ -1,5 +1,5 @@
 import { PlayerType } from "../../lib/db-types.js";
-import { PageLayout } from "../../lib/pageLayout.js";
+import { PageLayout } from "../../lib/pageLayout.html.js";
 
 export function addPlayer({
   players,

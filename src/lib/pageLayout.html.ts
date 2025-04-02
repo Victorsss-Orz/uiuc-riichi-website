@@ -41,3 +41,18 @@ export function PageLayout({
       </html>
   `;
 }
+
+function navBar({ isAdmin }: { isAdmin: boolean }) {
+  return `
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md" aria-label="Global navigation">
+    <div class="container-fluid">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="news.asp">News</a></li>
+        <li><a href="contact.asp">Contact</a></li>
+        <li><a href="about.asp">About</a></li>
+      </ul>
+    </div>
+  </nav>
+  `;
+}
