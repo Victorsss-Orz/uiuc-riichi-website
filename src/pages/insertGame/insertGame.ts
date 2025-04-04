@@ -15,11 +15,38 @@ router.get(
     res.send(insertGame({ players, resLocals: res.locals }));
   })
 );
+router.post(
+  "/calculate-game-results",
+  express.urlencoded({ extended: true }),
+  (req, res) => {
+    const { player1ID, player2ID, player3ID, player4ID } = req.body;
+
+    let { player1Score, player2Score, player3Score, player4Score } = req.body;
+    player1Score = parseInt(player1Score, 10);
+    player2Score = parseInt(player2Score, 10);
+    player3Score = parseInt(player3Score, 10);
+    player4Score = parseInt(player4Score, 10);
+
+    if (
+      Math.abs(
+        player1Score + player2Score + player3Score + player4Score - 1000
+      ) > 0.1
+    ) {
+      res.json({ ok: false, text: "Total score does not add up to 100000" });
+    } else {
+      res.send({
+        ok: true,
+        text: `<b>Player ${player1ID} with ${player1Score} points added!</b>`,
+      });
+    }
+  }
+);
 
 router.post(
   "/",
   asyncHandler(async (req, res) => {
     console.log(req.body);
+    res.redirect(req.originalUrl);
   })
 );
 

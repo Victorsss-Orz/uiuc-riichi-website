@@ -19,7 +19,7 @@ async function setupRoutes() {
   app.use(
     "/admin",
     // isAuthenticated, // TODO: remember to enable it back
-    (await import("./pages/addPlayer/addPlayer.js")).default
+    (await import("./pages/addPlayer/addPlayer.js")).default // TODO: add default admin panel page
   );
   app.use("/login", (await import("./pages/adminLogin/adminLogin.js")).default);
 

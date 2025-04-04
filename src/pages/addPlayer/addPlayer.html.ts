@@ -49,7 +49,7 @@ export function addPlayer({
                       Remove
                     </button>
                     <input type="hidden" name="playerToRemove" value=${row.id} />
-                  <form>
+                  </form>
                 </td>
               </tr>
               `
