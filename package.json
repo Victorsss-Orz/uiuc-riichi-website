@@ -18,8 +18,10 @@
     },
     "dependencies": {
         "@types/express-session": "^1.18.1",
+        "bootstrap": "^5.3.4",
         "express-async-handler": "^1.2.0",
         "express-session": "^1.18.1",
+        "jquery": "^3.7.1",
         "mysql2": "^3.14.0"
     },
     "type": "module"

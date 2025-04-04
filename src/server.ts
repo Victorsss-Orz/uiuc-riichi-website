@@ -1,10 +1,15 @@
 import express, { Request, Response, NextFunction } from "express";
-import { isAuthenticated } from "./lib/auth.js";
 import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
+
+import { isAuthenticated } from "./lib/auth.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 const PORT = 3001;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function setupRoutes() {
   app.use(
@@ -14,6 +19,14 @@ async function setupRoutes() {
       saveUninitialized: false, // Prevents saving empty sessions
       cookie: { secure: false }, // Set to true if using HTTPS
     })
+  );
+  app.use(
+    "/bootstrap",
+    express.static(path.join(__dirname, "../node_modules/bootstrap/dist"))
+  );
+  app.use(
+    "/jquery",
+    express.static(path.join(__dirname, "../node_modules/jquery/dist"))
   );
 
   app.use(
