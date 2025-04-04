@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PageLayout } from "../../lib/pageLayout.html.js";
+import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerType } from "../../lib/db-types";
-import { Modal } from "../../lib/modal.html.js";
+import { Modal } from "../../components/modal.html.js";
 
 export function insertGame({
   resLocals,
@@ -84,8 +84,6 @@ export function insertGame({
       })}
     </form>
 
-    
-
     <script type="module">
       document.getElementById("addGameForm").addEventListener("submit", async (e) => {
         if(e.submitter.name !== "gamePreprocess"){return;}
@@ -108,7 +106,7 @@ export function insertGame({
           document.getElementById("submit-button").disabled = false;
         }
 
-        document.getElementById("modal-body").innerHTML = data.text;
+        document.getElementById("modal-body").innerHTML = data.html;
 
         // Show the modal (using Bootstrap)
         const modal = new bootstrap.Modal(document.getElementById("gameResultModal"));

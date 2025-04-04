@@ -1,5 +1,5 @@
 import { PlayerType } from "../../lib/db-types.js";
-import { PageLayout } from "../../lib/pageLayout.html.js";
+import { PageLayout } from "../../components/pageLayout.html.js";
 
 export function addPlayer({
   players,
@@ -39,7 +39,7 @@ export function addPlayer({
                   <form name="removeUser${row.id}Form" method="POST">
                     <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-danger"
                     name="__action"
                     value="remove"
                     data-toggle="tooltip"

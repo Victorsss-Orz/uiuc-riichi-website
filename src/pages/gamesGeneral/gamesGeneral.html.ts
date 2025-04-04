@@ -1,5 +1,5 @@
 import { PlayerType } from "../../lib/db-types.js";
-import { PageLayout } from "../../lib/pageLayout.html.js";
+import { PageLayout } from "../../components/pageLayout.html.js";
 
 export function gamesGeneral({
   players,

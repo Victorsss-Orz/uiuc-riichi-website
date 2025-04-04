@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler";
 import { RowDataPacket } from "mysql2";
 
-import { connectToDatabase } from "../lib/database.js";
-import { loadSqlEquiv } from "../lib/loader.js";
+import { connectToDatabase } from "../lib/sqlDatabase.js";
+import { loadSqlEquiv } from "../lib/sqlLoader.js";
 
 interface SemesterType extends RowDataPacket {
   semester: string;
