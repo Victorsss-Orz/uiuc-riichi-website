@@ -1,12 +1,8 @@
 import asyncHandler from "express-async-handler";
-import { RowDataPacket } from "mysql2";
 
+import { SemesterType } from "../lib/db-types.js";
 import { connectToDatabase } from "../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../lib/sqlLoader.js";
-
-interface SemesterType extends RowDataPacket {
-  semester: string;
-}
 
 const sql = loadSqlEquiv(import.meta.url);
 export default asyncHandler(async (req, res, next) => {

@@ -1,9 +1,12 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
-import { insertGame } from "./insertGame.html.js";
+
+import { insertGame, gameResultConfirmation } from "./insertGame.html.js";
+
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { PlayerType } from "../../lib/db-types.js";
+import { processGameResults } from "../../lib/gameStats.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -18,46 +21,33 @@ router.get(
 router.post(
   "/calculate-game-results",
   express.urlencoded({ extended: true }),
-  (req, res) => {
-    const { player1ID, player2ID, player3ID, player4ID } = req.body;
+  asyncHandler(async (req, res) => {
+    try {
+      const results = await processGameResults(req);
 
-    let { player1Score, player2Score, player3Score, player4Score } = req.body;
-    player1Score = parseInt(player1Score, 10) * 100;
-    player2Score = parseInt(player2Score, 10) * 100;
-    player3Score = parseInt(player3Score, 10) * 100;
-    player4Score = parseInt(player4Score, 10) * 100;
-
-    const totalScore =
-      player1Score + player2Score + player3Score + player4Score;
-
-    if (Math.abs(totalScore - 100000) > 0.1) {
       res.json({
-        ok: false,
-        html: `
-          <p style="color:red;">Total score does not add up to <b>100000</b></p>
-          <p>Current total score: <b>${totalScore}</b></p>
-        `,
+        ok: true,
+        html: gameResultConfirmation(results, req.body.semester),
       });
-      return;
+    } catch (err) {
+      if (typeof err === "string") {
+        res.json({
+          ok: false,
+          html: err.toUpperCase,
+        });
+      } else if (err instanceof Error) {
+        res.json({
+          ok: false,
+          html: err.message,
+        });
+      } else {
+        res.json({
+          ok: false,
+          html: err,
+        });
+      }
     }
-
-    if (new Set([player1ID, player2ID, player3ID, player4ID]).size < 4) {
-      res.json({
-        ok: false,
-        html: `
-          <p style="color:red;">Cannot have duplicate players in a game</p>
-        `,
-      });
-      return;
-    }
-
-    const placementPoints = { 1: 50, 2: 10, 3: -10, 4: -30 };
-
-    res.json({
-      ok: true,
-      html: `<b>Player ${player1ID} with ${player1Score} points added!</b>`,
-    });
-  }
+  })
 );
 
 router.post(

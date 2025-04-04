@@ -1,4 +1,4 @@
-import mysql, { Connection, RowDataPacket } from "mysql2/promise";
+import mysql, { Connection } from "mysql2/promise";
 
 export async function connectToDatabase(): Promise<Connection> {
   const connection = await mysql.createConnection({
