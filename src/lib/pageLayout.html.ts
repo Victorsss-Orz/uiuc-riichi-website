@@ -20,6 +20,7 @@ export function PageLayout({
   /** The content of the page in the body after the main container. */
   postContent?: string;
 }) {
+  console.log(resLocals);
   return `
   <!DOCTYPE html>
       <html lang="en">
@@ -28,6 +29,7 @@ export function PageLayout({
       </head>
       <body>
         ${preContent ?? ""}
+        ${navBar({ resLocals })}
         <main
           id="content"
           class="container-fluid mb-4 flex-grow-1"
@@ -40,15 +42,42 @@ export function PageLayout({
   `;
 }
 
-function navBar({ isAdmin }: { isAdmin: boolean }) {
+function navBar({ resLocals }: { resLocals: Record<string, any> }) {
   return `
-  <nav class="navbar navbar-dark bg-dark navbar-expand-md" aria-label="Global navigation">
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md mb-4" aria-label="Global navigation">
     <div class="container-fluid">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="news.asp">News</a></li>
-        <li><a href="contact.asp">Contact</a></li>
-        <li><a href="about.asp">About</a></li>
+      <a class="navbar-brand" href="/">UIUC Riichi</a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Semesters
+          </a>
+          <ul class="dropdown-menu">
+            ${resLocals.semesters
+              .map(
+                (semester: any) =>
+                  `<li><a class="dropdown-item" href="/${semester}/overview">${semester}</a></li>`
+              )
+              .join("")}
+            
+            <li><hr class="dropdown-divider"></li>
+          </ul>
+        </li>
+        ${
+          resLocals.isAdmin
+            ? `
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/games">Games</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/players">Players</a>
+          </li>
+          ` : `
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Admin Login</a>
+          </li>
+          `
+        }
       </ul>
     </div>
   </nav>
@@ -67,10 +96,3 @@ export function HeadContents(title: string) {
     <script src="/jquery/jquery.min.js"></script>
   `;
 }
-// <link href="${'../../node_modules/bootstrap/dist/css/bootstrap.min.css'}" rel="stylesheet" />
-//     <link
-//       href="${'../../node_modules/bootstrap-icons/font/bootstrap-icons.css'}"
-//       rel="stylesheet"
-//     />
-//     <script src="${('../../node_modules/jquery/dist/jquery.min.js')}"></script>
-//     <script src="${('../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js')}"></script>

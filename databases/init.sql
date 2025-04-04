@@ -18,6 +18,9 @@ CREATE TABLE
     );
 
 CREATE TABLE
+    IF NOT EXISTS semesters (semester TEXT NOT NULL);
+
+CREATE TABLE
     IF NOT EXISTS teams (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         team_name TEXT NOT NULL,

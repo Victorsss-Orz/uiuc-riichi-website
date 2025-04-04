@@ -30,6 +30,12 @@ async function setupRoutes() {
   );
 
   app.use(
+    "/",
+    (await import("./middlewares/selectSemesters.js")).default,
+    (await import("./middlewares/checkAuthentication.js")).default
+  );
+
+  app.use(
     "/admin",
     // isAuthenticated, // TODO: remember to enable it back
     (await import("./pages/addPlayer/addPlayer.js")).default // TODO: add default admin panel page
