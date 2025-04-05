@@ -58,4 +58,4 @@ WHERE
     AND gp.player_id = ?
     AND NOT g.is_team_game
 ORDER BY
-    g.id;
+    gp.game_id;

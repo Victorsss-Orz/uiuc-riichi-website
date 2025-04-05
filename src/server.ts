@@ -51,7 +51,7 @@ async function setupRoutes() {
     (await import("./pages/insertGame/insertGame.js")).default
   );
   app.use(
-    "/:semester([a-zA-Z0-9_-]+)/overview",
+    "/semesters/:semester([a-zA-Z0-9_-]+)",
     function (req: Request, res: Response, next: NextFunction) {
       res.locals.semester = req.params.semester;
       next();

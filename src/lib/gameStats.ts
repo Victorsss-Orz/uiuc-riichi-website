@@ -85,7 +85,7 @@ export async function processGameResults(
       player_id: parseInt(player1ID, 10),
       player_name: "",
       score: player1ScoreVal,
-      starting_wind: teamGame ? player1Wind : "",
+      starting_wind: teamGame ? player1Wind : null,
       placement: 0,
       point_change: 0,
     },
@@ -93,7 +93,7 @@ export async function processGameResults(
       player_id: parseInt(player2ID, 10),
       player_name: "",
       score: player2ScoreVal,
-      starting_wind: teamGame ? player2Wind : "",
+      starting_wind: teamGame ? player2Wind : null,
       placement: 0,
       point_change: 0,
     },
@@ -101,7 +101,7 @@ export async function processGameResults(
       player_id: parseInt(player3ID, 10),
       player_name: "",
       score: player3ScoreVal,
-      starting_wind: teamGame ? player3Wind : "",
+      starting_wind: teamGame ? player3Wind : null,
       placement: 0,
       point_change: 0,
     },
@@ -109,7 +109,7 @@ export async function processGameResults(
       player_id: parseInt(player4ID, 10),
       player_name: "",
       score: player4ScoreVal,
-      starting_wind: teamGame ? player4Wind : "",
+      starting_wind: teamGame ? player4Wind : null,
       placement: 0,
       point_change: 0,
     },
@@ -223,11 +223,11 @@ async function playerRankUp(
   ranking: number
 ): Promise<boolean> {
   const rankLookup = [
-    { num_games: 5, avg_placement: 3.0 }, // 4
-    { num_games: 5, avg_placement: 2.9 }, // 3
-    { num_games: 5, avg_placement: 2.8 }, // 2
-    { num_games: 10, avg_placement: 2.7 },
-    { num_games: 10, avg_placement: 2.6 },
+    { num_games: 5, avg_placement: 3.0 }, // 4级
+    { num_games: 5, avg_placement: 2.9 },
+    { num_games: 5, avg_placement: 2.8 },
+    { num_games: 10, avg_placement: 2.7 }, // 1级
+    { num_games: 10, avg_placement: 2.6 }, // 初段
     { num_games: 10, avg_placement: 2.5 },
     { num_games: 15, avg_placement: 2.5 },
     { num_games: 15, avg_placement: 2.4 },
@@ -236,7 +236,7 @@ async function playerRankUp(
     { num_games: 25, avg_placement: 2.3 },
     { num_games: 25, avg_placement: 2.2 },
     { num_games: 25, avg_placement: 2.1 },
-    { num_games: 30, avg_placement: 2.0 },
+    { num_games: 30, avg_placement: 2.0 }, // 十段
   ];
   const requirement = rankLookup[ranking];
   if (player_games.length < requirement.num_games) {

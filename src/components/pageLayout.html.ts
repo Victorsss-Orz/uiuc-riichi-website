@@ -55,7 +55,7 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
             ${resLocals.semesters
               .map(
                 (semester: any) =>
-                  `<li><a class="dropdown-item" href="/${semester}/overview">${semester}</a></li>`
+                  `<li><a class="dropdown-item" href="/semesters/${semester}">${semester}</a></li>`
               )
               .join("")}
             
