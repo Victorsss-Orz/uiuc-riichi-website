@@ -24,7 +24,8 @@ CREATE TABLE
     IF NOT EXISTS teams (
         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         team_name TEXT NOT NULL,
-        points FLOAT NOT NULL DEFAULT 0
+        points FLOAT NOT NULL DEFAULT 0,
+        semester TEXT NOT NULL
     );
 
 CREATE TABLE

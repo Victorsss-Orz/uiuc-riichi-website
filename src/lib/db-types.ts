@@ -17,6 +17,7 @@ export interface TeamType extends RowDataPacket {
   id: number;
   team_name: string;
   points: number;
+  semester: string;
 }
 
 export interface GameType extends RowDataPacket {
