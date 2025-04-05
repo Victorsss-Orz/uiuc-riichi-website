@@ -33,57 +33,52 @@ export function insertGame({
         Team Game
       </div>
 
-      <div style="line-height: 2rem; margin-bottom: 1rem;">
-        <label for="player1ID">Player1 Name:</label>
-        <select name="player1ID" id="player1ID" style="width: 180px; overflow: hidden;">
-          ${players
-            .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
-            .join("")}
-        </select>
-        <br>
-        <label for="player1Score">Player1 Score:</label>
-        <input type="number" id="player1Score" name="player1Score" style="width: 80px;" value="250" required>
-        <label for="player1Score"> 00</label>
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover" aria-label="Created players">
+            <thead>
+              <tr>
+                <td>Player</td>
+                <td>Score</td>
+                <td>Wind</td>
+              </tr>
+            </thead>
+            <tbody>
+              ${[1, 2, 3, 4]
+                .map(
+                  (i) => `
+                <tr>
+                  <td>
+                    <select name="player${i}ID" id="player${i}ID" style="width: 180px; overflow: hidden;">
+                      ${players
+                        .map(
+                          (row) =>
+                            `<option value=${row.id}>${row.player_name}</option>`
+                        )
+                        .join("")}
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" id="player${i}Score" name="player${i}Score" style="width: 80px;" value="250" required>
+                    <label for="player${i}Score"> 00</label>
+                  </td>
+                  <td>
+                    <select name="player${i}Wind" id="player${i}Wind" style="width: 180px; overflow: hidden;">
+                      <option value="East">East</option>
+                      <option value="West">West</option>
+                      <option value="North">North</option>
+                      <option value="South">South</option>
+                    </select>
+                  </td>
+                </tr>
+                `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div style="line-height: 2rem; margin-bottom: 1rem;">
-        <label for="player2ID">Player2 Name:</label>
-        <select name="player2ID" id="player2ID" style="width: 180px; overflow: hidden;">
-          ${players
-            .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
-            .join("")}
-        </select>
-        <br>
-        <label for="player2Score">Player2 Score:</label>
-        <input type="number" id="player2Score" name="player2Score" style="width: 80px;" value="250" required>
-        <label for="player2Score"> 00</label>
-      </div>
-
-      <div style="line-height: 2rem; margin-bottom: 1rem;">
-        <label for="player3ID">Player3 Name:</label>
-        <select name="player3ID" id="player3ID" style="width: 180px; overflow: hidden;">
-          ${players
-            .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
-            .join("")}
-        </select>
-        <br>
-        <label for="player3Score">Player3 Score:</label>
-        <input type="number" id="player3Score" name="player3Score" style="width: 80px;" value="250" required>
-        <label for="player3Score"> 00</label>
-      </div>
-
-      <div style="line-height: 2rem; margin-bottom: 1rem;">
-        <label for="player4ID">Player4 Name:</label>
-        <select name="player4ID" id="player4ID" style="width: 180px; overflow: hidden;">
-          ${players
-            .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
-            .join("")}
-        </select>
-        <br>
-        <label for="player4Score">Player4 Score:</label>
-        <input type="number" id="player4Score" name="player4Score" style="width: 80px;" value="250" required>
-        <label for="player4Score"> 00</label>
-      </div>
       <button 
         class="btn btn-primary"
         name="gamePreprocess" 
@@ -181,3 +176,55 @@ export function gameResultConfirmation(
   `;
   return htmlContent;
 }
+
+// <div style="line-height: 2rem; margin-bottom: 1rem;">
+// <label for="player1ID">Player1 Name:</label>
+// <select name="player1ID" id="player1ID" style="width: 180px; overflow: hidden;">
+//   ${players
+//     .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
+//     .join("")}
+// </select>
+// <br>
+// <label for="player1Score">Player1 Score:</label>
+// <input type="number" id="player1Score" name="player1Score" style="width: 80px;" value="250" required>
+// <label for="player1Score"> 00</label>
+// </div>
+
+// <div style="line-height: 2rem; margin-bottom: 1rem;">
+// <label for="player2ID">Player2 Name:</label>
+// <select name="player2ID" id="player2ID" style="width: 180px; overflow: hidden;">
+//   ${players
+//     .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
+//     .join("")}
+// </select>
+// <br>
+// <label for="player2Score">Player2 Score:</label>
+// <input type="number" id="player2Score" name="player2Score" style="width: 80px;" value="250" required>
+// <label for="player2Score"> 00</label>
+// </div>
+
+// <div style="line-height: 2rem; margin-bottom: 1rem;">
+// <label for="player3ID">Player3 Name:</label>
+// <select name="player3ID" id="player3ID" style="width: 180px; overflow: hidden;">
+//   ${players
+//     .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
+//     .join("")}
+// </select>
+// <br>
+// <label for="player3Score">Player3 Score:</label>
+// <input type="number" id="player3Score" name="player3Score" style="width: 80px;" value="250" required>
+// <label for="player3Score"> 00</label>
+// </div>
+
+// <div style="line-height: 2rem; margin-bottom: 1rem;">
+// <label for="player4ID">Player4 Name:</label>
+// <select name="player4ID" id="player4ID" style="width: 180px; overflow: hidden;">
+//   ${players
+//     .map((row) => `<option value=${row.id}>${row.player_name}</option>`)
+//     .join("")}
+// </select>
+// <br>
+// <label for="player4Score">Player4 Score:</label>
+// <input type="number" id="player4Score" name="player4Score" style="width: 80px;" value="250" required>
+// <label for="player4Score"> 00</label>
+// </div>
