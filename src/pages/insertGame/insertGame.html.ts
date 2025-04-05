@@ -33,7 +33,7 @@ export function insertGame({
         Team Game
       </div>
 
-      <div class="card">
+      <div class="card" style="max-width: 600px; margin-bottom: 1rem;">
         <div class="table-responsive">
           <table class="table table-sm table-hover" aria-label="Created players">
             <thead>
@@ -49,7 +49,8 @@ export function insertGame({
                   (i) => `
                 <tr>
                   <td>
-                    <select name="player${i}ID" id="player${i}ID" style="width: 180px; overflow: hidden;">
+                    <select name="player${i}ID" id="player${i}ID" style="width: 150px; overflow: hidden;">
+                      <option selected></option>
                       ${players
                         .map(
                           (row) =>
@@ -63,11 +64,12 @@ export function insertGame({
                     <label for="player${i}Score"> 00</label>
                   </td>
                   <td>
-                    <select name="player${i}Wind" id="player${i}Wind" style="width: 180px; overflow: hidden;">
+                    <select name="player${i}Wind" id="player${i}Wind" style="width: 60px; overflow: hidden;">
+                      <option selected></option>
                       <option value="East">East</option>
                       <option value="West">West</option>
-                      <option value="North">North</option>
                       <option value="South">South</option>
+                      <option value="North">North</option>
                     </select>
                   </td>
                 </tr>

@@ -74,11 +74,11 @@ export async function processGameResults(
     `);
   }
 
-  // if (new Set([player1ID, player2ID, player3ID, player4ID]).size < 4) {
-  //   throw new Error(`
-  //     <p style="color:red;">Cannot have duplicate players in a game</p>
-  //   `);
-  // }
+  if (new Set([player1ID, player2ID, player3ID, player4ID]).size < 4) {
+    throw new Error(`
+      <p style="color:red;">You must select 4 distince players</p>
+    `);
+  }
 
   const results: GameResultType[] = [
     {
