@@ -28,6 +28,10 @@ async function setupRoutes() {
     "/jquery",
     express.static(path.join(__dirname, "../node_modules/jquery/dist"))
   );
+  app.use(
+    "/chart.js",
+    express.static(path.join(__dirname, "../node_modules/chart.js/dist"))
+  );
 
   app.use(
     "/",

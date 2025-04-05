@@ -71,7 +71,8 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
           <li class="nav-item">
             <a class="nav-link" href="/admin/players">Players</a>
           </li>
-          ` : `
+          `
+            : `
           <li class="nav-item">
             <a class="nav-link" href="/login">Admin Login</a>
           </li>

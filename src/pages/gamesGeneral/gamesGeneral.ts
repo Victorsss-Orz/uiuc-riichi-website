@@ -25,6 +25,15 @@ router.get(
         allStats.push(stats);
       }
     }
+    allStats.sort((a, b) => {
+      if (a.points - b.points > 1e-6) {
+        return -1;
+      } else if (a.points - b.points < 1e-6) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
     res.send(gamesGeneral({ allStats, resLocals: res.locals }));
   })
 );

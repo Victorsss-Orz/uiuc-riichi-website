@@ -19,6 +19,7 @@
     "dependencies": {
         "@types/express-session": "^1.18.1",
         "bootstrap": "^5.3.4",
+        "chart.js": "^4.4.8",
         "express-async-handler": "^1.2.0",
         "express-session": "^1.18.1",
         "jquery": "^3.7.1",
