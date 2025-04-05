@@ -20,7 +20,6 @@ export function PageLayout({
   /** The content of the page in the body after the main container. */
   postContent?: string;
 }) {
-  console.log(resLocals);
   return `
   <!DOCTYPE html>
       <html lang="en">

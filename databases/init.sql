@@ -12,8 +12,8 @@ CREATE TABLE
     IF NOT EXISTS player_semester_data (
         player_id BIGINT NOT NULL REFERENCES players (id) ON DELETE CASCADE ON UPDATE CASCADE,
         semester TEXT NOT NULL,
-        grade INT NOT NULL DEFAULT 0,
-        rating INT NOT NULL DEFAULT 0,
+        ranking INT NOT NULL DEFAULT 0,
+        points FLOAT NOT NULL DEFAULT 0,
         team_id BIGINT REFERENCES teams (id) ON DELETE CASCADE ON UPDATE CASCADE
     );
 
@@ -45,3 +45,11 @@ CREATE TABLE
         point_change FLOAT NOT NULL,
         CONSTRAINT chk_placement CHECK (placement IN (1, 2, 3, 4))
     );
+
+INSERT INTO semesters(semester) VALUES ('sp25');
+INSERT INTO semesters (semester) VALUES ('fa25');
+
+INSERT INTO players (player_name) VALUES ('H');
+INSERT INTO players (player_name) VALUES ('浩');
+INSERT INTO players (player_name) VALUES ('秦始皇');
+INSERT INTO players (player_name) VALUES ('地雷');

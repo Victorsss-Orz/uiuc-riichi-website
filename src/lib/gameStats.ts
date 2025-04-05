@@ -1,8 +1,14 @@
 import { Request } from "express";
 
-import { StartingWind, PlayerType } from "./db-types.js";
+import {
+  StartingWind,
+  PlayerType,
+  PlayerSemesterDataType,
+  GamePlayerType,
+} from "./db-types.js";
 import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
+import { ResultSetHeader } from "mysql2";
 
 const sql = loadSqlEquiv(import.meta.url);
 
@@ -130,4 +136,107 @@ export async function processGameResults(
     i = j;
   }
   return results;
+}
+
+export async function insertGameResults(
+  results: GameResultType[],
+  semester: string,
+  is_team_game: boolean
+): Promise<void> {
+  // Create game
+  const connection = await connectToDatabase();
+  const [inserted_game] = await connection.query<ResultSetHeader>(
+    sql.insert_game,
+    [is_team_game, semester]
+  );
+
+  console.log(`Inserted game ${inserted_game.insertId}`);
+
+  for (const result of results) {
+    // Insert player semester data if DNE
+    let [data] = await connection.query<PlayerSemesterDataType[]>(
+      sql.select_player_semester_data,
+      [result.player_id, semester]
+    );
+    if (data.length == 0) {
+      console.log(`Creating ${semester} data for ${result.player_name}`);
+      await connection.query(sql.insert_player_semester_data, [
+        result.player_id,
+        semester,
+      ]);
+    }
+
+    // Insert player results
+    await connection.query(sql.insert_player_game_result, [
+      inserted_game.insertId,
+      result.player_id,
+      result.starting_wind,
+      result.score,
+      result.placement,
+      result.point_change,
+    ]);
+
+    // Update player semester data
+    const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+      sql.select_player_semester_data,
+      [result.player_id, semester]
+    );
+    const player_data = players_data[0];
+    const new_points = player_data.points + result.point_change;
+
+    // Ranking
+    const [player_games] = await connection.query<GamePlayerType[]>(
+      sql.select_player_game_history,
+      [semester, result.player_id]
+    );
+    let new_ranking = player_data.ranking;
+    while (await playerRankUp(player_games, new_ranking)) {
+      new_ranking++;
+    }
+
+    // Update
+    await connection.query(sql.update_player_semester_data, [
+      new_ranking,
+      new_points,
+      result.player_id,
+      semester,
+    ]);
+  }
+}
+
+async function playerRankUp(
+  player_games: GamePlayerType[],
+  ranking: number
+): Promise<boolean> {
+  const rankLookup = [
+    { num_games: 5, avg_placement: 3.0 }, // 4
+    { num_games: 5, avg_placement: 2.9 }, // 3
+    { num_games: 5, avg_placement: 2.8 }, // 2
+    { num_games: 10, avg_placement: 2.7 }, 
+    { num_games: 10, avg_placement: 2.6 },
+    { num_games: 10, avg_placement: 2.5 },
+    { num_games: 15, avg_placement: 2.5 },
+    { num_games: 15, avg_placement: 2.4 },
+    { num_games: 20, avg_placement: 2.4 },
+    { num_games: 20, avg_placement: 2.3 },
+    { num_games: 25, avg_placement: 2.3 },
+    { num_games: 25, avg_placement: 2.2 },
+    { num_games: 25, avg_placement: 2.1 },
+    { num_games: 30, avg_placement: 2.0 },
+  ];
+  const requirement = rankLookup[ranking];
+  if (player_games.length < requirement.num_games) {
+    return false;
+  }
+  const game_placements = [];
+  for (
+    let i = player_games.length - requirement.num_games;
+    i < player_games.length;
+    i++
+  ) {
+    game_placements.push(player_games[i].placement);
+  }
+  const player_avg_placement =
+    game_placements.reduce((acc, val) => acc + val, 0) / game_placements.length;
+  return player_avg_placement <= requirement.avg_placement;
 }

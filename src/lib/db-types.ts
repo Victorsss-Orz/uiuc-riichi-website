@@ -8,8 +8,8 @@ export interface PlayerType extends RowDataPacket {
 export interface PlayerSemesterDataType extends RowDataPacket {
   player_id: number;
   semester: string;
-  grade: number; // 段位
-  rating: number; // elo
+  ranking: number; // 段位
+  points: number; // pt
   team_id: number | null;
 }
 
@@ -23,7 +23,7 @@ export interface GameType extends RowDataPacket {
   id: number;
   game_time: string;
   is_team_game: boolean;
-  semester: string;
+  semester: string; // TODO: add rule
 }
 
 export enum StartingWind {

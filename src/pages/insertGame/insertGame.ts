@@ -6,7 +6,7 @@ import { insertGame, gameResultConfirmation } from "./insertGame.html.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { PlayerType } from "../../lib/db-types.js";
-import { processGameResults } from "../../lib/gameStats.js";
+import { insertGameResults, processGameResults } from "../../lib/gameStats.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -24,7 +24,6 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       const results = await processGameResults(req);
-
       res.json({
         ok: true,
         html: gameResultConfirmation(results, req.body.semester),
@@ -54,6 +53,12 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     console.log(req.body);
+    const results = await processGameResults(req);
+    await insertGameResults(
+      results,
+      req.body.semester,
+      req.body.teamGame ? true : false
+    );
     res.redirect(req.originalUrl);
   })
 );
