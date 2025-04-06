@@ -33,6 +33,7 @@ async function setupRoutes() {
     express.static(path.join(__dirname, "../node_modules/chart.js/dist"))
   );
 
+  // TODO: create page
   app.use(
     "/",
     (await import("./middlewares/selectSemesters.js")).default,
@@ -54,14 +55,37 @@ async function setupRoutes() {
     "/admin/games",
     (await import("./pages/insertGame/insertGame.js")).default
   );
+
   app.use(
-    "/semesters/:semester([a-zA-Z0-9_-]+)",
-    function (req: Request, res: Response, next: NextFunction) {
-      res.locals.semester = req.params.semester;
-      next();
-    },
+    "/semester/:semester([a-zA-Z0-9_-]+)",
+    (await import("./middlewares/getSemester.js")).default
+  );
+  app.use(
+    "/semester/:semester([a-zA-Z0-9_-]+)/individual",
     (await import("./pages/gamesGeneral/gamesGeneral.js")).default
   );
+  app.use(
+    "/semester/:semester([a-zA-Z0-9_-]+)/player/:player_id(\\d+)",
+    function (req: Request, res: Response, next: NextFunction) {
+      res.locals.player_id = req.params.player_id;
+      next();
+    },
+    (await import("./pages/playerGames/playerGames.js")).default
+  );
+
+  app.use((req, res) => {
+    // TODO: handle this through another page
+    res.status(404).send(`
+      <!DOCTYPE html>
+      <html>
+      <head><title>404 - Not Found</title></head>
+      <body>
+        <h1>404 - Page Not Found</h1>
+        <a href="/">Go back to Home</a>
+      </body>
+      </html>
+    `);
+  });
 }
 
 setupRoutes().then(() => {

@@ -18,7 +18,7 @@ export function gamesGeneral({
         ${allStats
           .map(
             (stats) => `
-            <a href="/semesters/${resLocals.semester}/player/${
+            <a href="/semester/${resLocals.semester}/player/${
               stats.id
             }" style="text-decoration: none;">
               <div class="card" 
