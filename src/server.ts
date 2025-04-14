@@ -7,7 +7,8 @@ import { isAuthenticated } from "./lib/auth.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+// const PORT = 3001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

@@ -1,7 +1,7 @@
 {
     "name": "uiuc-riichi",
     "version": "1.0.0",
-    "main": "index.ts",
+    "main": "dist/server.js",
     "devDependencies": {
         "@types/express": "^5.0.1",
         "body-parser": "^1.20.3",
