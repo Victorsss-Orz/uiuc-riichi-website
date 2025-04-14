@@ -10,3 +10,14 @@ export async function connectToDatabase(): Promise<Connection> {
 
   return connection;
 }
+
+// export async function connectToDatabase(): Promise<Connection> {
+//   const connection = await mysql.createConnection({
+//     host: "localhost", // Use service name defined in docker-compose.yml
+//     user: "uiucriichi_admin", // MySQL username
+//     password: "uiucriichi1326", // MySQL password
+//     database: "uiucriichi_data", // Database name
+//   });
+
+//   return connection;
+// }

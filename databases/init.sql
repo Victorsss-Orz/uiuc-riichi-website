@@ -1,6 +1,6 @@
-CREATE DATABASE riichi;
+CREATE DATABASE uiucriichi_data;
 
-USE riichi;
+USE uiucriichi_data;
 
 CREATE TABLE
     IF NOT EXISTS players (
