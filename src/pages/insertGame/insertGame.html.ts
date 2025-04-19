@@ -85,8 +85,8 @@ export function insertGame({
         class="btn btn-primary"
         name="gamePreprocess" 
         type="submit" 
-        data-toggle="modal" 
-        data-target="#gameResultModal"
+        data-bs-toggle="modal" 
+        data-bs-target="#gameResultModal"
       >Add game history</button>
       ${Modal({
         body: "Calculating",

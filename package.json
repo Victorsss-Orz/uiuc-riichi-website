@@ -12,8 +12,8 @@
         "typescript": "^5.8.2"
     },
     "scripts": {
-        "nope": "nodemon --exec ts-node src/server.ts",
-        "start": "nodemon dist/server.js",
+        "dev": "nodemon dist/server.js",
+        "start": "node dist/server.js",
         "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/"
     },
     "dependencies": {
