@@ -13,7 +13,7 @@
     },
     "scripts": {
         "dev": "nodemon dist/server.js",
-        "start": "node dist/server.js",
+        "start": "node app.js",
         "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/"
     },
     "dependencies": {
