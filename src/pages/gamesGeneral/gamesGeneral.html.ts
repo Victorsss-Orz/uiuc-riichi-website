@@ -16,44 +16,50 @@ export function gamesGeneral({
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">
         <h2>Player rankings ${resLocals.semester}</h2>
-        ${allStats
-          .map(
-            (stats) => html`
-            <a href="/semester/${resLocals.semester}/player/${
-              stats.id
-            }" style="text-decoration: none;">
-              <div class="card" 
+        ${allStats.map(
+          (stats) => html`
+            <a
+              href="/semester/${resLocals.semester}/player/${stats.id}"
+              style="text-decoration: none;"
+            >
+              <div
+                class="card"
                 style="
                   justify-content: center; 
                   margin-top: 1rem; 
                   padding-top: 1rem; 
                   padding-bottom: 1rem; 
                   flex-direction: row; 
-                  gap: 2%;">
+                  gap: 2%;"
+              >
                 <div style="width: 60%">
                   <h4>${stats.name}</h4>
                   <div>Points: ${stats.points}</div>
-                  <div>Games Played: ${stats.placements.reduce(
-                    (acc, val) => acc + val,
-                    0
-                  )}</div>
-                  <div>Average Placement: ${
-                    Math.round(stats.average_placement * 100) / 100
-                  }</div>
-                  <div>Placement Percentages: ${[1, 2, 3, 4]
-                    .map(
-                      (i) =>
-                        `${i}: ${
-                          Math.round(
-                            (1000 * stats.placements[i - 1]) /
-                              stats.placements.reduce(
-                                (acc, val) => acc + val,
-                                0
-                              )
-                          ) / 10
-                        }%`
-                    )
-                    .join(", ")}</div>
+                  <div>
+                    Games Played:
+                    ${stats.placements.reduce((acc, val) => acc + val, 0)}
+                  </div>
+                  <div>
+                    Average Placement:
+                    ${Math.round(stats.average_placement * 100) / 100}
+                  </div>
+                  <div>
+                    Placement Percentages:
+                    ${[1, 2, 3, 4]
+                      .map(
+                        (i) =>
+                          `${i}: ${
+                            Math.round(
+                              (1000 * stats.placements[i - 1]) /
+                                stats.placements.reduce(
+                                  (acc, val) => acc + val,
+                                  0
+                                )
+                            ) / 10
+                          }%`
+                      )
+                      .join(", ")}
+                  </div>
                 </div>
                 <h4 style="width: 8%; color: red; margin-top: 3rem;">
                   ${stats.ranking}
@@ -65,8 +71,7 @@ export function gamesGeneral({
             </a>
             ${chartScript(stats.placements, stats.id)}
           `
-          )
-          }
+        )}
       </div>
     `,
   });
@@ -92,7 +97,7 @@ function chartScript(placements: number[], id: number) {
                   "rgb(255, 123, 0)",
                   "rgb(255, 0, 0)",
                 ],
-                data: [${placements}],
+                data: [${placements.map((p) => `${p}`).join(",")}],
               },
             ],
           },
