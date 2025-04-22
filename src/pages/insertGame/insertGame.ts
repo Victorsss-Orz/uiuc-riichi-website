@@ -26,7 +26,7 @@ router.post(
       const results = await processGameResults(req);
       res.json({
         ok: true,
-        html: gameResultConfirmation(results, req.body.semester),
+        html: gameResultConfirmation(results, req.body.semester).toString(),
       });
     } catch (err) {
       if (typeof err === "string") {

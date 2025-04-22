@@ -1,3 +1,4 @@
+import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerSemesterStats } from "../../lib/playerStats.js";
 
@@ -11,8 +12,8 @@ export function playerGames({
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Add User",
-    preContent: "",
-    content: ``,
+    preContent: html``,
+    content: html``,
   });
   return htmlContent;
 }

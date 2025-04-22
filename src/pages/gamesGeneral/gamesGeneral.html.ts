@@ -1,3 +1,4 @@
+import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerSemesterStats } from "../../lib/playerStats.js";
 
@@ -11,13 +12,13 @@ export function gamesGeneral({
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Add User",
-    preContent: "<script src='/chart.js/chart.umd.js'></script>",
-    content: `
+    preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
+    content: html`
       <div style="max-width: 800px; margin: 0 auto;">
         <h2>Player rankings ${resLocals.semester}</h2>
         ${allStats
           .map(
-            (stats) => `
+            (stats) => html`
             <a href="/semester/${resLocals.semester}/player/${
               stats.id
             }" style="text-decoration: none;">
@@ -65,7 +66,7 @@ export function gamesGeneral({
             ${chartScript(stats.placements, stats.id)}
           `
           )
-          .join("")}
+          }
       </div>
     `,
   });
@@ -73,32 +74,35 @@ export function gamesGeneral({
 }
 
 function chartScript(placements: number[], id: number) {
-  return `
+  return html`
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-
-        const ctx = document.getElementById('chartPlayer${id}').getContext('2d');
+        const ctx = document
+          .getElementById("chartPlayer${id}")
+          .getContext("2d");
         const myChart = new Chart(ctx, {
           type: "pie",
           data: {
             labels: [1, 2, 3, 4],
-            datasets: [{
-              backgroundColor: [
-                "rgb(30, 255, 0)",
-                "rgb(242, 255, 0)",
-                "rgb(255, 123, 0)",
-                "rgb(255, 0, 0)",
-              ],
-              data: [${placements}]
-            }]
+            datasets: [
+              {
+                backgroundColor: [
+                  "rgb(30, 255, 0)",
+                  "rgb(242, 255, 0)",
+                  "rgb(255, 123, 0)",
+                  "rgb(255, 0, 0)",
+                ],
+                data: [${placements}],
+              },
+            ],
           },
           options: {
             plugins: {
-              legend: { display: false }
-            }
-          }
+              legend: { display: false },
+            },
+          },
         });
       });
     </script>
-    `;
+  `;
 }
