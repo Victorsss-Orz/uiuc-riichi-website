@@ -19,7 +19,7 @@ router.get(
     const info = await getGamesForPlayer(player_id, semester);
     console.log(info);
 
-    res.send(playerGames({ games: [], resLocals: res.locals }));
+    res.send(playerGames({ info, resLocals: res.locals }));
   })
 );
 

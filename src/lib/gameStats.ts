@@ -216,7 +216,7 @@ export async function insertGameResults(
         semester,
       ]);
     } else {
-      // Update team part
+      // TODO: Update team scores and stuff
       return;
     }
   }

@@ -4,20 +4,22 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
-export interface GameInformationType extends GamePlayerRow {
+export interface GameInformationRow extends GamePlayerRow {
   game_time: string;
   is_team_game: boolean;
   player_name: string;
 }
 
+type ExtendedGamePlayer = GamePlayer & { player_name: string };
+
 export type GameInfo = {
   game_id: number;
   game_date: string;
   is_team_game: boolean;
-  player_1: GamePlayer | null;
-  player_2: GamePlayer | null;
-  player_3: GamePlayer | null;
-  player_4: GamePlayer | null;
+  player_1: ExtendedGamePlayer | null;
+  player_2: ExtendedGamePlayer | null;
+  player_3: ExtendedGamePlayer | null;
+  player_4: ExtendedGamePlayer | null;
 };
 
 export async function getGamesForPlayer(
@@ -25,14 +27,14 @@ export async function getGamesForPlayer(
   semester: string
 ): Promise<GameInfo[]> {
   const connection = await connectToDatabase();
-  const [games] = await connection.query<GameInformationType[]>(
+  const [games] = await connection.query<GameInformationRow[]>(
     sql.select_player_games,
     [player_id, semester]
   );
 
   const info: GameInfo[] = [];
   let curr_game_info = { game_id: -1, game_date: "", is_team_game: false };
-  let curr_game_players: (GamePlayer | null)[] = [];
+  let curr_game_players: (ExtendedGamePlayer | null)[] = [];
   for (const game of games) {
     if (curr_game_info.game_id != game.game_id) {
       if (curr_game_players.length) {
@@ -63,6 +65,7 @@ export async function getGamesForPlayer(
       score: game.score,
       placement: game.placement,
       point_change: game.point_change,
+      player_name: game.player_name,
     });
   }
   while (curr_game_players.length < 4) {
