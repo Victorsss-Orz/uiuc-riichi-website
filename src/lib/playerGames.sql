@@ -20,5 +20,5 @@ FROM
     JOIN game_players gp ON rg.id = gp.game_id
     JOIN players p ON gp.player_id = p.id
 ORDER BY
-    gp.game_id ASC,
+    rg.game_time DESC,
     gp.placement ASC;

@@ -204,7 +204,7 @@ export async function insertGameResults(
         [semester, result.player_id]
       );
       let new_ranking = player_data.ranking;
-      while (await playerRankUp(player_games, new_ranking)) {
+      while (playerRankUp(player_games, new_ranking)) {
         new_ranking++;
       }
       // Update
@@ -220,10 +220,7 @@ export async function insertGameResults(
   }
 }
 
-async function playerRankUp(
-  player_games: GamePlayerRow[],
-  ranking: number
-): Promise<boolean> {
+function playerRankUp(player_games: GamePlayerRow[], ranking: number): boolean {
   const rankLookup = [
     { num_games: 5, avg_placement: 3.0 }, // 4级
     { num_games: 5, avg_placement: 2.9 },

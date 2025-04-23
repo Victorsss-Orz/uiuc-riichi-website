@@ -25,8 +25,11 @@ router.post(
       const [players] = await connection.query<PlayerType[]>(
         sql.select_players
       );
+      let canInsert = true;
       for (const player of players) {
         if (player.player_name === playerName) {
+          // TODO: Use modal similar to game insertion
+          canInsert = false;
           res.send(`
             <script>
               alert("You can't have duplicate player names.");
@@ -35,9 +38,11 @@ router.post(
             `);
         }
       }
-      await connection.query(sql.insert_player, [playerName]);
-      console.log(`Inserted player ${playerName}`);
-      res.redirect(req.originalUrl);
+      if (canInsert) {
+        await connection.query(sql.insert_player, [playerName]);
+        console.log(`Inserted player ${playerName}`);
+        res.redirect(req.originalUrl);
+      }
     } else {
       const { playerToRemove } = req.body;
       const connection = await connectToDatabase();

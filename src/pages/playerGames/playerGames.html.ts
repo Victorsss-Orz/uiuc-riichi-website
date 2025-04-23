@@ -19,7 +19,7 @@ export function playerGames({
     pageTitle: "Add User",
     preContent: html``,
     content: html`<div style="margin: 0 auto;">
-        <h2>${player_name}' games ${semester}</h2>
+      <h2>${player_name}' games ${semester}</h2>
       <div class="card" style="max-width: 1500px;">
         <div class="table-responsive">
           <table class="table table-sm table-hover" aria-label="Games">
@@ -70,7 +70,14 @@ export function playerGames({
                         </td>`
                       : html`<td>${game.player_4?.player_name}</td>`}
                     <td>${game.player_4?.score}</td>
-                    <td>${getPlayerPointChange(game, player_id)}</td>
+
+                    ${getPlayerPointChange(game, player_id) < 0
+                      ? html`<td style="color: green; font-weight: bold;">
+                          ${getPlayerPointChange(game, player_id)}
+                        </td>`
+                      : html`<td style="color: red; font-weight: bold;">
+                          +${getPlayerPointChange(game, player_id)}
+                        </td>`}
                   </tr>`
               )}
             </tbody>
