@@ -4,7 +4,7 @@ import {
   StartingWind,
   PlayerType,
   PlayerSemesterDataType,
-  GamePlayerType,
+  GamePlayerRow,
 } from "./db-types.js";
 import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
@@ -12,7 +12,7 @@ import { ResultSetHeader } from "mysql2";
 
 const sql = loadSqlEquiv(import.meta.url);
 
-export type GameResultType = {
+export type GameResult = {
   player_id: number;
   player_name: string;
   starting_wind: StartingWind | null;
@@ -33,7 +33,7 @@ function findPlayerById(players: PlayerType[], id: number): string {
 
 export async function processGameResults(
   req: Request
-): Promise<GameResultType[]> {
+): Promise<GameResult[]> {
   const {
     player1ID,
     player2ID,
@@ -80,7 +80,7 @@ export async function processGameResults(
     `);
   }
 
-  const results: GameResultType[] = [
+  const results: GameResult[] = [
     {
       player_id: parseInt(player1ID, 10),
       player_name: "",
@@ -153,7 +153,7 @@ export async function processGameResults(
 }
 
 export async function insertGameResults(
-  results: GameResultType[],
+  results: GameResult[],
   semester: string,
   is_team_game: boolean
 ): Promise<void> {
@@ -200,7 +200,7 @@ export async function insertGameResults(
       const new_points = player_data.points + result.point_change;
 
       // Ranking
-      const [player_games] = await connection.query<GamePlayerType[]>(
+      const [player_games] = await connection.query<GamePlayerRow[]>(
         sql.select_player_game_history,
         [semester, result.player_id]
       );
@@ -223,7 +223,7 @@ export async function insertGameResults(
 }
 
 async function playerRankUp(
-  player_games: GamePlayerType[],
+  player_games: GamePlayerRow[],
   ranking: number
 ): Promise<boolean> {
   const rankLookup = [

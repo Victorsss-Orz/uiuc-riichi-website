@@ -1,10 +1,10 @@
-import { GamePlayer, GamePlayerType } from "./db-types.js";
+import { GamePlayer, GamePlayerRow } from "./db-types.js";
 import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
-export interface GameInformationType extends GamePlayerType {
+export interface GameInformationType extends GamePlayerRow {
   game_time: string;
   is_team_game: boolean;
   player_name: string;

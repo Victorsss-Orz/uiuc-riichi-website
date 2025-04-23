@@ -43,7 +43,7 @@ export type GamePlayer = {
   point_change: number;
 }
 
-export interface GamePlayerType extends GamePlayer, RowDataPacket {}
+export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
 
 export interface SemesterType extends RowDataPacket {

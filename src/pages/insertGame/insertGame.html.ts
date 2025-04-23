@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerType } from "../../lib/db-types";
 import { Modal } from "../../components/modal.html.js";
-import { GameResultType } from "../../lib/gameStats.js";
+import { GameResult } from "../../lib/gameStats.js";
 import { html } from "../../../packages/html/dist/index.js";
 
 export function insertGame({
@@ -186,7 +186,7 @@ export function insertGame({
 }
 
 export function gameResultConfirmation(
-  results: GameResultType[],
+  results: GameResult[],
   semester: string
 ) {
   const htmlContent = html`
