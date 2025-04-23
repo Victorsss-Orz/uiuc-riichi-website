@@ -21,7 +21,7 @@ export type GameResult = {
   point_change: number;
 };
 
-function findPlayerById(players: PlayerType[], id: number): string {
+export function findPlayerById(players: PlayerType[], id: number): string {
   let player_name = "";
   players.forEach((player) => {
     if (player.id === id) {
@@ -31,9 +31,7 @@ function findPlayerById(players: PlayerType[], id: number): string {
   return player_name;
 }
 
-export async function processGameResults(
-  req: Request
-): Promise<GameResult[]> {
+export async function processGameResults(req: Request): Promise<GameResult[]> {
   const {
     player1ID,
     player2ID,
@@ -164,8 +162,6 @@ export async function insertGameResults(
     [is_team_game, semester]
   );
 
-  console.log(`Inserted game ${inserted_game.insertId}`);
-
   for (const result of results) {
     // Insert player semester data if DNE
     let [data] = await connection.query<PlayerSemesterDataType[]>(
@@ -189,6 +185,9 @@ export async function insertGameResults(
       result.placement,
       result.point_change,
     ]);
+    console.log(
+      `Inserted player ${result.player_id} results for game ${inserted_game.insertId}`
+    );
 
     if (is_team_game) {
       // Update player semester data
@@ -217,7 +216,6 @@ export async function insertGameResults(
       ]);
     } else {
       // TODO: Update team scores and stuff
-      return;
     }
   }
 }

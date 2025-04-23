@@ -52,7 +52,6 @@ router.post(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    console.log(req.body);
     const results = await processGameResults(req);
     await insertGameResults(
       results,

@@ -22,8 +22,23 @@ export type GameInfo = {
   player_4: ExtendedGamePlayer | null;
 };
 
+export function getPlayerPointChange(
+  game: GameInfo,
+  player_id: number
+): number {
+  if (game.player_1?.player_id == player_id) {
+    return game.player_1.point_change;
+  } else if (game.player_2?.player_id == player_id) {
+    return game.player_2.point_change;
+  } else if (game.player_3?.player_id == player_id) {
+    return game.player_3.point_change;
+  } else {
+    return game.player_4 ? game.player_4.point_change : 0;
+  }
+}
+
 export async function getGamesForPlayer(
-  player_id: string,
+  player_id: number,
   semester: string
 ): Promise<GameInfo[]> {
   const connection = await connectToDatabase();
@@ -51,9 +66,12 @@ export async function getGamesForPlayer(
           player_4: curr_game_players[3],
         });
       }
+      const date = new Date(game.game_time);
       curr_game_info = {
         game_id: game.game_id,
-        game_date: game.game_time,
+        game_date: `${date.getUTCFullYear().toString()}-${date
+          .getUTCMonth()
+          .toString()}-${date.getUTCDate().toString()}`,
         is_team_game: game.is_team_game,
       };
       curr_game_players = [];
@@ -68,6 +86,7 @@ export async function getGamesForPlayer(
       player_name: game.player_name,
     });
   }
+  
   while (curr_game_players.length < 4) {
     curr_game_players.push(null);
   }

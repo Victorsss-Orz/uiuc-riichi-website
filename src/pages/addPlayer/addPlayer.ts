@@ -19,7 +19,6 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    console.log(req.body);
     if (req.body.__action === "add") {
       const { playerName } = req.body;
       const connection = await connectToDatabase();
@@ -37,6 +36,7 @@ router.post(
         }
       }
       await connection.query(sql.insert_player, [playerName]);
+      console.log(`Inserted player ${playerName}`);
       res.redirect(req.originalUrl);
     } else {
       const { playerToRemove } = req.body;
