@@ -190,31 +190,35 @@ export async function insertGameResults(
       result.point_change,
     ]);
 
-    // Update player semester data
-    const [players_data] = await connection.query<PlayerSemesterDataType[]>(
-      sql.select_player_semester_data,
-      [result.player_id, semester]
-    );
-    const player_data = players_data[0];
-    const new_points = player_data.points + result.point_change;
+    if (is_team_game) {
+      // Update player semester data
+      const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+        sql.select_player_semester_data,
+        [result.player_id, semester]
+      );
+      const player_data = players_data[0];
+      const new_points = player_data.points + result.point_change;
 
-    // Ranking
-    const [player_games] = await connection.query<GamePlayerType[]>(
-      sql.select_player_game_history,
-      [semester, result.player_id]
-    );
-    let new_ranking = player_data.ranking;
-    while (await playerRankUp(player_games, new_ranking)) {
-      new_ranking++;
+      // Ranking
+      const [player_games] = await connection.query<GamePlayerType[]>(
+        sql.select_player_game_history,
+        [semester, result.player_id]
+      );
+      let new_ranking = player_data.ranking;
+      while (await playerRankUp(player_games, new_ranking)) {
+        new_ranking++;
+      }
+      // Update
+      await connection.query(sql.update_player_semester_data, [
+        new_ranking,
+        new_points,
+        result.player_id,
+        semester,
+      ]);
+    } else {
+      // Update team part
+      return;
     }
-
-    // Update
-    await connection.query(sql.update_player_semester_data, [
-      new_ranking,
-      new_points,
-      result.player_id,
-      semester,
-    ]);
   }
 }
 

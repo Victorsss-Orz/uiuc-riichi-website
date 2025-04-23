@@ -34,7 +34,7 @@ export enum StartingWind {
   "North",
 }
 
-export interface GamePlayerType extends RowDataPacket {
+export type GamePlayer = {
   game_id: number;
   player_id: number;
   starting_wind: StartingWind | null;
@@ -42,6 +42,9 @@ export interface GamePlayerType extends RowDataPacket {
   placement: number;
   point_change: number;
 }
+
+export interface GamePlayerType extends GamePlayer, RowDataPacket {}
+
 
 export interface SemesterType extends RowDataPacket {
   semester: string;

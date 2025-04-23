@@ -92,8 +92,8 @@ function chartScript(placements: number[], id: number) {
             datasets: [
               {
                 backgroundColor: [
-                  "rgb(30, 255, 0)",
-                  "rgb(242, 255, 0)",
+                  "rgb(0, 255, 0)",
+                  "rgb(255, 255, 0)",
                   "rgb(255, 123, 0)",
                   "rgb(255, 0, 0)",
                 ],
