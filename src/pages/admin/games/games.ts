@@ -1,7 +1,7 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 
-import { insertGame, gameResultConfirmation } from "./insertGame.html.js";
+import { insertGame, gameResultConfirmation } from "./games.html.js";
 
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";

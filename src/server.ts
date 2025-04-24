@@ -44,17 +44,17 @@ async function setupRoutes() {
   app.use(
     "/admin",
     // isAuthenticated, // TODO: remember to enable it back
-    (await import("./pages/admin/addPlayer/addPlayer.js")).default // TODO: add default admin panel page
+    (await import("./pages/admin/players/players.js")).default // TODO: add default admin panel page
   );
-  app.use("/login", (await import("./pages/admin/adminLogin/adminLogin.js")).default);
+  app.use("/login", (await import("./pages/admin/login/login.js")).default);
 
   app.use(
     "/admin/players",
-    (await import("./pages/admin/addPlayer/addPlayer.js")).default
+    (await import("./pages/admin/players/players.js")).default
   );
   app.use(
     "/admin/games",
-    (await import("./pages/admin/insertGame/insertGame.js")).default
+    (await import("./pages/admin/games/games.js")).default
   );
 
   app.use(

@@ -16,9 +16,16 @@ export function addPlayer({
         <label for="playerName">Player Name:</label>
         <input type="text" id="playerName" name="playerName" required />
         <br />
-        <button type="submit" name="__action" value="add">Submit</button>
+        <button
+          type="submit"
+          name="__action"
+          value="add"
+          class="btn btn-primary"
+        >
+          Submit
+        </button>
       </form>
-      <div class="card">
+      <div class="card" style="margin-top: 1rem;">
         <div class="table-responsive">
           <table
             class="table table-sm table-hover"

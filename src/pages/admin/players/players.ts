@@ -1,6 +1,6 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
-import { addPlayer } from "./addPlayer.html.js";
+import { addPlayer } from "./players.html.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
 import { PlayerType } from "../../../lib/db-types.js";
