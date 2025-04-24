@@ -3,10 +3,10 @@ import asyncHandler from "express-async-handler";
 
 import { insertGame, gameResultConfirmation } from "./insertGame.html.js";
 
-import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { connectToDatabase } from "../../lib/sqlDatabase.js";
-import { PlayerType } from "../../lib/db-types.js";
-import { insertGameResults, processGameResults } from "../../lib/gameStats.js";
+import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
+import { connectToDatabase } from "../../../lib/sqlDatabase.js";
+import { PlayerType } from "../../../lib/db-types.js";
+import { insertGameResults, processGameResults } from "../../../lib/gameStats.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);

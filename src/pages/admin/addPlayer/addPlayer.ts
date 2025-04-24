@@ -1,9 +1,9 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 import { addPlayer } from "./addPlayer.html.js";
-import { connectToDatabase } from "../../lib/sqlDatabase.js";
-import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { PlayerType } from "../../lib/db-types.js";
+import { connectToDatabase } from "../../../lib/sqlDatabase.js";
+import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
+import { PlayerType } from "../../../lib/db-types.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);

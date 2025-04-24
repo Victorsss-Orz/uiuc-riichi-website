@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 
-import { PageLayout } from "../../components/pageLayout.html.js";
-import { PlayerType } from "../../lib/db-types";
-import { Modal } from "../../components/modal.html.js";
-import { GameResult } from "../../lib/gameStats.js";
-import { html } from "../../../packages/html/dist/index.js";
+import { PageLayout } from "../../../components/pageLayout.html.js";
+import { PlayerType } from "../../../lib/db-types.js";
+import { Modal } from "../../../components/modal.html.js";
+import { GameResult } from "../../../lib/gameStats.js";
+import { html } from "../../../../packages/html/dist/index.js";
 
 export function insertGame({
   resLocals,

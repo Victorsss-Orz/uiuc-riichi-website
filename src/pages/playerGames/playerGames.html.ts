@@ -18,73 +18,79 @@ export function playerGames({
     resLocals,
     pageTitle: "Add User",
     preContent: html``,
-    content: html`<div style="margin: 0 auto;">
-      <h2>${player_name}' games ${semester}</h2>
-      <div class="card" style="max-width: 1500px;">
-        <div class="table-responsive">
-          <table class="table table-sm table-hover" aria-label="Games">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Player 1 Name</th>
-                <th>Player 1 Score</th>
-                <th>Player 2 Name</th>
-                <th>Player 2 Score</th>
-                <th>Player 3 Name</th>
-                <th>Player 3 Score</th>
-                <th>Player 4 Name</th>
-                <th>Player 4 Score</th>
-                <th>Point Change</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${info.map(
-                (game) =>
-                  html`<tr>
-                    <td>${game.game_date}</td>
+    content: html` <a
+        href="/semester/${resLocals.semester}/individual"
+        class="btn btn-sm btn-primary"
+      >
+        Back to players
+      </a>
+      <div style="margin: 0 auto;">
+        <h2>${player_name}' games ${semester}</h2>
+        <div class="card" style="max-width: 1500px;">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover" aria-label="Games">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Player 1 Name</th>
+                  <th>Player 1 Score</th>
+                  <th>Player 2 Name</th>
+                  <th>Player 2 Score</th>
+                  <th>Player 3 Name</th>
+                  <th>Player 3 Score</th>
+                  <th>Player 4 Name</th>
+                  <th>Player 4 Score</th>
+                  <th>Point Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${info.map(
+                  (game) =>
+                    html`<tr>
+                      <td>${game.game_date}</td>
 
-                    ${game.player_1?.player_id == player_id
-                      ? html`<td style="color: blue; font-weight: bold;">
-                          ${game.player_1?.player_name}
-                        </td>`
-                      : html`<td>${game.player_1?.player_name}</td>`}
-                    <td>${game.player_1?.score}</td>
+                      ${game.player_1?.player_id == player_id
+                        ? html`<td style="color: blue; font-weight: bold;">
+                            ${game.player_1?.player_name}
+                          </td>`
+                        : html`<td>${game.player_1?.player_name}</td>`}
+                      <td>${game.player_1?.score}</td>
 
-                    ${game.player_2?.player_id == player_id
-                      ? html`<td style="color: blue; font-weight: bold;">
-                          ${game.player_2?.player_name}
-                        </td>`
-                      : html`<td>${game.player_2?.player_name}</td>`}
-                    <td>${game.player_2?.score}</td>
+                      ${game.player_2?.player_id == player_id
+                        ? html`<td style="color: blue; font-weight: bold;">
+                            ${game.player_2?.player_name}
+                          </td>`
+                        : html`<td>${game.player_2?.player_name}</td>`}
+                      <td>${game.player_2?.score}</td>
 
-                    ${game.player_3?.player_id == player_id
-                      ? html`<td style="color: blue; font-weight: bold;">
-                          ${game.player_3?.player_name}
-                        </td>`
-                      : html`<td>${game.player_3?.player_name}</td>`}
-                    <td>${game.player_3?.score}</td>
+                      ${game.player_3?.player_id == player_id
+                        ? html`<td style="color: blue; font-weight: bold;">
+                            ${game.player_3?.player_name}
+                          </td>`
+                        : html`<td>${game.player_3?.player_name}</td>`}
+                      <td>${game.player_3?.score}</td>
 
-                    ${game.player_4?.player_id == player_id
-                      ? html`<td style="color: blue; font-weight: bold;">
-                          ${game.player_4?.player_name}
-                        </td>`
-                      : html`<td>${game.player_4?.player_name}</td>`}
-                    <td>${game.player_4?.score}</td>
+                      ${game.player_4?.player_id == player_id
+                        ? html`<td style="color: blue; font-weight: bold;">
+                            ${game.player_4?.player_name}
+                          </td>`
+                        : html`<td>${game.player_4?.player_name}</td>`}
+                      <td>${game.player_4?.score}</td>
 
-                    ${getPlayerPointChange(game, player_id) < 0
-                      ? html`<td style="color: green; font-weight: bold;">
-                          ${getPlayerPointChange(game, player_id)}
-                        </td>`
-                      : html`<td style="color: red; font-weight: bold;">
-                          +${getPlayerPointChange(game, player_id)}
-                        </td>`}
-                  </tr>`
-              )}
-            </tbody>
-          </table>
+                      ${getPlayerPointChange(game, player_id) < 0
+                        ? html`<td style="color: green; font-weight: bold;">
+                            ${getPlayerPointChange(game, player_id)}
+                          </td>`
+                        : html`<td style="color: red; font-weight: bold;">
+                            +${getPlayerPointChange(game, player_id)}
+                          </td>`}
+                    </tr>`
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </div>`,
+      </div>`,
   });
   return htmlContent;
 }

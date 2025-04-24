@@ -1,6 +1,6 @@
-import { PlayerType } from "../../lib/db-types.js";
-import { PageLayout } from "../../components/pageLayout.html.js";
-import { html } from "../../../packages/html/dist/index.js";
+import { PlayerType } from "../../../lib/db-types.js";
+import { PageLayout } from "../../../components/pageLayout.html.js";
+import { html } from "../../../../packages/html/dist/index.js";
 
 export function addPlayer({
   players,
