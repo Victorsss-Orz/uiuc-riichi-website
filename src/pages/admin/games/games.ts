@@ -1,12 +1,16 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 
-import { insertGame, gameResultConfirmation } from "./games.html.js";
+import { games, gameResultConfirmation } from "./games.html.js";
 
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";
 import { PlayerType } from "../../../lib/db-types.js";
-import { insertGameResults, processGameResults } from "../../../lib/gameStats.js";
+import {
+  insertGameResults,
+  processGameResults,
+} from "../../../lib/gameStats.js";
+import { getAllGames } from "../../../lib/playerGames.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -15,7 +19,9 @@ router.get(
   asyncHandler(async (req, res) => {
     const connection = await connectToDatabase();
     const [players] = await connection.query<PlayerType[]>(sql.select_players);
-    res.send(insertGame({ players, resLocals: res.locals }));
+
+    const info = await getAllGames();
+    res.send(games({ players, resLocals: res.locals, info }));
   })
 );
 router.post(

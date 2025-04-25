@@ -18,7 +18,8 @@ export function playerGames({
     resLocals,
     pageTitle: "Add User",
     preContent: html``,
-    content: html` <a
+    content: html`
+      <a
         href="/semester/${resLocals.semester}/individual"
         class="btn btn-sm btn-primary"
       >
@@ -28,7 +29,14 @@ export function playerGames({
         <h2>${player_name}' games ${semester}</h2>
         <div class="card" style="max-width: 1500px;">
           <div class="table-responsive">
-            <table class="table table-sm table-hover" aria-label="Games">
+            <table
+              class="table table-sm table-hover"
+              aria-label="Games"
+              id="games"
+              data-toggle="table"
+              data-pagination="true"
+              data-page-size="10"
+            >
               <thead>
                 <tr>
                   <th>Date</th>
@@ -90,7 +98,13 @@ export function playerGames({
             </table>
           </div>
         </div>
-      </div>`,
+      </div>
+    `,
+    postContent: html`<script>
+      $(document).ready(function () {
+        $("#games").bootstrapTable();
+      });
+    </script>`,
   });
   return htmlContent;
 }

@@ -34,6 +34,10 @@ async function setupRoutes() {
     "/chart.js",
     express.static(path.join(__dirname, "../node_modules/chart.js/dist"))
   );
+  app.use(
+    "/bootstrap-table",
+    express.static(path.join(__dirname, "../node_modules/bootstrap-table/dist"))
+  );
 
   // TODO: create page
   app.use(

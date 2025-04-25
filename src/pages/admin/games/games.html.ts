@@ -5,13 +5,16 @@ import { PlayerType } from "../../../lib/db-types.js";
 import { Modal } from "../../../components/modal.html.js";
 import { GameResult } from "../../../lib/gameStats.js";
 import { html } from "../../../../packages/html/dist/index.js";
+import { GameInfo } from "../../../lib/playerGames.js";
 
-export function insertGame({
+export function games({
   resLocals,
   players,
+  info,
 }: {
   resLocals: Record<string, any>;
   players: PlayerType[];
+  info: GameInfo[];
 }) {
   const htmlContent = PageLayout({
     resLocals,
@@ -142,6 +145,61 @@ export function insertGame({
           title: "Game results",
         })}
       </form>
+
+      <div class="card" style="max-width: 1500px;">
+        <div class="table-responsive">
+          <table
+            class="table table-sm table-hover"
+            aria-label="Games"
+            id="games"
+            data-toggle="table"
+            data-pagination="true"
+            data-page-size="10"
+          >
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Player 1 Name</th>
+                <th>Player 1 Score</th>
+                <th>Player 2 Name</th>
+                <th>Player 2 Score</th>
+                <th>Player 3 Name</th>
+                <th>Player 3 Score</th>
+                <th>Player 4 Name</th>
+                <th>Player 4 Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${info.map(
+                (game) =>
+                  html`<tr>
+                    <td>${game.game_date}</td>
+
+                    <td>${html`${game.player_1?.player_name}`}</td>
+                    <td>${game.player_1?.score}</td>
+
+                    <td>${html`${game.player_2?.player_name}`}</td>
+                    <td>${game.player_2?.score}</td>
+
+                    <td>${html`${game.player_3?.player_name}`}</td>
+                    <td>${game.player_3?.score}</td>
+
+                    <td>${html`${game.player_4?.player_name}`}</td>
+                    <td>${game.player_4?.score}</td>
+                    <td>Delete</td>
+                  </tr>`
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          $("#games").bootstrapTable();
+        });
+      </script>
 
       <script type="module">
         document

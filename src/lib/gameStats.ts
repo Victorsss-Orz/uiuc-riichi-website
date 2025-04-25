@@ -189,7 +189,7 @@ export async function insertGameResults(
       `Inserted player ${result.player_id} results for game ${inserted_game.insertId}`
     );
 
-    if (is_team_game) {
+    if (!is_team_game) {
       // Update player semester data
       const [players_data] = await connection.query<PlayerSemesterDataType[]>(
         sql.select_player_semester_data,

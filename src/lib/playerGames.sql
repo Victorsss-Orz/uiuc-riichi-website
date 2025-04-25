@@ -26,21 +26,13 @@ ORDER BY
 -- BLOCK select_all_games
 SELECT
     gp.*,
-    rg.game_time,
-    rg.is_team_game,
+    g.game_time,
+    g.is_team_game,
     p.player_name
 FROM
-    (
-        SELECT
-            g.id,
-            g.game_time,
-            g.is_team_game
-        FROM
-            games g
-            JOIN game_players gp ON g.id = gp.game_id
-    ) rg
-    JOIN game_players gp ON rg.id = gp.game_id
+    games g
+    JOIN game_players gp ON g.id = gp.game_id
     JOIN players p ON gp.player_id = p.id
 ORDER BY
-    rg.game_time DESC,
+    g.game_time DESC,
     gp.placement ASC;

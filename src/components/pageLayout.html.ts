@@ -103,5 +103,8 @@ export function HeadContents(title: string) {
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
     <script src="/jquery/jquery.min.js"></script>
+    <script src="/bootstrap-table/bootstrap-table.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap-table/bootstrap-table.min.css" />
+    <script src="/bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
   `.toString();
 }
