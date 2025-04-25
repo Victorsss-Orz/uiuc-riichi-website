@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { isAuthenticated } from "./lib/auth.js";
+import { error } from "./pages/error/error.html.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -38,7 +39,8 @@ async function setupRoutes() {
   app.use(
     "/",
     (await import("./middlewares/selectSemesters.js")).default,
-    (await import("./middlewares/checkAuthentication.js")).default
+    (await import("./middlewares/checkAuthentication.js")).default,
+    (await import("./pages/error/error.js")).default
   );
 
   app.use(
@@ -76,16 +78,7 @@ async function setupRoutes() {
 
   app.use((req, res) => {
     // TODO: handle this through another page
-    res.status(404).send(`
-      <!DOCTYPE html>
-      <html>
-      <head><title>404 - Not Found</title></head>
-      <body>
-        <h1>404 - Page Not Found</h1>
-        <a href="/">Go back to Home</a>
-      </body>
-      </html>
-    `);
+    res.status(404).send(error({resLocals: res.locals}));
   });
 }
 

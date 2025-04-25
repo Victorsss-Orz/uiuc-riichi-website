@@ -47,6 +47,19 @@ export async function getGamesForPlayer(
     [player_id, semester]
   );
 
+  return combineGameInfo(games);
+}
+
+export async function getAllGames(): Promise<GameInfo[]> {
+  const connection = await connectToDatabase();
+  const [games] = await connection.query<GameInformationRow[]>(
+    sql.select_all_games
+  );
+
+  return combineGameInfo(games);
+}
+
+function combineGameInfo(games: GameInformationRow[]): GameInfo[] {
   const info: GameInfo[] = [];
   let curr_game_info = { game_id: -1, game_date: "", is_team_game: false };
   let curr_game_players: (ExtendedGamePlayer | null)[] = [];
@@ -86,7 +99,7 @@ export async function getGamesForPlayer(
       player_name: game.player_name,
     });
   }
-  
+
   while (curr_game_players.length < 4) {
     curr_game_players.push(null);
   }
