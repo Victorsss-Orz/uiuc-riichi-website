@@ -58,13 +58,21 @@ router.post(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    const results = await processGameResults(req);
-    await insertGameResults(
-      results,
-      req.body.semester,
-      req.body.teamGame ? true : false
-    );
-    res.redirect(req.originalUrl);
+    if (req.body.__action == "add") {
+      const results = await processGameResults(req);
+      await insertGameResults(
+        results,
+        req.body.semester,
+        req.body.teamGame ? true : false
+      );
+      res.redirect(req.originalUrl);
+    } else if (req.body.__action == "remove") {
+      const { gameToRemove } = req.body;
+      // TODO: Handle game removal
+      res.redirect(req.originalUrl);
+    } else {
+      res.redirect(req.originalUrl);
+    }
   })
 );
 

@@ -26,7 +26,7 @@ export function playerGames({
         Back to players
       </a>
       <div style="margin: 0 auto;">
-        <h2>${player_name}' games ${semester}</h2>
+        <h1>${player_name}'s games ${semester}</h1>
         <div class="card" style="max-width: 1500px;">
           <div class="table-responsive">
             <table

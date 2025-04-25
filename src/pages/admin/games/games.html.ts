@@ -20,6 +20,9 @@ export function games({
     resLocals,
     pageTitle: "Add Game",
     content: html`
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <h1>Add a game</h1>
+      </div>
       <form id="addGameForm" method="POST">
         <div style="line-height: 2rem; margin-bottom: 1rem;">
           <label for="semester">Select semester:</label>
@@ -146,6 +149,10 @@ export function games({
         })}
       </form>
 
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <h1>Past games</h1>
+      </div>
+
       <div class="card" style="max-width: 1500px;">
         <div class="table-responsive">
           <table
@@ -187,15 +194,34 @@ export function games({
 
                     <td>${html`${game.player_4?.player_name}`}</td>
                     <td>${game.player_4?.score}</td>
-                    <td>Delete</td>
+                    <td>
+                      <form name="removeGame${game.game_id}Form" method="POST">
+                        <button
+                          type="submit"
+                          class="btn btn-danger"
+                          name="__action"
+                          value="remove"
+                          data-toggle="tooltip"
+                          data-placement="right"
+                          title="Remove this game"
+                        >
+                          Remove
+                        </button>
+                        <input
+                          type="hidden"
+                          name="gameToRemove"
+                          value=${game.game_id}
+                        />
+                      </form>
+                    </td>
                   </tr>`
               )}
             </tbody>
           </table>
         </div>
       </div>
-
-      <script>
+    `,
+    postContent: html`<script>
         $(document).ready(function () {
           $("#games").bootstrapTable();
         });
@@ -237,8 +263,7 @@ export function games({
 
             modalElement.show();
           });
-      </script>
-    `,
+      </script>`,
   });
   return htmlContent;
 }

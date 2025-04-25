@@ -11,8 +11,11 @@ export function addPlayer({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Add User",
-    content: html` <form id="addPlayerForm" method="POST">
+    pageTitle: "Add Player",
+    content: html` <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <h1>Add a player</h1>
+      </div>
+      <form id="addPlayerForm" method="POST">
         <label for="playerName">Player Name:</label>
         <input type="text" id="playerName" name="playerName" required />
         <br />
@@ -25,6 +28,11 @@ export function addPlayer({
           Submit
         </button>
       </form>
+
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <h1>Players</h1>
+      </div>
+
       <div class="card" style="margin-top: 1rem;">
         <div class="table-responsive">
           <table

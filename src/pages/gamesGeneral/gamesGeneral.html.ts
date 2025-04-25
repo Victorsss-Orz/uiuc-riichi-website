@@ -15,7 +15,7 @@ export function gamesGeneral({
     preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">
-        <h2>Player rankings ${resLocals.semester}</h2>
+        <h1>Player rankings ${resLocals.semester}</h1>
         ${allStats.map(
           (stats) => html`
             <a

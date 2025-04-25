@@ -43,10 +43,12 @@ router.post(
         console.log(`Inserted player ${playerName}`);
         res.redirect(req.originalUrl);
       }
-    } else {
+    } else if (req.body.__action == "remove") {
       const { playerToRemove } = req.body;
       const connection = await connectToDatabase();
       await connection.query(sql.remove_player, [playerToRemove]);
+      res.redirect(req.originalUrl);
+    } else {
       res.redirect(req.originalUrl);
     }
   })
