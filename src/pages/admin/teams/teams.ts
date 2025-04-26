@@ -3,13 +3,14 @@ import asyncHandler from "express-async-handler";
 import { teams } from "./teams.html.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
-import { PlayerRow, TeamRow } from "../../../lib/db-types.js";
+import { Player, PlayerRow, TeamRow } from "../../../lib/db-types.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
 
 export type TeamPlayerInformation = {
   id: number;
+  players: Player[];
 };
 
 router.get(
@@ -28,6 +29,14 @@ router.get(
       const [all_teams] = await connection.query<TeamRow[]>(sql.select_teams, [
         semester,
       ]);
+
+      for (const team of all_teams) {
+        const [players] = await connection.query<PlayerRow[]>(
+          sql.select_players_of_team,
+          [team.id]
+        );
+      }
+
       res.send(
         teams({
           resLocals: res.locals,

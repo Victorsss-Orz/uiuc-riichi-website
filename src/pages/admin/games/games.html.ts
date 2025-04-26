@@ -1,9 +1,7 @@
-import { Request, Response } from "express";
-
 import { PageLayout } from "../../../components/pageLayout.html.js";
 import { PlayerRow } from "../../../lib/db-types.js";
 import { Modal } from "../../../components/modal.html.js";
-import { GameResult } from "../../../lib/gameStats.js";
+import { GameResult } from "../../../lib/gameResults.js";
 import { html } from "../../../../packages/html/dist/index.js";
 import { GameInfo } from "../../../lib/playerGames.js";
 

@@ -10,7 +10,7 @@ import {
   insertGameResults,
   processGameResults,
   removeGameResults,
-} from "../../../lib/gameStats.js";
+} from "../../../lib/gameResults.js";
 import { getAllGames } from "../../../lib/playerGames.js";
 
 const router = express.Router();

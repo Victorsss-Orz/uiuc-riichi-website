@@ -5,7 +5,7 @@ import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { getGamesForPlayer } from "../../lib/playerGames.js";
 import { PlayerRow } from "../../lib/db-types.js";
-import { findPlayerById } from "../../lib/gameStats.js";
+import { findPlayerById } from "../../lib/gameResults.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
