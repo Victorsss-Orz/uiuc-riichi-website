@@ -5,10 +5,12 @@ import {
   PlayerType,
   PlayerSemesterDataType,
   GamePlayerRow,
+  Game,
+  GamePlayer,
 } from "./db-types.js";
 import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 const sql = loadSqlEquiv(import.meta.url);
 
@@ -20,6 +22,8 @@ export type GameResult = {
   placement: number;
   point_change: number;
 };
+
+interface GameAndPlayerRow extends Game, GamePlayer, RowDataPacket {}
 
 export function findPlayerById(players: PlayerType[], id: number): string {
   let player_name = "";
@@ -150,6 +154,47 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
   return results;
 }
 
+export async function removeGameResults(game_id: number): Promise<void> {
+  console.log(`Removing game ${game_id}`);
+  const connection = await connectToDatabase();
+  const [games] = await connection.query<GameAndPlayerRow[]>(
+    sql.select_game_information,
+    [game_id]
+  );
+  if (!games.length) {
+    return;
+  }
+  const { semester, is_team_game } = games[0];
+
+  for (const game of games) {
+    if (!is_team_game) {
+      // Update player semester data
+      // Total points
+      const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+        sql.select_player_semester_data,
+        [game.player_id, semester]
+      );
+      const player_data = players_data[0];
+      const new_points = player_data.points - game.point_change;
+
+      // Update
+      await connection.query(sql.update_player_semester_data, [
+        player_data.ranking,
+        new_points,
+        game.player_id,
+        semester,
+      ]);
+    } else {
+      // TODO: Update team scores and stuff
+    }
+    await connection.query(sql.remove_player_game_result, [
+      game_id,
+      game.player_id,
+    ]);
+  }
+  await connection.query(sql.remove_game, [game_id]);
+}
+
 export async function insertGameResults(
   results: GameResult[],
   semester: string,
@@ -191,13 +236,13 @@ export async function insertGameResults(
 
     if (!is_team_game) {
       // Update player semester data
+      // Total points
       const [players_data] = await connection.query<PlayerSemesterDataType[]>(
         sql.select_player_semester_data,
         [result.player_id, semester]
       );
       const player_data = players_data[0];
       const new_points = player_data.points + result.point_change;
-
       // Ranking
       const [player_games] = await connection.query<GamePlayerRow[]>(
         sql.select_player_game_history,

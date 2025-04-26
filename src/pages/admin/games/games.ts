@@ -9,6 +9,7 @@ import { PlayerType } from "../../../lib/db-types.js";
 import {
   insertGameResults,
   processGameResults,
+  removeGameResults,
 } from "../../../lib/gameStats.js";
 import { getAllGames } from "../../../lib/playerGames.js";
 
@@ -69,6 +70,7 @@ router.post(
     } else if (req.body.__action == "remove") {
       const { gameToRemove } = req.body;
       // TODO: Handle game removal
+      await removeGameResults(parseInt(gameToRemove, 10));
       res.redirect(req.originalUrl);
     } else {
       res.redirect(req.originalUrl);

@@ -59,3 +59,24 @@ WHERE
     AND NOT g.is_team_game
 ORDER BY
     gp.game_id;
+
+-- BLOCK select_game_information
+SELECT
+    gp.*,
+    g.*
+FROM
+    game_players gp
+    JOIN games g ON gp.game_id = g.id
+WHERE
+    g.id = ?;
+
+-- BLOCK remove_player_game_result
+DELETE FROM game_players
+WHERE
+    game_id = (?)
+    AND player_id = (?);
+
+-- BLOCK remove_game
+DELETE FROM games
+WHERE
+    id = (?);

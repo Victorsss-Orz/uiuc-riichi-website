@@ -20,7 +20,7 @@ export interface TeamType extends RowDataPacket {
   semester: string;
 }
 
-export interface GameType extends RowDataPacket {
+export interface Game extends RowDataPacket {
   id: number;
   game_time: string;
   is_team_game: boolean;
@@ -41,10 +41,11 @@ export type GamePlayer = {
   score: number;
   placement: number;
   point_change: number;
-}
+};
 
 export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
+export interface GameRow extends Game, RowDataPacket {}
 
 export interface SemesterType extends RowDataPacket {
   semester: string;
