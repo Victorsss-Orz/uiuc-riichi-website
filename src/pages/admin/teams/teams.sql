@@ -20,3 +20,12 @@ FROM
     JOIN players p ON psd.player_id = p.id
 WHERE
     psd.team_id = (?);
+
+-- BLOCK select_unassigned_players
+SELECT
+    p.*
+FROM
+    player_semester_data psd
+    JOIN players p ON psd.player_id = p.id
+WHERE
+    psd.team_id IS NULL;

@@ -38,6 +38,10 @@ async function setupRoutes() {
     "/bootstrap-table",
     express.static(path.join(__dirname, "../node_modules/bootstrap-table/dist"))
   );
+  app.use(
+    "/sortablejs",
+    express.static(path.join(__dirname, "../node_modules/sortablejs"))
+  );
 
   // TODO: create page
   app.use(
@@ -86,7 +90,7 @@ async function setupRoutes() {
 
   app.use((req, res) => {
     // TODO: handle this through another page
-    res.status(404).send(error({resLocals: res.locals}));
+    res.status(404).send(error({ resLocals: res.locals }));
   });
 }
 

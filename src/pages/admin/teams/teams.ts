@@ -10,7 +10,8 @@ const sql = loadSqlEquiv(import.meta.url);
 
 export type TeamPlayerInformation = {
   id: number;
-  players: Player[];
+  team_name: string;
+  players: PlayerRow[];
 };
 
 router.get(
@@ -22,6 +23,8 @@ router.get(
         teams({
           resLocals: res.locals,
           semester,
+          teamInfo: [],
+          unassigned_players: [],
         })
       );
     } else {
@@ -30,17 +33,24 @@ router.get(
         semester,
       ]);
 
+      const teamInfo: TeamPlayerInformation[] = [];
       for (const team of all_teams) {
         const [players] = await connection.query<PlayerRow[]>(
           sql.select_players_of_team,
           [team.id]
         );
+        teamInfo.push({ id: team.id, team_name: team.team_name, players });
       }
+      const [unassigned_players] = await connection.query<PlayerRow[]>(
+        sql.select_unassigned_players
+      );
 
       res.send(
         teams({
           resLocals: res.locals,
           semester,
+          teamInfo,
+          unassigned_players,
         })
       );
     }
