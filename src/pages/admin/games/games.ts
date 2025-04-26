@@ -5,7 +5,7 @@ import { games, gameResultConfirmation } from "./games.html.js";
 
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";
-import { PlayerType } from "../../../lib/db-types.js";
+import { PlayerRow } from "../../../lib/db-types.js";
 import {
   insertGameResults,
   processGameResults,
@@ -19,7 +19,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const connection = await connectToDatabase();
-    const [players] = await connection.query<PlayerType[]>(sql.select_players);
+    const [players] = await connection.query<PlayerRow[]>(sql.select_players);
 
     const info = await getAllGames();
     res.send(games({ players, resLocals: res.locals, info }));

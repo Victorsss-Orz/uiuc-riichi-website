@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import { teams } from "./teams.html.js";
 import { connectToDatabase } from "../../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
-import { PlayerType, TeamRow } from "../../../lib/db-types.js";
+import { PlayerRow, TeamRow } from "../../../lib/db-types.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);

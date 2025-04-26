@@ -2,8 +2,8 @@ import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import {
   GamePlayerRow,
-  PlayerSemesterDataType,
-  PlayerType,
+  PlayerSemesterDataRow,
+  PlayerRow,
 } from "./db-types.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -18,7 +18,7 @@ export type PlayerSemesterStats = {
 };
 
 export async function playerIndividualStats(
-  player: PlayerType,
+  player: PlayerRow,
   semester: string
 ): Promise<PlayerSemesterStats | null> {
   const connection = await connectToDatabase();
@@ -30,7 +30,7 @@ export async function playerIndividualStats(
   if (!player_games.length) {
     return null;
   }
-  const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+  const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
     sql.select_player_semester_data,
     [player.id, semester]
   );

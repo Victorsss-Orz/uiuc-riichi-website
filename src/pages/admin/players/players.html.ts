@@ -1,4 +1,4 @@
-import { PlayerType } from "../../../lib/db-types.js";
+import { PlayerRow } from "../../../lib/db-types.js";
 import { PageLayout } from "../../../components/pageLayout.html.js";
 import { html } from "../../../../packages/html/dist/index.js";
 
@@ -6,7 +6,7 @@ export function addPlayer({
   players,
   resLocals,
 }: {
-  players: PlayerType[];
+  players: PlayerRow[];
   resLocals: Record<string, any>;
 }) {
   const htmlContent = PageLayout({

@@ -2,8 +2,8 @@ import { Request } from "express";
 
 import {
   StartingWind,
-  PlayerType,
-  PlayerSemesterDataType,
+  PlayerRow,
+  PlayerSemesterDataRow,
   GamePlayerRow,
   Game,
   GamePlayer,
@@ -25,7 +25,7 @@ export type GameResult = {
 
 interface GameAndPlayerRow extends Game, GamePlayer, RowDataPacket {}
 
-export function findPlayerById(players: PlayerType[], id: number): string {
+export function findPlayerById(players: PlayerRow[], id: number): string {
   let player_name = "";
   players.forEach((player) => {
     if (player.id === id) {
@@ -128,7 +128,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
 
   const placementPointsMatching = [50, 10, -10, -30];
   const connection = await connectToDatabase();
-  const [players] = await connection.query<PlayerType[]>(sql.select_players);
+  const [players] = await connection.query<PlayerRow[]>(sql.select_players);
 
   // Updates information for game results
   // Considers tie games for placement points
@@ -170,7 +170,7 @@ export async function removeGameResults(game_id: number): Promise<void> {
     if (!is_team_game) {
       // Update player semester data
       // Total points
-      const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+      const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
         sql.select_player_semester_data,
         [game.player_id, semester]
       );
@@ -209,7 +209,7 @@ export async function insertGameResults(
 
   for (const result of results) {
     // Insert player semester data if DNE
-    let [data] = await connection.query<PlayerSemesterDataType[]>(
+    let [data] = await connection.query<PlayerSemesterDataRow[]>(
       sql.select_player_semester_data,
       [result.player_id, semester]
     );
@@ -237,7 +237,7 @@ export async function insertGameResults(
     if (!is_team_game) {
       // Update player semester data
       // Total points
-      const [players_data] = await connection.query<PlayerSemesterDataType[]>(
+      const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
         sql.select_player_semester_data,
         [result.player_id, semester]
       );

@@ -1,17 +1,18 @@
 import { RowDataPacket } from "mysql2/promise";
 
-export interface PlayerType extends RowDataPacket {
-  id: number;
-  player_name: string;
-}
+export type Player = { id: number; player_name: string };
+export interface PlayerRow extends Player, RowDataPacket {}
 
-export interface PlayerSemesterDataType extends RowDataPacket {
+export type PlayerSemesterData = {
   player_id: number;
   semester: string;
   ranking: number; // 段位
   points: number; // pt
   team_id: number | null;
-}
+};
+export interface PlayerSemesterDataRow
+  extends PlayerSemesterData,
+    RowDataPacket {}
 
 export type Team = {
   id: number;
@@ -46,6 +47,6 @@ export type GamePlayer = {
 };
 export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
-export interface SemesterType extends RowDataPacket {
+export interface SemesterRow extends RowDataPacket {
   semester: string;
 }

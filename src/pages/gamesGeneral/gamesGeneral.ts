@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import { gamesGeneral } from "./gamesGeneral.html.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { PlayerType } from "../../lib/db-types.js";
+import { PlayerRow } from "../../lib/db-types.js";
 import {
   playerIndividualStats,
   PlayerSemesterStats,
@@ -16,7 +16,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const connection = await connectToDatabase();
-    const [players] = await connection.query<PlayerType[]>(sql.select_players);
+    const [players] = await connection.query<PlayerRow[]>(sql.select_players);
     const semester = res.locals.semester;
     const allStats: PlayerSemesterStats[] = [];
     for (const player of players) {
