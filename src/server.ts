@@ -62,6 +62,10 @@ async function setupRoutes() {
     "/admin/games",
     (await import("./pages/admin/games/games.js")).default
   );
+  app.use(
+    "/admin/teams",
+    (await import("./pages/admin/teams/teams.js")).default
+  );
 
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)",

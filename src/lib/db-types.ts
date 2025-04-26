@@ -13,19 +13,21 @@ export interface PlayerSemesterDataType extends RowDataPacket {
   team_id: number | null;
 }
 
-export interface TeamType extends RowDataPacket {
+export type Team = {
   id: number;
   team_name: string;
   points: number;
   semester: string;
-}
+};
+export interface TeamRow extends Team, RowDataPacket {}
 
-export interface Game extends RowDataPacket {
+export type Game = {
   id: number;
   game_time: string;
   is_team_game: boolean;
   semester: string; // TODO: add rule
-}
+};
+export interface GameRow extends Game, RowDataPacket {}
 
 export enum StartingWind {
   "East",
@@ -42,10 +44,7 @@ export type GamePlayer = {
   placement: number;
   point_change: number;
 };
-
 export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
-
-export interface GameRow extends Game, RowDataPacket {}
 
 export interface SemesterType extends RowDataPacket {
   semester: string;

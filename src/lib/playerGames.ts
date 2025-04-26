@@ -82,9 +82,9 @@ function combineGameInfo(games: GameInformationRow[]): GameInfo[] {
       const date = new Date(game.game_time);
       curr_game_info = {
         game_id: game.game_id,
-        game_date: `${date.getUTCFullYear().toString()}-${date
-          .getUTCMonth()
-          .toString()}-${date.getUTCDate().toString()}`,
+        game_date: `${date.getUTCFullYear().toString()}-${(
+          date.getUTCMonth() + 1
+        ).toString()}-${date.getUTCDate().toString()}`,
         is_team_game: game.is_team_game,
       };
       curr_game_players = [];
