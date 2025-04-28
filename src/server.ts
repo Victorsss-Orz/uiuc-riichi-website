@@ -22,6 +22,7 @@ async function setupRoutes() {
       cookie: { secure: false }, // Set to true if using HTTPS
     })
   );
+  app.use(express.json());
   app.use(
     "/bootstrap",
     express.static(path.join(__dirname, "../node_modules/bootstrap/dist"))

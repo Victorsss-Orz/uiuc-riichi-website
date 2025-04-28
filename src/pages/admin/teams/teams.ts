@@ -60,6 +60,7 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
+    console.log(req.body);
     const semester = req.query.semester?.toString();
     if (req.body.__action === "add") {
       const connection = await connectToDatabase();
@@ -67,7 +68,7 @@ router.post(
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "remove") {
       res.redirect(req.originalUrl);
-    } else {
+    } else if (req.body.__action == "save_team") {
       res.redirect(req.originalUrl);
     }
   })

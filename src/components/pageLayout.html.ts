@@ -42,7 +42,7 @@ export function PageLayout({
 function navBar({ resLocals }: { resLocals: Record<string, any> }) {
   return html`
     <nav
-      class="navbar navbar-dark bg-dark navbar-expand-md mb-4"
+      class="navbar navbar-dark bg-dark navbar-expand-md mb-4 sticky-top"
       aria-label="Global navigation"
     >
       <div class="container-fluid">
