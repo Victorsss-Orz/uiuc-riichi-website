@@ -34,7 +34,7 @@ export function teams({
         }
         .team {
           height: 15rem;
-          width: 12rem;
+          width: 13rem;
           border: 2px solid rgba(39, 41, 43, 0.1);
           margin: auto 1.5% 5px;
           padding: 8px;

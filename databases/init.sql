@@ -33,7 +33,8 @@ CREATE TABLE
         semester TEXT NOT NULL,
         ranking INT NOT NULL DEFAULT 0,
         points FLOAT NOT NULL DEFAULT 0,
-        team_id BIGINT UNSIGNED REFERENCES teams (id) ON DELETE SET NULL ON UPDATE CASCADE
+        team_id BIGINT UNSIGNED NULL,
+        CONSTRAINT fk_team FOREIGN KEY (team_id) REFERENCES teams (id) ON DELETE SET NULL ON UPDATE CASCADE
     );
 
 CREATE TABLE
@@ -47,10 +48,53 @@ CREATE TABLE
         CONSTRAINT chk_placement CHECK (placement IN (1, 2, 3, 4))
     );
 
-INSERT INTO semesters(semester) VALUES ('sp25');
-INSERT INTO semesters (semester) VALUES ('fa25');
+DELIMITER $$
+CREATE TRIGGER after_insert_semester
+AFTER INSERT ON semesters
+FOR EACH ROW
+BEGIN
+    INSERT INTO player_semester_data (player_id, semester)
+    SELECT id, NEW.semester
+    FROM players;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER after_insert_player
+AFTER INSERT ON players
+FOR EACH ROW
+BEGIN
+    INSERT INTO player_semester_data (player_id, semester)
+    SELECT NEW.id, semester
+    FROM semesters;
+END$$
+DELIMITER ;
 
-INSERT INTO players (player_name) VALUES ('H');
-INSERT INTO players (player_name) VALUES ('浩');
-INSERT INTO players (player_name) VALUES ('秦始皇');
-INSERT INTO players (player_name) VALUES ('地雷');
+INSERT INTO
+    semesters (semester)
+VALUES
+    ('sp25');
+
+INSERT INTO
+    semesters (semester)
+VALUES
+    ('fa25');
+
+INSERT INTO
+    players (player_name)
+VALUES
+    ('H');
+
+INSERT INTO
+    players (player_name)
+VALUES
+    ('浩');
+
+INSERT INTO
+    players (player_name)
+VALUES
+    ('秦始皇');
+
+INSERT INTO
+    players (player_name)
+VALUES
+    ('地雷');

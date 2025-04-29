@@ -28,7 +28,8 @@ FROM
     player_semester_data psd
     JOIN players p ON psd.player_id = p.id
 WHERE
-    psd.team_id IS NULL;
+    psd.semester = (?)
+    AND psd.team_id IS NULL;
 
 -- BLOCK update_player_team
 UPDATE player_semester_data

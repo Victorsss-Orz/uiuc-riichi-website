@@ -42,7 +42,7 @@ router.get(
         teamInfo.push({ id: team.id, team_name: team.team_name, players });
       }
       const [unassigned_players] = await connection.query<PlayerRow[]>(
-        sql.select_unassigned_players
+        sql.select_unassigned_players, [semester]
       );
 
       res.send(

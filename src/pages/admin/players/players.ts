@@ -22,9 +22,7 @@ router.post(
     if (req.body.__action === "add") {
       const { playerName } = req.body;
       const connection = await connectToDatabase();
-      const [players] = await connection.query<PlayerRow[]>(
-        sql.select_players
-      );
+      const [players] = await connection.query<PlayerRow[]>(sql.select_players);
       let canInsert = true;
       for (const player of players) {
         if (player.player_name === playerName) {
