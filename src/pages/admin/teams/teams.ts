@@ -60,15 +60,36 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    console.log(req.body);
     const semester = req.query.semester?.toString();
+    const connection = await connectToDatabase();
     if (req.body.__action === "add") {
-      const connection = await connectToDatabase();
       await connection.query(sql.insert_team, [req.body.teamName, semester]);
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "remove") {
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "save_team") {
+      for (const team_id in req.body) {
+        if (team_id == "__action") {
+          continue;
+        } else if (team_id == "-1") {
+          const players = req.body[team_id];
+          for (const player_id of players) {
+            await connection.query(sql.remove_player_from_team, [
+              player_id,
+              semester,
+            ]);
+          }
+        } else {
+          const players = req.body[team_id];
+          for (const player_id of players) {
+            await connection.query(sql.update_player_team, [
+              team_id,
+              player_id,
+              semester,
+            ]);
+          }
+        }
+      }
       res.redirect(req.originalUrl);
     }
   })

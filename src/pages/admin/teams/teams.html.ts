@@ -21,19 +21,28 @@ export function teams({
     preContent: html`<script src="/sortablejs/Sortable.js"></script>
       <style>
         .player {
-          max-width: 100px;
+          max-width: 10rem;
+          font-size: 20px;
           border: solid 1px;
           margin: 3px;
           cursor: pointer;
+          padding: 2px;
         }
         .player-selected {
           background-color: #f9c7c8;
           border: solid red 1px !important;
         }
-        .col {
+        .team {
           height: 15rem;
+          width: 12rem;
           border: 2px solid rgba(39, 41, 43, 0.1);
           margin: auto 1.5% 5px;
+        }
+        .unassigned {
+          height: 70%;
+          width: 100%;
+          min-width: 15rem;
+          overflow: auto;
         }
         .right-banner {
           width: 25%;
@@ -42,80 +51,101 @@ export function teams({
         }
       </style>`,
     content: html`
-      <div style="margin-top: 1rem; margin-bottom: 1rem;">
-        <h1>Manage teams</h1>
-      </div>
-      <form id="selectSemesterForm" method="GET">
-        <div style="line-height: 2rem; margin-bottom: 1rem;">
-          <label for="semester">Select semester:</label>
-          <select
-            name="semester"
-            id="semester"
-            style="width: 80px; overflow: hidden;"
-            onchange="this.form.submit()"
-          >
-            ${!semester ? html`<option selected></option>` : ""}
-            ${resLocals.semesters.map(
-              (row: string) =>
-                html`<option value=${row} ${semester == row ? "selected" : ""}>
-                  ${row}
-                </option>`
-            )}
-          </select>
+      <div style="width: 70%;">
+        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+          <h1>Manage teams</h1>
         </div>
-      </form>
-      ${semester
-        ? html`
-            <div class="card" style="padding: 1rem;">
-              <form id="addTeamForm" method="POST">
-                <label for="teamName">Team Name:</label>
-                <input type="text" id="teamName" name="teamName" required />
-                <button
-                  type="submit"
-                  name="__action"
-                  value="add"
-                  class="btn btn-primary"
+        <form id="selectSemesterForm" method="GET">
+          <div style="line-height: 2rem; margin-bottom: 1rem;">
+            <label for="semester">Select semester:</label>
+            <select
+              name="semester"
+              id="semester"
+              style="width: 80px; overflow: hidden;"
+              onchange="this.form.submit()"
+            >
+              ${!semester ? html`<option selected></option>` : ""}
+              ${resLocals.semesters.map(
+                (row: string) =>
+                  html`<option
+                    value=${row}
+                    ${semester == row ? "selected" : ""}
+                  >
+                    ${row}
+                  </option>`
+              )}
+            </select>
+          </div>
+        </form>
+        ${semester
+          ? html`
+              <nav
+                class="navbar bg-light position-fixed top-0 end-0 d-flex flex-column p-3"
+                style="height: 100vh; width: 25%; z-index: 1000;"
+              >
+                <div
+                  class="card team unassigned"
+                  id="team-unassigned"
+                  data-team-id="-1"
                 >
-                  Add
-                </button>
-              </form>
-              <div class="container" style="margin-top: 1rem;">
-                <div class="row row-cols-6">
-                  ${teamInfo.map(
-                    (team) =>
-                      html`<div
-                        class="col team"
-                        id="team-${team.id}"
-                        data-team-id="${team.id}"
-                      >
-                        <h2>${team.team_name}</h2>
-                        ${team.players.map(
-                          (player) =>
-                            html`<div
-                              class="player"
-                              data-player-id="${player.id}"
-                            >
-                              ${player.player_name}
-                            </div>`
-                        )}
+                  <h3>Unassigned</h3>
+                  ${unassigned_players.map(
+                    (player) =>
+                      html`<div class="player" data-player-id="${player.id}">
+                        ${player.player_name}
                       </div>`
                   )}
                 </div>
-              </div>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-lg"
+                  onclick="submitTeamAssignment()"
+                  title="Save current team assignment"
+                >
+                  Save
+                </button>
+              </nav>
 
-              <div class="card team" id="team-unassigned" data-team-id="-1">
-                <h2>Unassigned Players</h2>
-                ${unassigned_players.map(
-                  (player) =>
-                    html`<div class="player" data-player-id="${player.id}">
-                      ${player.player_name}
-                    </div>`
-                )}
+              <div class="card" style="padding: 1rem;">
+                <form id="addTeamForm" method="POST">
+                  <label for="teamName">Team Name:</label>
+                  <input type="text" id="teamName" name="teamName" required />
+                  <button
+                    type="submit"
+                    name="__action"
+                    value="add"
+                    class="btn btn-primary"
+                  >
+                    Add
+                  </button>
+                </form>
+                <div class="container" style="margin-top: 1rem;">
+                  <div class="row">
+                    ${teamInfo.map(
+                      (team) =>
+                        html`<div
+                          class="team"
+                          id="team-${team.id}"
+                          data-team-id="${team.id}"
+                        >
+                          <h2>${team.team_name}</h2>
+                          ${team.players.map(
+                            (player) =>
+                              html`<div
+                                class="player"
+                                data-player-id="${player.id}"
+                              >
+                                ${player.player_name}
+                              </div>`
+                          )}
+                        </div>`
+                    )}
+                  </div>
+                </div>
               </div>
-              <div onclick="submitTeamAssignment()">Save</div>
-            </div>
-          `
-        : ""}
+            `
+          : ""}
+      </div>
     `,
     postContent: html`
       ${teamInfo.map(
