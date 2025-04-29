@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import { playerGames } from "./playerGames.html.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { getGamesForPlayer } from "../../lib/playerGames.js";
+import { getGamesForPlayer } from "../../lib/gamesTable.js";
 import { PlayerRow } from "../../lib/db-types.js";
 import { findPlayerById } from "../../lib/gameResults.js";
 

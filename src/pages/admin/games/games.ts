@@ -11,7 +11,7 @@ import {
   processGameResults,
   removeGameResults,
 } from "../../../lib/gameResults.js";
-import { getAllGames } from "../../../lib/playerGames.js";
+import { getAllGames } from "../../../lib/gamesTable.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);

@@ -100,18 +100,20 @@ function combineGameInfo(games: GameInformationRow[]): GameInfo[] {
     });
   }
 
-  while (curr_game_players.length < 4) {
-    curr_game_players.push(null);
+  if (curr_game_players.length) {
+    while (curr_game_players.length < 4) {
+      curr_game_players.push(null);
+    }
+    info.push({
+      game_id: curr_game_info.game_id,
+      game_date: curr_game_info.game_date,
+      is_team_game: curr_game_info.is_team_game,
+      player_1: curr_game_players[0],
+      player_2: curr_game_players[1],
+      player_3: curr_game_players[2],
+      player_4: curr_game_players[3],
+    });
   }
-  info.push({
-    game_id: curr_game_info.game_id,
-    game_date: curr_game_info.game_date,
-    is_team_game: curr_game_info.is_team_game,
-    player_1: curr_game_players[0],
-    player_2: curr_game_players[1],
-    player_3: curr_game_players[2],
-    player_4: curr_game_players[3],
-  });
 
   return info;
 }

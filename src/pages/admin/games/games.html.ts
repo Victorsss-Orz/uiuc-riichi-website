@@ -3,7 +3,7 @@ import { PlayerRow } from "../../../lib/db-types.js";
 import { Modal } from "../../../components/modal.html.js";
 import { GameResult } from "../../../lib/gameResults.js";
 import { html } from "../../../../packages/html/dist/index.js";
-import { GameInfo } from "../../../lib/playerGames.js";
+import { GameInfo } from "../../../lib/gamesTable.js";
 
 export function games({
   resLocals,
