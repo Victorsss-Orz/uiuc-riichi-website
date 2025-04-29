@@ -78,7 +78,7 @@ async function setupRoutes() {
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/individual",
-    (await import("./pages/gamesGeneral/gamesGeneral.js")).default
+    (await import("./pages/individualStats/individualStats.js")).default
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/player/:player_id(\\d+)",

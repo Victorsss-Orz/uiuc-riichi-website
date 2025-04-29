@@ -1,8 +1,8 @@
 import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
-import { PlayerSemesterStats } from "../../lib/playerStats.js";
+import { PlayerSemesterStats } from "../../lib/stats.js";
 
-export function gamesGeneral({
+export function individualStats({
   allStats,
   resLocals,
 }: {

@@ -1,6 +1,6 @@
 import { html } from "../../../packages/html/dist";
 
-export function renderTeamResults() {
+export function teamGames() {
   return html`
     <!DOCTYPE html>
     <html lang="en">

@@ -1,13 +1,13 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
-import { gamesGeneral } from "./gamesGeneral.html.js";
+import { individualStats } from "./individualStats.html.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { PlayerRow } from "../../lib/db-types.js";
 import {
   playerIndividualStats,
   PlayerSemesterStats,
-} from "../../lib/playerStats.js";
+} from "../../lib/stats.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -34,7 +34,7 @@ router.get(
         return 0;
       }
     });
-    res.send(gamesGeneral({ allStats, resLocals: res.locals }));
+    res.send(individualStats({ allStats, resLocals: res.locals }));
   })
 );
 
