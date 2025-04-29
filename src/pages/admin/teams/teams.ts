@@ -66,6 +66,8 @@ router.post(
       await connection.query(sql.insert_team, [req.body.teamName, semester]);
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "remove") {
+      const { teamToRemove } = req.body;
+      await connection.query(sql.remove_team, [teamToRemove]);
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "save_team") {
       for (const team_id in req.body) {

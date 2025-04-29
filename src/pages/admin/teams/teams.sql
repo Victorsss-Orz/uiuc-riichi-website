@@ -45,3 +45,8 @@ SET
 WHERE
     player_id = (?)
     AND semester = (?);
+
+-- BLOCK remove_team
+DELETE FROM teams
+WHERE
+    id = (?);

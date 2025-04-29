@@ -37,6 +37,7 @@ export function teams({
           width: 12rem;
           border: 2px solid rgba(39, 41, 43, 0.1);
           margin: auto 1.5% 5px;
+          padding: 8px;
         }
         .unassigned {
           height: 70%;
@@ -128,7 +129,29 @@ export function teams({
                           id="team-${team.id}"
                           data-team-id="${team.id}"
                         >
-                          <h2>${team.team_name}</h2>
+                          <div
+                            style="display: flex; flex-direction: row; align-items: center;"
+                          >
+                            <h5 class="me-3">${team.team_name}</h5>
+                            <form name="removeTeam${team.id}Form" method="POST">
+                              <button
+                                type="submit"
+                                class="btn btn-danger"
+                                name="__action"
+                                value="remove"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Remove this team"
+                              >
+                                Remove
+                              </button>
+                              <input
+                                type="hidden"
+                                name="teamToRemove"
+                                value=${team.id}
+                              />
+                            </form>
+                          </div>
                           ${team.players.map(
                             (player) =>
                               html`<div
