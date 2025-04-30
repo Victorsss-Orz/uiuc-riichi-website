@@ -1,12 +1,12 @@
 import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
-import { PlayerSemesterStats } from "../../lib/stats.js";
+import { teamSemesterStats } from "../../lib/stats.js";
 
 export function teamStats({
   allStats,
   resLocals,
 }: {
-  allStats: PlayerSemesterStats[];
+  allStats: teamSemesterStats[];
   resLocals: Record<string, any>;
 }) {
   const htmlContent = PageLayout({
@@ -15,11 +15,11 @@ export function teamStats({
     preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">
-        <h1>Player rankings ${resLocals.semester}</h1>
+        <h1>Team rankings ${resLocals.semester}</h1>
         ${allStats.map(
           (stats) => html`
             <a
-              href="/semester/${resLocals.semester}/player/${stats.id}"
+              href="/semester/${resLocals.semester}/team/${stats.id}"
               style="text-decoration: none;"
             >
               <div
@@ -61,9 +61,6 @@ export function teamStats({
                       .join(", ")}
                   </div>
                 </div>
-                <h4 style="width: 8%; color: red; margin-top: 3rem;">
-                  ${stats.ranking}
-                </h4>
                 <div style="width: 20%;">
                   <canvas id="chartPlayer${stats.id}"></canvas>
                 </div>

@@ -77,8 +77,8 @@ async function setupRoutes() {
     (await import("./middlewares/getSemester.js")).default
   );
   app.use(
-    "/semester/:semester([a-zA-Z0-9_-]+)/individual",
-    (await import("./pages/individualStats/individualStats.js")).default
+    "/semester/:semester([a-zA-Z0-9_-]+)/players",
+    (await import("./pages/playerStats/playerStats.js")).default
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/player/:player_id(\\d+)",
@@ -89,7 +89,15 @@ async function setupRoutes() {
     (await import("./pages/playerGames/playerGames.js")).default
   );
   app.use(
-    "/semester/:semester([a-zA-Z0-9_-]+)/team",
+    "/semester/:semester([a-zA-Z0-9_-]+)/teams",
+    (await import("./pages/teamStats/teamStats.js")).default
+  );
+  app.use(
+    "/semester/:semester([a-zA-Z0-9_-]+)/team/:team_id(\\d+)",
+    function (req: Request, res: Response, next: NextFunction) {
+      res.locals.team_id = req.params.team_id;
+      next();
+    },
     (await import("./pages/teamStats/teamStats.js")).default
   );
 

@@ -1,6 +1,6 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
-import { individualStats } from "./individualStats.html.js";
+import { playerStats } from "./playerStats.html.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { PlayerRow } from "../../lib/db-types.js";
@@ -34,7 +34,7 @@ router.get(
         return 0;
       }
     });
-    res.send(individualStats({ allStats, resLocals: res.locals }));
+    res.send(playerStats({ allStats, resLocals: res.locals }));
   })
 );
 

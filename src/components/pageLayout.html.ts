@@ -80,7 +80,7 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
                     html`<li>
                       <a
                         class="dropdown-item"
-                        href="/semester/${semester}/individual"
+                        href="/semester/${semester}/players"
                         >${semester}</a
                       >
                     </li>`

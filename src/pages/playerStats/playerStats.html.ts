@@ -2,7 +2,7 @@ import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerSemesterStats } from "../../lib/stats.js";
 
-export function individualStats({
+export function playerStats({
   allStats,
   resLocals,
 }: {

@@ -90,30 +90,24 @@ export async function getSemesterTeamStats(
     sql.select_team_game_history,
     [team.id]
   );
-  return null;
-  // if (!player_games.length) {
-  //   return null;
-  // }
-  // const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
-  //   sql.select_player_semester_data,
-  //   [player.id, semester]
-  // );
-  // const player_data = players_data[0];
+  if (!player_games.length) {
+    return null;
+  }
 
-  // const placements = [0, 0, 0, 0];
-  // let sum_placement = 0;
-  // let length_placement = 0;
-  // for (const game of player_games) {
-  //   placements[game.placement - 1]++;
-  //   sum_placement += game.placement;
-  //   length_placement++;
-  // }
+  const placements = [0, 0, 0, 0];
+  let sum_placement = 0;
+  let length_placement = 0;
+  for (const game of player_games) {
+    placements[game.placement - 1]++;
+    sum_placement += game.placement;
+    length_placement++;
+  }
 
-  // return {
-  //   id: team.id,
-  //   name: team.team_name,
-  //   placements,
-  //   average_placement: sum_placement / length_placement,
-  //   points: team.points,
-  // };
+  return {
+    id: team.id,
+    name: team.team_name,
+    placements,
+    average_placement: sum_placement / length_placement,
+    points: team.points,
+  };
 }

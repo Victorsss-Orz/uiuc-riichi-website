@@ -30,6 +30,7 @@ router.get(
         allStats.push(stats);
       }
     }
+    console.log(allStats);
     allStats.sort((a, b) => {
       if (a.points - b.points > 1e-6) {
         return -1;
@@ -39,8 +40,7 @@ router.get(
         return 0;
       }
     });
-    // res.send(teamStats({ allStats, resLocals: res.locals }));
-    res.send("abc");
+    res.send(teamStats({ allStats, resLocals: res.locals }));
   })
 );
 
