@@ -15,7 +15,7 @@ export function playerGames({
   const player_id = parseInt(resLocals.player_id);
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Add User",
+    pageTitle: "Player Games",
     preContent: html``,
     content: html`
       <a

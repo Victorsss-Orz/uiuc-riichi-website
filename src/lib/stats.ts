@@ -4,6 +4,7 @@ import {
   GamePlayerRow,
   PlayerSemesterDataRow,
   PlayerRow,
+  TeamRow,
 } from "./db-types.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -17,7 +18,7 @@ export type PlayerSemesterStats = {
   points: number;
 };
 
-export async function playerIndividualStats(
+export async function getSemesterIndividualStats(
   player: PlayerRow,
   semester: string
 ): Promise<PlayerSemesterStats | null> {
@@ -70,4 +71,49 @@ export async function playerIndividualStats(
     ranking: rankingText[player_data.ranking],
     points: player_data.points,
   };
+}
+
+export type teamSemesterStats = {
+  id: number;
+  name: string;
+  placements: number[];
+  average_placement: number;
+  points: number;
+};
+
+export async function getSemesterTeamStats(
+  team: TeamRow
+): Promise<teamSemesterStats | null> {
+  const connection = await connectToDatabase();
+
+  const [player_games] = await connection.query<GamePlayerRow[]>(
+    sql.select_team_game_history,
+    [team.id]
+  );
+  return null;
+  // if (!player_games.length) {
+  //   return null;
+  // }
+  // const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
+  //   sql.select_player_semester_data,
+  //   [player.id, semester]
+  // );
+  // const player_data = players_data[0];
+
+  // const placements = [0, 0, 0, 0];
+  // let sum_placement = 0;
+  // let length_placement = 0;
+  // for (const game of player_games) {
+  //   placements[game.placement - 1]++;
+  //   sum_placement += game.placement;
+  //   length_placement++;
+  // }
+
+  // return {
+  //   id: team.id,
+  //   name: team.team_name,
+  //   placements,
+  //   average_placement: sum_placement / length_placement,
+  //   points: team.points,
+  // };
 }

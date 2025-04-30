@@ -1,5 +1,10 @@
 import { html, HtmlValue } from "../../packages/html/dist/index.js";
 
+export type navContext = {
+  type: "user" | "admin";
+  page: "semester" | "non-semester";
+};
+
 export function PageLayout({
   resLocals,
   pageTitle,
@@ -26,7 +31,7 @@ export function PageLayout({
     <!DOCTYPE html>
     <html lang="en">
       <head>
-        ${HeadContents(pageTitle)}
+        ${headContent ?? ""} ${HeadContents(pageTitle)}
       </head>
       <body>
         ${preContent ?? ""} ${navBar({ resLocals })}
@@ -47,47 +52,59 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
     >
       <div class="container-fluid">
         <a class="navbar-brand" href="/">UIUC Riichi</a>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Semesters
-            </a>
-            <ul class="dropdown-menu">
-              ${resLocals.semesters.map(
-                (semester: any) =>
-                  html`<li>
-                    <a
-                      class="dropdown-item"
-                      href="/semester/${semester}/individual"
-                      >${semester}</a
-                    >
-                  </li>`
-              )}
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target=".navbar-collapse"
+          aria-expanded="true"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Semesters
+              </a>
+              <ul class="dropdown-menu">
+                ${resLocals.semesters.map(
+                  (semester: any) =>
+                    html`<li>
+                      <a
+                        class="dropdown-item"
+                        href="/semester/${semester}/individual"
+                        >${semester}</a
+                      >
+                    </li>`
+                )}
 
-              <li><hr class="dropdown-divider" /></li>
-            </ul>
-          </li>
-          ${resLocals.isAdmin
-            ? html`
-                <li class="nav-item">
-                  <a class="nav-link" href="/admin/games">Games</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/admin/players">Players</a>
-                </li>
-              `
-            : html`
-                <li class="nav-item">
-                  <a class="nav-link" href="/login">Admin Login</a>
-                </li>
-              `}
-        </ul>
+                <li><hr class="dropdown-divider" /></li>
+              </ul>
+            </li>
+            ${resLocals.isAdmin
+              ? html`
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin/games">Games</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin/players">Players</a>
+                  </li>
+                `
+              : html`
+                  <li class="nav-item">
+                    <a class="nav-link" href="/login">Admin Login</a>
+                  </li>
+                `}
+          </ul>
+        </div>
       </div>
     </nav>
   `.toString();

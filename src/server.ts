@@ -88,6 +88,10 @@ async function setupRoutes() {
     },
     (await import("./pages/playerGames/playerGames.js")).default
   );
+  app.use(
+    "/semester/:semester([a-zA-Z0-9_-]+)/team",
+    (await import("./pages/teamStats/teamStats.js")).default
+  );
 
   app.use((req, res) => {
     // TODO: handle this through another page

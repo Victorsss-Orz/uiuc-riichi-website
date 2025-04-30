@@ -2,7 +2,7 @@ import { html } from "../../../packages/html/dist/index.js";
 import { PageLayout } from "../../components/pageLayout.html.js";
 import { PlayerSemesterStats } from "../../lib/stats.js";
 
-export function individualStats({
+export function teamStats({
   allStats,
   resLocals,
 }: {
@@ -11,7 +11,7 @@ export function individualStats({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Individual Stats",
+    pageTitle: "Team Stats",
     preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">
