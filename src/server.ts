@@ -98,7 +98,7 @@ async function setupRoutes() {
       res.locals.team_id = req.params.team_id;
       next();
     },
-    (await import("./pages/teamStats/teamStats.js")).default
+    (await import("./pages/teamGames/teamGames.js")).default
   );
 
   app.use((req, res) => {

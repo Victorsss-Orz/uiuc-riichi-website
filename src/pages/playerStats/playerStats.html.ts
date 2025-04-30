@@ -11,7 +11,7 @@ export function playerStats({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Individual Stats",
+    pageTitle: "Player Stats",
     preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">

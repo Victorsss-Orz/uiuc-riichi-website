@@ -37,6 +37,21 @@ export function getPlayerPointChange(
   }
 }
 
+export function getTeamPointChange(
+  game: GameInfo,
+  team_players: number[]
+): number {
+  if (game.player_1 && team_players.includes(game.player_1.player_id)) {
+    return game.player_1.point_change;
+  } else if (game.player_2 && team_players.includes(game.player_2.player_id)) {
+    return game.player_2.point_change;
+  } else if (game.player_3 && team_players.includes(game.player_3.player_id)) {
+    return game.player_3.point_change;
+  } else {
+    return game.player_4 ? game.player_4.point_change : 0;
+  }
+}
+
 export async function getGamesForPlayer(
   player_id: number,
   semester: string

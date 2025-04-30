@@ -4,25 +4,38 @@ import { teamGames } from "./teamGames.html.js";
 import { connectToDatabase } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { getGamesForPlayer } from "../../lib/gamesTable.js";
-import { PlayerRow } from "../../lib/db-types.js";
-import { findPlayerById } from "../../lib/gameResults.js";
+import { TeamRow } from "../../lib/db-types.js";
+import { findTeamById } from "../../lib/gameResults.js";
+import { RowDataPacket } from "mysql2";
 
 const router = express.Router();
-// const sql = loadSqlEquiv(import.meta.url);
+const sql = loadSqlEquiv(import.meta.url);
+
+interface IdRow extends RowDataPacket {
+  player_id: number;
+}
 
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    // const semester = res.locals.semester;
-    // const player_id = parseInt(res.locals.player_id);
+    const semester = res.locals.semester;
+    const team_id = parseInt(res.locals.team_id);
 
-    // const connection = await connectToDatabase();
-    // const [players] = await connection.query<PlayerRow[]>(sql.select_players);
-    // const player_name = findPlayerById(players, player_id);
+    const connection = await connectToDatabase();
+    const [teams] = await connection.query<TeamRow[]>(sql.select_teams, [
+      semester,
+    ]);
+    const team_name = findTeamById(teams, team_id);
+    console.log(team_name);
+    const [team_players] = await connection.query<IdRow[]>(
+      sql.select_team_players,
+      [team_id]
+    );
+    console.log(team_players);
 
     // const info = await getGamesForPlayer(player_id, semester);
 
-    res.send(teamGames());
+    res.send("");
   })
 );
 

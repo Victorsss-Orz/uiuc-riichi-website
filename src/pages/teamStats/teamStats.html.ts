@@ -61,6 +61,8 @@ export function teamStats({
                       .join(", ")}
                   </div>
                 </div>
+                <div style="width: 8%; margin-top: 3rem;">
+                </div>
                 <div style="width: 20%;">
                   <canvas id="chartPlayer${stats.id}"></canvas>
                 </div>

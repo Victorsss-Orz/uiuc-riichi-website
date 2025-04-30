@@ -7,6 +7,7 @@ import {
   GamePlayerRow,
   Game,
   GamePlayer,
+  TeamRow,
 } from "./db-types.js";
 import { connectToDatabase } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
@@ -33,6 +34,16 @@ export function findPlayerById(players: PlayerRow[], id: number): string {
     }
   });
   return player_name;
+}
+
+export function findTeamById(teams: TeamRow[], id: number): string {
+  let team_name = "";
+  teams.forEach((team) => {
+    if (team.id === id) {
+      team_name = team.team_name;
+    }
+  });
+  return team_name;
 }
 
 export async function processGameResults(req: Request): Promise<GameResult[]> {

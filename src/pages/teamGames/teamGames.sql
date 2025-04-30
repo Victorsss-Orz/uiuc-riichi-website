@@ -1,0 +1,15 @@
+-- BLOCK select_teams
+SELECT
+    *
+FROM
+    teams
+WHERE
+    teams.semester = (?);
+
+-- BLOCK select_team_players
+SELECT
+    player_id
+FROM
+    player_semester_data
+WHERE
+    team_id = (?);
