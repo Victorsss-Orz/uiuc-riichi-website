@@ -1,7 +1,7 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 import { teamGames } from "./teamGames.html.js";
-import { connectToDatabase } from "../../lib/sqlDatabase.js";
+import { connectToDatabase, queryRows } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { getGamesForPlayer } from "../../lib/gamesTable.js";
 import { TeamRow } from "../../lib/db-types.js";
@@ -10,10 +10,6 @@ import { RowDataPacket } from "mysql2";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
-
-interface IdRow extends RowDataPacket {
-  player_id: number;
-}
 
 router.get(
   "/",
@@ -27,10 +23,10 @@ router.get(
     ]);
     const team_name = findTeamById(teams, team_id);
     console.log(team_name);
-    const [team_players] = await connection.query<IdRow[]>(
-      sql.select_team_players,
-      [team_id]
-    );
+
+    const team_players = await queryRows<number>(sql.select_team_players, {
+      team_id,
+    });
     console.log(team_players);
 
     // const info = await getGamesForPlayer(player_id, semester);

@@ -12,4 +12,4 @@ SELECT
 FROM
     player_semester_data
 WHERE
-    team_id = (?);
+    team_id =:team_id;
