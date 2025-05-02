@@ -13,7 +13,6 @@ const sql = loadSqlEquiv(import.meta.url);
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-
     const semester = res.locals.semester;
     const player_id = parseInt(res.locals.player_id);
 
@@ -25,7 +24,7 @@ router.get(
 
     res.send(
       playerGames({
-        info,
+        info: info.filter((item) => !item.is_team_game),
         player_name,
         resLocals: res.locals,
       })

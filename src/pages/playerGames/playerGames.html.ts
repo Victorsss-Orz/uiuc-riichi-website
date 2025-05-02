@@ -19,7 +19,7 @@ export function playerGames({
     preContent: html``,
     content: html`
       <a
-        href="/semester/${resLocals.semester}/individual"
+        href="/semester/${resLocals.semester}/players"
         class="btn btn-sm btn-primary"
       >
         Back to players

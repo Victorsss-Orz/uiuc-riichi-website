@@ -21,13 +21,13 @@ export function teamGames({
     preContent: html``,
     content: html`
       <a
-        href="/semester/${resLocals.semester}/individual"
+        href="/semester/${resLocals.semester}/teams"
         class="btn btn-sm btn-primary"
       >
         Back to teams
       </a>
       <div style="margin: 0 auto;">
-        <h1>${team_name}'s games ${semester}</h1>
+        <h1>Team ${team_name}'s games ${semester}</h1>
         <div class="card" style="max-width: 1500px;">
           <div class="table-responsive">
             <table
