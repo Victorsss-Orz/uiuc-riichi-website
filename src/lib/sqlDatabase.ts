@@ -38,7 +38,7 @@ type queryParams = Record<string, any>;
 
 export async function queryRows<T>(
   query: string,
-  params: queryParams
+  params?: queryParams
 ): Promise<T[]> {
   const [rows] = await pool.execute<RowDataPacket[]>(query, params);
   return rows as T[];
@@ -46,7 +46,7 @@ export async function queryRows<T>(
 
 export async function queryOneRow<T>(
   query: string,
-  params: queryParams
+  params?: queryParams
 ): Promise<T> {
   const [rows] = await pool.execute<RowDataPacket[]>(query, params);
   if (rows.length != 1) {
@@ -59,7 +59,7 @@ export async function queryOneRow<T>(
 
 export async function queryWrite(
   query: string,
-  params: queryParams
+  params?: queryParams
 ): Promise<ResultSetHeader> {
   const [result] = await pool.execute<ResultSetHeader>(query, params);
   return result;

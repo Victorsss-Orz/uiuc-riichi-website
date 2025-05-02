@@ -8,7 +8,7 @@ FROM
 INSERT INTO
     games (is_team_game, semester)
 VALUES
-    (?, ?);
+    (:is_team_game, :semester);
 
 -- BLOCK select_player_semester_data
 SELECT
@@ -16,23 +16,17 @@ SELECT
 FROM
     player_semester_data
 WHERE
-    player_id = ?
-    AND semester = ?;
-
--- BLOCK insert_player_semester_data
-INSERT INTO
-    player_semester_data (player_id, semester)
-VALUES
-    (?, ?);
+    player_id = :player_id
+    AND semester = :semester;
 
 -- BLOCK update_player_semester_data
 UPDATE player_semester_data
 SET
-    ranking = ?,
-    points = ?
+    ranking = :new_ranking,
+    points = :new_points
 WHERE
-    player_id = ?
-    AND semester = ?;
+    player_id = :player_id
+    AND semester = :semester;
 
 -- BLOCK insert_player_game_result
 INSERT INTO
@@ -45,7 +39,14 @@ INSERT INTO
         point_change
     )
 VALUES
-    (?, ?, ?, ?, ?, ?);
+    (
+        :game_id,
+        :player_id,
+        :starting_wind,
+        :score,
+        :placement,
+        :point_change
+    );
 
 -- BLOCK select_player_game_history
 SELECT
@@ -54,8 +55,8 @@ FROM
     game_players gp
     JOIN games g ON gp.game_id = g.id
 WHERE
-    g.semester = ?
-    AND gp.player_id = ?
+    g.semester = :semester
+    AND gp.player_id = :player_id
     AND NOT g.is_team_game
 ORDER BY
     gp.game_id;
@@ -68,18 +69,18 @@ FROM
     game_players gp
     JOIN games g ON gp.game_id = g.id
 WHERE
-    g.id = ?;
+    g.id = :game_id;
 
 -- BLOCK remove_player_game_result
 DELETE FROM game_players
 WHERE
-    game_id = (?)
-    AND player_id = (?);
+    game_id = :game_id
+    AND player_id = :player_id;
 
 -- BLOCK remove_game
 DELETE FROM games
 WHERE
-    id = (?);
+    id = :game_id;
 
 -- BLOCK select_team_of_player
 SELECT
