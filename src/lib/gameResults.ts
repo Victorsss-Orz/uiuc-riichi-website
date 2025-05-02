@@ -9,15 +9,22 @@ import {
   GamePlayer,
   Team,
 } from "./db-types.js";
-import { connectToDatabase } from "./sqlDatabase.js";
+import {
+  connectToDatabase,
+  queryOneRow,
+  queryRows,
+  queryWrite,
+} from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 const sql = loadSqlEquiv(import.meta.url);
 
 export type GameResult = {
   player_id: number;
   player_name: string;
+  team_id: number | null;
   starting_wind: StartingWind | null;
   score: number;
   placement: number;
@@ -61,6 +68,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     player3Wind,
     player4Wind,
     teamGame,
+    semester,
   } = req.body;
 
   const player1ScoreVal = parseInt(player1Score, 10) * 100;
@@ -71,13 +79,38 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
   const totalScore =
     player1ScoreVal + player2ScoreVal + player3ScoreVal + player4ScoreVal;
 
-  if (
-    teamGame &&
-    new Set([player1Wind, player2Wind, player3Wind, player4Wind]).size < 4
-  ) {
-    throw new Error(`
-      <p style="color:red;">There should not be duplicate starting winds for team games</p>
-    `);
+  if (teamGame) {
+    if (
+      new Set([player1Wind, player2Wind, player3Wind, player4Wind]).size < 4
+    ) {
+      throw new Error(`
+        <p style="color:red;">There should not be duplicate starting winds for team games</p>
+      `);
+    }
+
+    const teams = [
+      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+        player_id: parseInt(player1ID, 10),
+        semester,
+      }),
+      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+        player_id: parseInt(player2ID, 10),
+        semester,
+      }),
+      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+        player_id: parseInt(player3ID, 10),
+        semester,
+      }),
+      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+        player_id: parseInt(player4ID, 10),
+        semester,
+      }),
+    ].filter((item) => item.team_id);
+    if (new Set(teams.map((item) => item.team_id)).size < 4) {
+      throw new Error(`
+        <p style="color:red;">All players should come from different teams for team games</p>
+      `);
+    }
   }
 
   if (Math.abs(totalScore - 100000) > 0.1) {
@@ -97,6 +130,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     {
       player_id: parseInt(player1ID, 10),
       player_name: "",
+      team_id: null,
       score: player1ScoreVal,
       starting_wind: teamGame ? player1Wind : null,
       placement: 0,
@@ -105,6 +139,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     {
       player_id: parseInt(player2ID, 10),
       player_name: "",
+      team_id: null,
       score: player2ScoreVal,
       starting_wind: teamGame ? player2Wind : null,
       placement: 0,
@@ -113,6 +148,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     {
       player_id: parseInt(player3ID, 10),
       player_name: "",
+      team_id: null,
       score: player3ScoreVal,
       starting_wind: teamGame ? player3Wind : null,
       placement: 0,
@@ -121,6 +157,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     {
       player_id: parseInt(player4ID, 10),
       player_name: "",
+      team_id: null,
       score: player4ScoreVal,
       starting_wind: teamGame ? player4Wind : null,
       placement: 0,
@@ -159,6 +196,14 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
           placement_points.length;
       results[k].placement = i + 1;
       results[k].player_name = findPlayerById(players, results[k].player_id);
+      if (teamGame) {
+        results[k].team_id = (
+          await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+            player_id: results[k].player_id,
+            semester,
+          })
+        ).team_id;
+      }
     }
     i = j;
   }
@@ -196,7 +241,22 @@ export async function removeGameResults(game_id: number): Promise<void> {
         semester,
       ]);
     } else {
-      // TODO: Update team scores and stuff
+      // Update team data
+      const team_id = (
+        await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+          player_id: game.player_id,
+          semester,
+        })
+      ).team_id;
+      const team_data = await queryOneRow<Team>(sql.select_team_data, {
+        team_id,
+      });
+      const new_points = team_data.points + game.point_change;
+      // Update
+      await queryWrite(sql.update_team_data, {
+        new_points,
+        team_id,
+      });
     }
     await connection.query(sql.remove_player_game_result, [
       game_id,
@@ -271,7 +331,16 @@ export async function insertGameResults(
         semester,
       ]);
     } else {
-      // TODO: Update team scores and stuff
+      // Update team data
+      const team_data = await queryOneRow<Team>(sql.select_team_data, {
+        team_id: result.team_id,
+      });
+      const new_points = team_data.points + result.point_change;
+      // Update
+      await queryWrite(sql.update_team_data, {
+        new_points,
+        team_id: result.team_id,
+      });
     }
   }
 }

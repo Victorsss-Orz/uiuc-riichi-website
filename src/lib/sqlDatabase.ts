@@ -44,6 +44,19 @@ export async function queryRows<T>(
   return rows as T[];
 }
 
+export async function queryOneRow<T>(
+  query: string,
+  params: queryParams
+): Promise<T> {
+  const [rows] = await pool.execute<RowDataPacket[]>(query, params);
+  if (rows.length != 1) {
+    throw new Error(
+      `queryOneRow() result should be length 1. Got: ${rows.length}`
+    );
+  }
+  return rows[0] as T;
+}
+
 export async function queryWrite(
   query: string,
   params: queryParams

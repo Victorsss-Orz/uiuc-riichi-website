@@ -204,7 +204,6 @@ export function teams({
               .each(function () {
                 players.push($(this).data("player-id"));
               });
-            console.log(teamId, players);
             teams[teamId] = players;
           });
           await fetch(document.URL, {

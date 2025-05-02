@@ -31,6 +31,16 @@ router.get(
       info = info.concat(new_game_info);
     }
 
+    info.sort((a, b) => {
+      if (a.game_id > b.game_id) {
+        return -1;
+      } else if (a.game_id < b.game_id) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
     res.send(
       teamGames({
         info: info.filter((item) => item.is_team_game),

@@ -80,3 +80,27 @@ WHERE
 DELETE FROM games
 WHERE
     id = (?);
+
+-- BLOCK select_team_of_player
+SELECT
+    team_id
+FROM
+    player_semester_data
+WHERE
+    player_id = :player_id
+    AND semester = :semester;
+
+-- BLOCK select_team_data
+SELECT
+    *
+FROM
+    teams
+WHERE
+    id = :team_id;
+
+-- BLOCK update_team_data
+UPDATE teams
+SET
+    points = :new_points
+WHERE
+    id = :team_id;
