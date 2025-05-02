@@ -1,4 +1,4 @@
-CREATE DATABASE uiucriichi_data;
+CREATE DATABASE IF NOT EXISTS uiucriichi_data;
 
 USE uiucriichi_data;
 
