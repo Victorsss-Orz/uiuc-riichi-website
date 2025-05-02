@@ -4,4 +4,4 @@ SELECT
 FROM
     teams
 WHERE
-    teams.semester = (?);
+    teams.semester = :semester;

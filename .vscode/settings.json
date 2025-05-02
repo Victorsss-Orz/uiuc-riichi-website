@@ -1,6 +1,6 @@
 {
   "SQL-Formatter-VSCode.dialect": "postgresql",
   "SQL-Formatter-VSCode.paramTypes": {
-    "named": true
+    "named": [":"]
   }
 }

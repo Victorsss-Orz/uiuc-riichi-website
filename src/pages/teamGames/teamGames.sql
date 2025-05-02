@@ -4,7 +4,7 @@ SELECT
 FROM
     teams
 WHERE
-    teams.semester = (?);
+    teams.semester = :semester;
 
 -- BLOCK select_team_players
 SELECT
@@ -12,4 +12,4 @@ SELECT
 FROM
     player_semester_data
 WHERE
-    team_id =:team_id;
+    team_id = :team_id;

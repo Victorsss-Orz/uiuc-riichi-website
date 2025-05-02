@@ -1,15 +1,10 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 import { teamStats } from "./teamStats.html.js";
-import { connectToDatabase } from "../../lib/sqlDatabase.js";
+import { queryRows } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { PlayerRow, TeamRow } from "../../lib/db-types.js";
-import {
-  getSemesterIndividualStats,
-  getSemesterTeamStats,
-  PlayerSemesterStats,
-  teamSemesterStats,
-} from "../../lib/stats.js";
+import { Team } from "../../lib/db-types.js";
+import { getSemesterTeamStats, teamSemesterStats } from "../../lib/stats.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -17,11 +12,8 @@ const sql = loadSqlEquiv(import.meta.url);
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const connection = await connectToDatabase();
     const semester = res.locals.semester;
-    const [teams] = await connection.query<TeamRow[]>(sql.select_teams, [
-      semester,
-    ]);
+    const teams = await queryRows<Team>(sql.select_teams, { semester });
 
     const allStats: teamSemesterStats[] = [];
     for (const team of teams) {

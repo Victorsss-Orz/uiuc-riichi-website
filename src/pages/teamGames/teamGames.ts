@@ -1,12 +1,11 @@
 import * as express from "express";
 import asyncHandler from "express-async-handler";
 import { teamGames } from "./teamGames.html.js";
-import { connectToDatabase, queryRows } from "../../lib/sqlDatabase.js";
+import { queryRows } from "../../lib/sqlDatabase.js";
 import { loadSqlEquiv } from "../../lib/sqlLoader.js";
 import { getGamesForPlayer } from "../../lib/gamesTable.js";
-import { TeamRow } from "../../lib/db-types.js";
+import { Team } from "../../lib/db-types.js";
 import { findTeamById } from "../../lib/gameResults.js";
-import { RowDataPacket } from "mysql2";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -17,10 +16,7 @@ router.get(
     const semester = res.locals.semester;
     const team_id = parseInt(res.locals.team_id);
 
-    const connection = await connectToDatabase();
-    const [teams] = await connection.query<TeamRow[]>(sql.select_teams, [
-      semester,
-    ]);
+    const teams = await queryRows<Team>(sql.select_teams, { semester });
     const team_name = findTeamById(teams, team_id);
     console.log(team_name);
 

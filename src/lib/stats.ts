@@ -4,7 +4,7 @@ import {
   GamePlayerRow,
   PlayerSemesterDataRow,
   PlayerRow,
-  TeamRow,
+  Team,
 } from "./db-types.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -82,7 +82,7 @@ export type teamSemesterStats = {
 };
 
 export async function getSemesterTeamStats(
-  team: TeamRow
+  team: Team
 ): Promise<teamSemesterStats | null> {
   const connection = await connectToDatabase();
 
