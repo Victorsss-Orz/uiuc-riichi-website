@@ -14,7 +14,6 @@
     "scripts": {
         "dev": "nodemon dist/server.js",
         "start": "node app.js",
-        "start-backup": "node app.cjs",
         "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/"
     },
     "dependencies": {
