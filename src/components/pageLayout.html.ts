@@ -89,6 +89,16 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
                 <li><hr class="dropdown-divider" /></li>
               </ul>
             </li>
+            ${resLocals.semester
+              ? html`<li class="nav-item">
+                  <a class="nav-link" href="/semester/${resLocals.semester}/players">Player Stats</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/semester/${resLocals.semester}/teams">Team Stats</a>
+                </li>`
+              : ""}
+          </ul>
+          <ul class="nav navbar-nav" id="admin-nav">
             ${resLocals.isAdmin
               ? html`
                   <li class="nav-item">
@@ -96,6 +106,9 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/admin/players">Players</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin/teams">Teams</a>
                   </li>
                 `
               : html`
