@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   const { username, password } = req.body;
-  if (username === "admin" && password === "password") {
+  if (username === "admin" && password === "1326") {
     // Replace with real authentication
     req.session.isAdmin = true;
     const redirectUrl =

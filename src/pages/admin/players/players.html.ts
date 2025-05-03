@@ -11,9 +11,9 @@ export function addPlayer({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Add Player",
+    pageTitle: "Manage players",
     content: html` <div style="margin-top: 1rem; margin-bottom: 1rem;">
-        <h1>Add a player</h1>
+        <h1>Manage players</h1>
       </div>
       <form id="addPlayerForm" method="POST">
         <label for="playerName">Player Name:</label>

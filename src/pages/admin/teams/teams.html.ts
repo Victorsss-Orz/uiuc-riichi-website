@@ -17,7 +17,7 @@ export function teams({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Teams",
+    pageTitle: "Manage teams",
     preContent: html`<script src="/sortablejs/Sortable.js"></script>
       <style>
         .player {

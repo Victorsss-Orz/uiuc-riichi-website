@@ -16,10 +16,10 @@ export function games({
 }) {
   const htmlContent = PageLayout({
     resLocals,
-    pageTitle: "Add Game",
+    pageTitle: "Manage games",
     content: html`
       <div style="margin-top: 1rem; margin-bottom: 1rem;">
-        <h1>Add a game</h1>
+        <h1>Manage games</h1>
       </div>
       <form id="addGameForm" method="POST">
         <div style="line-height: 2rem; margin-bottom: 1rem;">

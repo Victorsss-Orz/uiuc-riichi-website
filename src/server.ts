@@ -43,13 +43,17 @@ async function setupRoutes() {
     "/sortablejs",
     express.static(path.join(__dirname, "../node_modules/sortablejs"))
   );
+  app.use(
+    "/assets",
+    express.static(path.join(__dirname, "../assets"))
+  );
 
   // TODO: create page
   app.use(
     "/",
     (await import("./middlewares/selectSemesters.js")).default,
     (await import("./middlewares/checkAuthentication.js")).default,
-    (await import("./pages/error/error.js")).default
+    (await import("./pages/home/home.js")).default
   );
 
   app.use(

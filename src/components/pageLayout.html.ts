@@ -85,8 +85,6 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
                       >
                     </li>`
                 )}
-
-                <li><hr class="dropdown-divider" /></li>
               </ul>
             </li>
             ${resLocals.semester
@@ -129,6 +127,7 @@ export function HeadContents(title: string) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${title}</title>
+    <link rel="icon" href="/assets/maj.ico" type="image/x-icon" />
 
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
