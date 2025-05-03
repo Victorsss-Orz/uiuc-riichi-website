@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
       typeof req.query.redirect === "string" ? req.query.redirect : "/admin";
     return res.redirect(redirectUrl);
   }
-  res.send("Invalid credentials. Try again.");
+  res.send(`Invalid credentials. <a href="/login">Try again</a>.`);
 });
 
 export default router;
