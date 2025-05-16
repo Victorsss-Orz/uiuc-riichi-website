@@ -8,7 +8,7 @@ import {
   Player,
   PlayerSemesterData,
 } from "./db-types.js";
-import { queryOneRow, queryRows, queryWrite } from "./sqlDatabase.js";
+import { queryRow, queryRows, queryWrite } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -81,19 +81,19 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     }
 
     const teams = [
-      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+      await queryRow<{ team_id: number }>(sql.select_team_of_player, {
         player_id: parseInt(player1ID, 10),
         semester,
       }),
-      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+      await queryRow<{ team_id: number }>(sql.select_team_of_player, {
         player_id: parseInt(player2ID, 10),
         semester,
       }),
-      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+      await queryRow<{ team_id: number }>(sql.select_team_of_player, {
         player_id: parseInt(player3ID, 10),
         semester,
       }),
-      await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+      await queryRow<{ team_id: number }>(sql.select_team_of_player, {
         player_id: parseInt(player4ID, 10),
         semester,
       }),
@@ -189,7 +189,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
       results[k].player_name = findPlayerById(players, results[k].player_id);
       if (teamGame) {
         results[k].team_id = (
-          await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+          await queryRow<{ team_id: number }>(sql.select_team_of_player, {
             player_id: results[k].player_id,
             semester,
           })
@@ -215,7 +215,7 @@ export async function removeGameResults(game_id: number): Promise<void> {
     if (!is_team_game) {
       // Update player semester data
       // Total points
-      const player_data = await queryOneRow<PlayerSemesterData>(
+      const player_data = await queryRow<PlayerSemesterData>(
         sql.select_player_semester_data,
         { player_id: game.player_id, semester }
       );
@@ -231,12 +231,12 @@ export async function removeGameResults(game_id: number): Promise<void> {
     } else {
       // Update team data
       const team_id = (
-        await queryOneRow<{ team_id: number }>(sql.select_team_of_player, {
+        await queryRow<{ team_id: number }>(sql.select_team_of_player, {
           player_id: game.player_id,
           semester,
         })
       ).team_id;
-      const team_data = await queryOneRow<Team>(sql.select_team_data, {
+      const team_data = await queryRow<Team>(sql.select_team_data, {
         team_id,
       });
       const new_points = team_data.points - game.point_change;
@@ -282,7 +282,7 @@ export async function insertGameResults(
     if (!is_team_game) {
       // Update player semester data
       // Total points
-      const player_data = await queryOneRow<PlayerSemesterData>(
+      const player_data = await queryRow<PlayerSemesterData>(
         sql.select_player_semester_data,
         { player_id: result.player_id, semester }
       );
@@ -305,7 +305,7 @@ export async function insertGameResults(
       });
     } else {
       // Update team data
-      const team_data = await queryOneRow<Team>(sql.select_team_data, {
+      const team_data = await queryRow<Team>(sql.select_team_data, {
         team_id: result.team_id,
       });
       const new_points = team_data.points + result.point_change;
