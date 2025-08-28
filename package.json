@@ -24,6 +24,8 @@
         "bootstrap-table": "^1.24.1",
         "chart.js": "^4.4.8",
         "copyfiles": "^2.4.1",
+        "discord.js": "^14.22.1",
+        "dotenv": "^17.2.1",
         "express": "^4.21.2",
         "express-async-handler": "^1.2.0",
         "express-session": "^1.18.1",

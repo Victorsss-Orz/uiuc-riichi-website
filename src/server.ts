@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 
 import { isAuthenticated } from "./lib/auth.js";
 import { error } from "./pages/error/error.html.js";
+import { startBot } from "./lib/bot.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -43,10 +44,7 @@ async function setupRoutes() {
     "/sortablejs",
     express.static(path.join(__dirname, "../node_modules/sortablejs"))
   );
-  app.use(
-    "/assets",
-    express.static(path.join(__dirname, "../assets"))
-  );
+  app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
   // TODO: create page
   app.use(
@@ -112,7 +110,12 @@ async function setupRoutes() {
 }
 
 setupRoutes().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`Server running at http://localhost:${PORT}`);
+    try {
+      await startBot();
+    } catch (e) {
+      console.log(`Bot failed to start: ${e}`);
+    }
   });
 });
