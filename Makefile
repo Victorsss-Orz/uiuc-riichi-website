@@ -17,5 +17,4 @@ clean:
 	rm -rf dist
 
 deps:
-	npm install
-	
+	npm install --include=dev
