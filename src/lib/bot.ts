@@ -6,7 +6,7 @@ import {
   Interaction,
   Partials,
 } from "discord.js";
-import { deployCommands } from "./deploy-commands.js";
+import { commandMap, deployCommands } from "./deploy-commands.js";
 
 let started = false;
 export async function startBot() {
@@ -20,6 +20,7 @@ export async function startBot() {
 
   client.once(Events.ClientReady, async () => {
     console.log(`Bot logged in as ${client.user?.tag}`);
+    await deployCommands({ guildId: "1292212177171779657" });
     await deployCommands();
   });
 
@@ -30,10 +31,29 @@ export async function startBot() {
 
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     if (!interaction.isChatInputCommand()) return;
-    if (interaction.commandName === "hi") {
-      await interaction.reply({
-        content: "Hello! 👋",
-      });
+    const cmd = commandMap.get(interaction.commandName);
+    console.log(`Command ${cmd?.data.name} triggered!`);
+
+    if (!cmd) {
+      await interaction.reply({ content: "Unknown command.", ephemeral: true });
+      return;
+    }
+
+    try {
+      await cmd.execute(interaction);
+    } catch (err) {
+      console.error(err);
+      if (interaction.deferred || interaction.replied) {
+        await interaction.followUp({
+          content: "Error while executing command.",
+          ephemeral: true,
+        });
+      } else {
+        await interaction.reply({
+          content: "Error while executing command.",
+          ephemeral: true,
+        });
+      }
     }
   });
 

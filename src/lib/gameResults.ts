@@ -45,7 +45,25 @@ export function findTeamById(teams: Team[], id: number): string {
   return team_name;
 }
 
-export async function processGameResults(req: Request): Promise<GameResult[]> {
+export async function processGameResults(
+  data: {
+    player1ID: string;
+    player2ID: string;
+    player3ID: string;
+    player4ID: string;
+    player1Score: string;
+    player2Score: string;
+    player3Score: string;
+    player4Score: string;
+    player1Wind: StartingWind | null;
+    player2Wind: StartingWind | null;
+    player3Wind: StartingWind | null;
+    player4Wind: StartingWind | null;
+    teamGame: boolean;
+    semester: string;
+  },
+  context: "website" | "discord" = "discord"
+): Promise<GameResult[]> {
   const {
     player1ID,
     player2ID,
@@ -61,7 +79,7 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
     player4Wind,
     teamGame,
     semester,
-  } = req.body;
+  } = data;
 
   const player1ScoreVal = parseInt(player1Score, 10) * 100;
   const player2ScoreVal = parseInt(player2Score, 10) * 100;
@@ -106,16 +124,25 @@ export async function processGameResults(req: Request): Promise<GameResult[]> {
   }
 
   if (Math.abs(totalScore - 100000) > 0.1) {
-    throw new Error(`
+    if (context === "website") {
+      throw new Error(`
       <p style="color:red;">Total score does not add up to <b>100000</b></p>
       <p>Current total score: <b>${totalScore}</b></p>
     `);
+    } else {
+      throw new Error(`Total score does not add up to *100000*
+Current total score: *${totalScore}*`);
+    }
   }
 
   if (new Set([player1ID, player2ID, player3ID, player4ID]).size < 4) {
-    throw new Error(`
+    if (context === "website") {
+      throw new Error(`
       <p style="color:red;">You must select 4 distinct players</p>
     `);
+    } else {
+      throw new Error("You must select 4 distinct players");
+    }
   }
 
   const results: GameResult[] = [

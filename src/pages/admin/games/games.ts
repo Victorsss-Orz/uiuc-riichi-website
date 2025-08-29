@@ -30,7 +30,7 @@ router.post(
   express.urlencoded({ extended: true }),
   asyncHandler(async (req, res) => {
     try {
-      const results = await processGameResults(req);
+      const results = await processGameResults(req.body);
       res.json({
         ok: true,
         html: gameResultConfirmation(results, req.body.semester).toString(),
@@ -39,7 +39,7 @@ router.post(
       if (typeof err === "string") {
         res.json({
           ok: false,
-          html: err.toUpperCase,
+          html: err.toUpperCase(),
         });
       } else if (err instanceof Error) {
         res.json({
@@ -60,7 +60,7 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     if (req.body.__action == "add") {
-      const results = await processGameResults(req);
+      const results = await processGameResults(req.body);
       await insertGameResults(
         results,
         req.body.semester,
