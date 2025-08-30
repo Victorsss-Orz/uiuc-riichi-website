@@ -24,7 +24,7 @@ export type GameInfo = {
 
 export function getPlayerPointChange(
   game: GameInfo,
-  player_id: number
+  player_id: string
 ): number {
   if (game.player_1?.player_id == player_id) {
     return game.player_1.point_change;
@@ -39,7 +39,7 @@ export function getPlayerPointChange(
 
 export function getTeamPointChange(
   game: GameInfo,
-  team_players: number[]
+  team_players: string[]
 ): number {
   if (game.player_1 && team_players.includes(game.player_1.player_id)) {
     return game.player_1.point_change;

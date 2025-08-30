@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { processGameResults } from "../gameResults.js";
+import { insertGameResults, processGameResults } from "../gameResults.js";
+import { addPlayer, playerExists } from "../addPlayer.js";
 
 export const data = new SlashCommandBuilder()
   .setName("result")
@@ -30,6 +31,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const semester = "fa25"; // TODO: replace with environment var
   const p1 = interaction.options.getUser("player1", true);
   const p2 = interaction.options.getUser("player2", true);
   const p3 = interaction.options.getUser("player3", true);
@@ -40,7 +42,20 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const s3 = interaction.options.getInteger("score3", true);
   const s4 = interaction.options.getInteger("score4", true);
 
-  try {
+  if (!(await playerExists(p1.id))) {
+    await addPlayer(p1.id, p1.displayName);
+  }
+  if (!(await playerExists(p2.id))) {
+    await addPlayer(p2.id, p2.displayName);
+  }
+  if (!(await playerExists(p3.id))) {
+    await addPlayer(p3.id, p3.displayName);
+  }
+  if (!(await playerExists(p4.id))) {
+    await addPlayer(p4.id, p4.displayName);
+  }
+
+  // try {
     const results = await processGameResults(
       {
         player1ID: p1.id,
@@ -56,24 +71,26 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         player3Wind: null,
         player4Wind: null,
         teamGame: false,
-        semester: "fa25", // TODO: replace with environment var
+        semester,
       },
       "discord"
     );
+    console.log(results);
+    await insertGameResults(results, semester, false);
     return interaction.reply(
       "Game result:\n" +
         results
           .map((result) => `Point change: ${result.point_change}`)
           .join("\n")
     );
-  } catch (err) {
-    // TODO: only show to sender when error
-    if (typeof err === "string") {
-      return interaction.reply(err.toUpperCase());
-    } else if (err instanceof Error) {
-      return interaction.reply(err.message);
-    } else {
-      return interaction.reply("Unknow error");
-    }
-  }
+  // } catch (err) {
+  //   // TODO: only show to sender when error
+  //   if (typeof err === "string") {
+  //     return interaction.reply(err.toUpperCase());
+  //   } else if (err instanceof Error) {
+  //     return interaction.reply(err.message);
+  //   } else {
+  //     return interaction.reply("Unknow error");
+  //   }
+  // }
 }

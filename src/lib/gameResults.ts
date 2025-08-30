@@ -1,5 +1,3 @@
-import { Request } from "express";
-
 import {
   StartingWind,
   Game,
@@ -14,7 +12,7 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 const sql = loadSqlEquiv(import.meta.url);
 
 export type GameResult = {
-  player_id: number;
+  player_id: string;
   player_name: string;
   team_id: number | null;
   starting_wind: StartingWind | null;
@@ -25,7 +23,7 @@ export type GameResult = {
 
 type GameAndPlayer = Game & GamePlayer;
 
-export function findPlayerById(players: Player[], id: number): string {
+export function findPlayerById(players: Player[], id: string): string {
   let player_name = "";
   players.forEach((player) => {
     if (player.id === id) {
@@ -147,7 +145,7 @@ Current total score: *${totalScore}*`);
 
   const results: GameResult[] = [
     {
-      player_id: parseInt(player1ID, 10),
+      player_id: player1ID,
       player_name: "",
       team_id: null,
       score: player1ScoreVal,
@@ -156,7 +154,7 @@ Current total score: *${totalScore}*`);
       point_change: 0,
     },
     {
-      player_id: parseInt(player2ID, 10),
+      player_id: player2ID,
       player_name: "",
       team_id: null,
       score: player2ScoreVal,
@@ -165,7 +163,7 @@ Current total score: *${totalScore}*`);
       point_change: 0,
     },
     {
-      player_id: parseInt(player3ID, 10),
+      player_id: player3ID,
       player_name: "",
       team_id: null,
       score: player3ScoreVal,
@@ -174,7 +172,7 @@ Current total score: *${totalScore}*`);
       point_change: 0,
     },
     {
-      player_id: parseInt(player4ID, 10),
+      player_id: player4ID,
       player_name: "",
       team_id: null,
       score: player4ScoreVal,

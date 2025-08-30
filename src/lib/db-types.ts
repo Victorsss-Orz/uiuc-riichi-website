@@ -1,10 +1,10 @@
 import { RowDataPacket } from "mysql2/promise";
 
-export type Player = { id: number; player_name: string };
+export type Player = { id: string; player_name: string };
 export interface PlayerRow extends Player, RowDataPacket {}
 
 export type PlayerSemesterData = {
-  player_id: number;
+  player_id: string;
   semester: string;
   ranking: number; // 段位
   points: number; // pt
@@ -39,7 +39,7 @@ export enum StartingWind {
 
 export type GamePlayer = {
   game_id: number;
-  player_id: number;
+  player_id: string;
   starting_wind: StartingWind | null;
   score: number;
   placement: number;
