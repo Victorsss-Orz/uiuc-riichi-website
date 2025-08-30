@@ -19,7 +19,7 @@ export const data = new SlashCommandBuilder()
       .addStringOption((opt) =>
         opt
           .setName("name")
-          .setDescription("Semester name (e.g., Fall 2025)")
+          .setDescription("Semester name (e.g., fa25)")
           .setRequired(true)
       )
   )
@@ -30,7 +30,7 @@ export const data = new SlashCommandBuilder()
       .addStringOption((opt) =>
         opt
           .setName("name")
-          .setDescription("Semester name (e.g., Fall 2025)")
+          .setDescription("Semester name (e.g., fa25)")
           .setRequired(true)
       )
   );

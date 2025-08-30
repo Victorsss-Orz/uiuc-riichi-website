@@ -4,8 +4,14 @@ import {
   SlashCommandBuilder,
   User,
 } from "discord.js";
+
+import { queryRows } from "../sqlDatabase.js";
+import { loadSqlEquiv } from "../sqlLoader.js";
+import { Semester } from "../db-types.js";
 import { insertGameResults, processGameResults } from "../gameResults.js";
 import { addPlayer, playerExists } from "../addPlayer.js";
+
+const sql = loadSqlEquiv(import.meta.url);
 
 export const data = new SlashCommandBuilder()
   .setName("result")
@@ -36,7 +42,17 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const semester = "fa25"; // TODO: replace with environment var
+  const active_semesters = await queryRows<Semester>(
+    sql.select_active_semesters
+  );
+  if (!active_semesters.length) {
+    return interaction.reply({
+      content:
+        "There is no activates semester. Please contact a club officer for help.",
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+  const semester = active_semesters[0].semester;
 
   const data: Record<string, { player: User; score: number }> = {};
   [1, 2, 3, 4].forEach((idx) => {
