@@ -78,7 +78,7 @@ export function playerStats({
   return htmlContent;
 }
 
-function chartScript(placements: number[], id: number) {
+function chartScript(placements: number[], id: string) {
   return html`
     <script>
       document.addEventListener("DOMContentLoaded", function () {

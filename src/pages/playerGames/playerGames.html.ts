@@ -12,7 +12,7 @@ export function playerGames({
   resLocals: Record<string, any>;
 }) {
   const semester = resLocals.semester;
-  const player_id = parseInt(resLocals.player_id);
+  const player_id = resLocals.player_id;
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Player Games",

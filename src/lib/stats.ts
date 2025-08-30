@@ -3,14 +3,14 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 import {
   GamePlayerRow,
   PlayerSemesterDataRow,
-  PlayerRow,
   Team,
+  Player,
 } from "./db-types.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
 export type PlayerSemesterStats = {
-  id: number;
+  id: string;
   name: string;
   placements: number[];
   average_placement: number;
@@ -19,7 +19,7 @@ export type PlayerSemesterStats = {
 };
 
 export async function getSemesterIndividualStats(
-  player: PlayerRow,
+  player: Player,
   semester: string
 ): Promise<PlayerSemesterStats | null> {
   const connection = await connectToDatabase();

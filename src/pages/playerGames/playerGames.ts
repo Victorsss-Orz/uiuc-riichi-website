@@ -14,7 +14,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const semester = res.locals.semester;
-    const player_id = parseInt(res.locals.player_id);
+    const player_id = res.locals.player_id;
 
     const players = await queryRows<Player>(sql.select_players);
     const player_name = findPlayerById(players, player_id);

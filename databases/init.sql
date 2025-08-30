@@ -72,29 +72,4 @@ DELIMITER ;
 INSERT INTO
     semesters (semester)
 VALUES
-    ('sp25');
-
-INSERT INTO
-    semesters (semester)
-VALUES
     ('fa25');
-
-INSERT INTO
-    players (player_name)
-VALUES
-    ('H');
-
-INSERT INTO
-    players (player_name)
-VALUES
-    ('浩');
-
-INSERT INTO
-    players (player_name)
-VALUES
-    ('秦始皇');
-
-INSERT INTO
-    players (player_name)
-VALUES
-    ('zcy');

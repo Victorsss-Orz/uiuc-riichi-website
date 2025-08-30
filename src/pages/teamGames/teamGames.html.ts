@@ -10,7 +10,7 @@ export function teamGames({
 }: {
   info: GameInfo[];
   team_name: string;
-  team_players: number[];
+  team_players: string[];
   resLocals: Record<string, any>;
 }) {
   const semester = resLocals.semester;

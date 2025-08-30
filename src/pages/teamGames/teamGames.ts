@@ -10,7 +10,7 @@ import { findTeamById } from "../../lib/gameResults.js";
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
 
-type Id = { player_id: number };
+type Id = { player_id: string };
 
 router.get(
   "/",

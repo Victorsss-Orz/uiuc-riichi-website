@@ -53,7 +53,7 @@ export function getTeamPointChange(
 }
 
 export async function getGamesForPlayer(
-  player_id: number,
+  player_id: string,
   semester: string
 ): Promise<GameInfo[]> {
   const connection = await connectToDatabase();

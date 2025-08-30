@@ -75,7 +75,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       },
       "discord"
     );
-    console.log(results);
     await insertGameResults(results, semester, false);
     return interaction.reply(
       "Game result:\n" +
