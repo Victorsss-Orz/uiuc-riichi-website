@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { isAuthenticated } from "./lib/auth.js";
 import { error } from "./pages/error/error.html.js";
 import { startBot } from "./lib/bot.js";
+import { acquireSingleton } from "./lib/sqlDatabase.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -113,7 +114,12 @@ setupRoutes().then(() => {
   app.listen(PORT, async () => {
     console.log(`Server running at http://localhost:${PORT}`);
     try {
-      await startBot();
+      const canStartBot = await acquireSingleton();
+      if (canStartBot) {
+        await startBot();
+      } else {
+        console.log("Bot already running.");
+      }
     } catch (e) {
       console.log(`Bot failed to start: ${e}`);
     }

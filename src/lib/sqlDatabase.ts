@@ -15,6 +15,24 @@ import mysql, {
 //   return connection;
 // }
 
+export async function acquireSingleton(): Promise<boolean> {
+  const lockConn = await connectToDatabase();
+
+  const [rows] = await lockConn.query(
+    "SELECT GET_LOCK('discord-bot-singleton', 0) AS ok"
+  );
+  // @ts-ignore
+  if (!rows[0].ok) {
+    return false;
+  }
+  process.on("exit", async () => {
+    try {
+      await lockConn!.query("DO RELEASE_LOCK('discord-bot-singleton')");
+    } catch {}
+  });
+  return true;
+}
+
 export async function connectToDatabase(): Promise<Connection> {
   const connection = await mysql.createConnection({
     host: "localhost", // Use service name defined in docker-compose.yml
