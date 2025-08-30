@@ -4,6 +4,7 @@ import {
   Events,
   GatewayIntentBits,
   Interaction,
+  MessageFlags,
   Options,
 } from "discord.js";
 import { commandMap, deployCommands } from "./deploy-commands.js";
@@ -62,12 +63,12 @@ export async function startBot() {
       if (interaction.deferred || interaction.replied) {
         await interaction.followUp({
           content: "Error while executing command.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else {
         await interaction.reply({
           content: "Error while executing command.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     }

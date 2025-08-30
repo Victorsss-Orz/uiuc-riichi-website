@@ -49,4 +49,5 @@ export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
 export interface SemesterRow extends RowDataPacket {
   semester: string;
+  active: boolean;
 }

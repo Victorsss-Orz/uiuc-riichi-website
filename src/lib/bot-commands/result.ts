@@ -1,4 +1,9 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlags,
+  SlashCommandBuilder,
+  User,
+} from "discord.js";
 import { insertGameResults, processGameResults } from "../gameResults.js";
 import { addPlayer, playerExists } from "../addPlayer.js";
 
@@ -6,25 +11,25 @@ export const data = new SlashCommandBuilder()
   .setName("result")
   .setDescription("Report the result of a ranked game.")
   .addUserOption((opt) =>
-    opt.setName("player1").setDescription("First player").setRequired(true)
+    opt.setName("player1").setDescription("Player 1").setRequired(true)
   )
   .addIntegerOption((opt) =>
     opt.setName("score1").setDescription("Score for player 1").setRequired(true)
   )
   .addUserOption((opt) =>
-    opt.setName("player2").setDescription("Second player").setRequired(true)
+    opt.setName("player2").setDescription("Player 2").setRequired(true)
   )
   .addIntegerOption((opt) =>
     opt.setName("score2").setDescription("Score for player 2").setRequired(true)
   )
   .addUserOption((opt) =>
-    opt.setName("player3").setDescription("Third player").setRequired(true)
+    opt.setName("player3").setDescription("Player 3").setRequired(true)
   )
   .addIntegerOption((opt) =>
     opt.setName("score3").setDescription("Score for player 3").setRequired(true)
   )
   .addUserOption((opt) =>
-    opt.setName("player4").setDescription("Fourth player").setRequired(true)
+    opt.setName("player4").setDescription("Player 4").setRequired(true)
   )
   .addIntegerOption((opt) =>
     opt.setName("score4").setDescription("Score for player 4").setRequired(true)
@@ -32,40 +37,32 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const semester = "fa25"; // TODO: replace with environment var
-  const p1 = interaction.options.getUser("player1", true);
-  const p2 = interaction.options.getUser("player2", true);
-  const p3 = interaction.options.getUser("player3", true);
-  const p4 = interaction.options.getUser("player4", true);
 
-  const s1 = interaction.options.getInteger("score1", true);
-  const s2 = interaction.options.getInteger("score2", true);
-  const s3 = interaction.options.getInteger("score3", true);
-  const s4 = interaction.options.getInteger("score4", true);
+  const data: Record<string, { player: User; score: number }> = {};
+  [1, 2, 3, 4].forEach((idx) => {
+    const player = interaction.options.getUser(`player${idx}`, true);
+    const score = interaction.options.getInteger(`score${idx}`, true);
+    data[player.id] = { player, score };
+  });
+  const player_ids = Object.keys(data);
 
-  if (!(await playerExists(p1.id))) {
-    await addPlayer(p1.id, p1.displayName);
-  }
-  if (!(await playerExists(p2.id))) {
-    await addPlayer(p2.id, p2.displayName);
-  }
-  if (!(await playerExists(p3.id))) {
-    await addPlayer(p3.id, p3.displayName);
-  }
-  if (!(await playerExists(p4.id))) {
-    await addPlayer(p4.id, p4.displayName);
+  for (const { player } of Object.values(data)) {
+    if (!(await playerExists(player.id))) {
+      await addPlayer(player.id, player.displayName);
+    }
   }
 
   try {
     const results = await processGameResults(
       {
-        player1ID: p1.id,
-        player2ID: p2.id,
-        player3ID: p3.id,
-        player4ID: p4.id,
-        player1Score: `${s1 / 100}`,
-        player2Score: `${s2 / 100}`,
-        player3Score: `${s3 / 100}`,
-        player4Score: `${s4 / 100}`,
+        player1ID: player_ids[0],
+        player2ID: player_ids[1],
+        player3ID: player_ids[2],
+        player4ID: player_ids[3],
+        player1Score: `${data[player_ids[0]].score / 100}`,
+        player2Score: `${data[player_ids[1]].score / 100}`,
+        player3Score: `${data[player_ids[2]].score / 100}`,
+        player4Score: `${data[player_ids[3]].score / 100}`,
         player1Wind: null,
         player2Wind: null,
         player3Wind: null,
@@ -79,17 +76,29 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     return interaction.reply(
       "Game result:\n" +
         results
-          .map((result) => `Point change: ${result.point_change}`)
+          .map(
+            (result) =>
+              `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change}`
+          )
           .join("\n")
     );
   } catch (err) {
-    // TODO: only show to sender when error
+    // TODO: maybe allow for faster editing when error instead of having to copy/paste from previous command
     if (typeof err === "string") {
-      return interaction.reply(err.toUpperCase());
+      return interaction.reply({
+        content: err.toUpperCase(),
+        flags: MessageFlags.Ephemeral,
+      });
     } else if (err instanceof Error) {
-      return interaction.reply(err.message);
+      return interaction.reply({
+        content: err.message,
+        flags: MessageFlags.Ephemeral,
+      });
     } else {
-      return interaction.reply("Unknow error");
+      return interaction.reply({
+        content: "Unknow error",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   }
 }
