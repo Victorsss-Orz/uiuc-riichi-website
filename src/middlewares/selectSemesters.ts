@@ -9,7 +9,7 @@ export default asyncHandler(async (req, res, next) => {
   const connection = await connectToDatabase();
   const [semester_rows] = await connection.query<SemesterRow[]>(
     sql.select_semesters
-  );
+  ); // TODO: change to new query function
   const semesters = semester_rows.map((row) => row.semester);
   res.locals.semesters = semesters;
   next();

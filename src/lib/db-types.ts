@@ -47,7 +47,5 @@ export type GamePlayer = {
 };
 export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
-export interface SemesterRow extends RowDataPacket {
-  semester: string;
-  active: boolean;
-}
+export type Semester = { semester: string; active: boolean };
+export interface SemesterRow extends Semester, RowDataPacket {}
