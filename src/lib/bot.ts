@@ -36,7 +36,9 @@ export async function startBot() {
 
   client.once(Events.ClientReady, async () => {
     console.log(`Bot logged in as ${client.user?.tag}`);
-    await deployCommands({ guildId: "1292212177171779657" });
+    if (process.env.DEPLOY_COMMANDS === "1") {
+      await deployCommands({ guildId: "1292212177171779657" });
+    }
   });
 
   // We don't need to register guild-specific commands
