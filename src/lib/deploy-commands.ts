@@ -33,10 +33,10 @@ export async function deployCommands({ guildId }: DeployCommandsProps = {}) {
     await rest.put(Routes.applicationCommands(appId), { body: [] });
     console.log("Cleared all global commands");
 
-    // await rest.put(Routes.applicationCommands(appId), { body: commandsData });
-    // console.log(`Registered ${commandsData.length} global command(s)`);
+    await rest.put(Routes.applicationCommands(appId), { body: commandsData });
+    console.log(`Registered ${commandsData.length} global command(s)`);
 
-    // const globalCmds = await rest.get(Routes.applicationCommands(appId));
-    // console.log("Global commands:", globalCmds);
+    const globalCmds = await rest.get(Routes.applicationCommands(appId));
+    console.log("Global commands:", globalCmds);
   }
 }

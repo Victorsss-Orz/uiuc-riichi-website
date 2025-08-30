@@ -55,7 +55,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     await addPlayer(p4.id, p4.displayName);
   }
 
-  // try {
+  try {
     const results = await processGameResults(
       {
         player1ID: p1.id,
@@ -82,14 +82,14 @@ export async function execute(interaction: ChatInputCommandInteraction) {
           .map((result) => `Point change: ${result.point_change}`)
           .join("\n")
     );
-  // } catch (err) {
-  //   // TODO: only show to sender when error
-  //   if (typeof err === "string") {
-  //     return interaction.reply(err.toUpperCase());
-  //   } else if (err instanceof Error) {
-  //     return interaction.reply(err.message);
-  //   } else {
-  //     return interaction.reply("Unknow error");
-  //   }
-  // }
+  } catch (err) {
+    // TODO: only show to sender when error
+    if (typeof err === "string") {
+      return interaction.reply(err.toUpperCase());
+    } else if (err instanceof Error) {
+      return interaction.reply(err.message);
+    } else {
+      return interaction.reply("Unknow error");
+    }
+  }
 }

@@ -4,7 +4,7 @@ import {
   Events,
   GatewayIntentBits,
   Interaction,
-  Partials,
+  Options,
 } from "discord.js";
 import { commandMap, deployCommands } from "./deploy-commands.js";
 
@@ -14,14 +14,29 @@ export async function startBot() {
   started = true;
 
   const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages],
-    partials: [Partials.Channel], // needed to receive DMs
+    intents: [GatewayIntentBits.Guilds],
+    partials: [],
+    makeCache: Options.cacheWithLimits({
+      // turn off the heavy stuff
+      GuildMemberManager: 0,
+      MessageManager: 0,
+      ReactionManager: 0,
+      PresenceManager: 0,
+      ThreadManager: 0,
+      GuildScheduledEventManager: 0,
+      VoiceStateManager: 0,
+      AutoModerationRuleManager: 0,
+    }),
+    sweepers: {
+      // no periodic sweeping if nothing is cached
+      messages: { interval: 0, lifetime: 0 },
+    },
+    presence: { status: "online", activities: [] }, // skip frequent presence updates
   });
 
   client.once(Events.ClientReady, async () => {
     console.log(`Bot logged in as ${client.user?.tag}`);
     await deployCommands({ guildId: "1292212177171779657" });
-    await deployCommands();
   });
 
   // We don't need to register guild-specific commands
@@ -32,7 +47,6 @@ export async function startBot() {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     if (!interaction.isChatInputCommand()) return;
     const cmd = commandMap.get(interaction.commandName);
-    console.log(`Command ${cmd?.data.name} triggered!`);
 
     if (!cmd) {
       await interaction.reply({ content: "Unknown command.", ephemeral: true });
