@@ -1,10 +1,10 @@
-import { connectToDatabase } from "./sqlDatabase.js";
+import { queryRow, queryRows } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import {
-  GamePlayerRow,
-  PlayerSemesterDataRow,
   Team,
   Player,
+  GamePlayer,
+  PlayerSemesterData,
 } from "./db-types.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -22,20 +22,17 @@ export async function getSemesterIndividualStats(
   player: Player,
   semester: string
 ): Promise<PlayerSemesterStats | null> {
-  const connection = await connectToDatabase();
-
-  const [player_games] = await connection.query<GamePlayerRow[]>(
+  const player_games = await queryRows<GamePlayer>(
     sql.select_player_game_history,
-    [semester, player.id]
+    { semester, player_id: player.id }
   );
   if (!player_games.length) {
     return null;
   }
-  const [players_data] = await connection.query<PlayerSemesterDataRow[]>(
+  const player_data = await queryRow<PlayerSemesterData>(
     sql.select_player_semester_data,
-    [player.id, semester]
+    { semester, player_id: player.id }
   );
-  const player_data = players_data[0];
 
   const placements = [0, 0, 0, 0];
   let sum_placement = 0;
@@ -84,11 +81,9 @@ export type teamSemesterStats = {
 export async function getSemesterTeamStats(
   team: Team
 ): Promise<teamSemesterStats | null> {
-  const connection = await connectToDatabase();
-
-  const [player_games] = await connection.query<GamePlayerRow[]>(
+  const player_games = await queryRows<GamePlayer>(
     sql.select_team_game_history,
-    [team.id]
+    { team_id: team.id }
   );
   if (!player_games.length) {
     return null;

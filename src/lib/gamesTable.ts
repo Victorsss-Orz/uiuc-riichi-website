@@ -1,14 +1,14 @@
 import { GamePlayer, GamePlayerRow } from "./db-types.js";
-import { connectToDatabase } from "./sqlDatabase.js";
+import { queryRows } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
-export interface GameInformationRow extends GamePlayerRow {
+type GameInformation = GamePlayer & {
   game_time: string;
   is_team_game: boolean;
   player_name: string;
-}
+};
 
 type ExtendedGamePlayer = GamePlayer & { player_name: string };
 
@@ -56,25 +56,19 @@ export async function getGamesForPlayer(
   player_id: string,
   semester: string
 ): Promise<GameInfo[]> {
-  const connection = await connectToDatabase();
-  const [games] = await connection.query<GameInformationRow[]>(
-    sql.select_player_games,
-    [player_id, semester]
-  );
-
+  const games = await queryRows<GameInformation>(sql.select_player_games, {
+    player_id,
+    semester,
+  });
   return combineGameInfo(games);
 }
 
 export async function getAllGames(): Promise<GameInfo[]> {
-  const connection = await connectToDatabase();
-  const [games] = await connection.query<GameInformationRow[]>(
-    sql.select_all_games
-  );
-
+  const games = await queryRows<GameInformation>(sql.select_all_games);
   return combineGameInfo(games);
 }
 
-function combineGameInfo(games: GameInformationRow[]): GameInfo[] {
+function combineGameInfo(games: GameInformation[]): GameInfo[] {
   const info: GameInfo[] = [];
   let curr_game_info = { game_id: -1, game_date: "", is_team_game: false };
   let curr_game_players: (ExtendedGamePlayer | null)[] = [];

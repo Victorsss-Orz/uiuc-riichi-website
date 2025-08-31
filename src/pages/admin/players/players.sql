@@ -2,7 +2,7 @@
 INSERT INTO
     players (player_name)
 VALUES
-    (?);
+    (:player_name);
 
 -- BLOCK select_players
 SELECT
@@ -14,4 +14,4 @@ FROM
 -- BLOCK remove_player
 DELETE FROM players
 WHERE
-    id = (?);
+    id = (:player_id);

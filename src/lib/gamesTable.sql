@@ -14,8 +14,8 @@ FROM
             games g
             JOIN game_players gp ON g.id = gp.game_id
         WHERE
-            gp.player_id = ?
-            AND g.semester = ?
+            gp.player_id = :player_id
+            AND g.semester = :semester
     ) rg
     JOIN game_players gp ON rg.id = gp.game_id
     JOIN players p ON gp.player_id = p.id

@@ -2,7 +2,7 @@ import { PageLayout } from "../../../components/pageLayout.html.js";
 import { Modal } from "../../../components/modal.html.js";
 import { html } from "../../../../packages/html/dist/index.js";
 import { TeamPlayerInformation } from "./teams.js";
-import { PlayerRow } from "../../../lib/db-types.js";
+import { Player } from "../../../lib/db-types.js";
 
 export function teams({
   resLocals,
@@ -13,7 +13,7 @@ export function teams({
   resLocals: Record<string, any>;
   semester?: string;
   teamInfo: TeamPlayerInformation[];
-  unassigned_players: PlayerRow[];
+  unassigned_players: Player[];
 }) {
   const htmlContent = PageLayout({
     resLocals,
