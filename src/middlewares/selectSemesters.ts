@@ -11,6 +11,7 @@ export default asyncHandler(async (req, res, next) => {
     sql.select_semesters
   ); // TODO: change to new query function
   const semesters = semester_rows.map((row) => row.semester);
+  semesters.reverse();
   res.locals.semesters = semesters;
   next();
 });

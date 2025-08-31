@@ -52,6 +52,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       flags: MessageFlags.Ephemeral,
     });
   }
+  // There should be just one active semester in this case
+  // Maybe implement queryOptionalRow later, but this works for now
   const semester = active_semesters[0].semester;
 
   const data: Record<string, { player: User; score: number }> = {};
@@ -96,7 +98,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
             (result) =>
               `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change}`
           )
-          .join("\n")
+          .join("\n") +
+        `Updated ranking can be found at https://uiucriichi.web.illinois.edu/semesters/${semester}/players`
     );
   } catch (err) {
     // TODO: maybe allow for faster editing when error instead of having to copy/paste from previous command

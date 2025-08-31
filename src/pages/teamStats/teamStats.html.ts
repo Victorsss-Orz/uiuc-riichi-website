@@ -16,61 +16,62 @@ export function teamStats({
     content: html`
       <div style="max-width: 800px; margin: 0 auto;">
         <h1>Team rankings ${resLocals.semester}</h1>
-        ${allStats.map(
-          (stats) => html`
-            <a
-              href="/semester/${resLocals.semester}/team/${stats.id}"
-              style="text-decoration: none;"
-            >
-              <div
-                class="card"
-                style="
+        ${allStats.length
+          ? allStats.map(
+              (stats) => html`
+                <a
+                  href="/semester/${resLocals.semester}/team/${stats.id}"
+                  style="text-decoration: none;"
+                >
+                  <div
+                    class="card"
+                    style="
                   justify-content: center; 
                   margin-top: 1rem; 
                   padding-top: 1rem; 
                   padding-bottom: 1rem; 
                   flex-direction: row; 
                   gap: 2%;"
-              >
-                <div style="width: 60%">
-                  <h4>${stats.name}</h4>
-                  <div>Points: ${stats.points}</div>
-                  <div>
-                    Games Played:
-                    ${stats.placements.reduce((acc, val) => acc + val, 0)}
+                  >
+                    <div style="width: 60%">
+                      <h4>${stats.name}</h4>
+                      <div>Points: ${stats.points}</div>
+                      <div>
+                        Games Played:
+                        ${stats.placements.reduce((acc, val) => acc + val, 0)}
+                      </div>
+                      <div>
+                        Average Placement:
+                        ${Math.round(stats.average_placement * 100) / 100}
+                      </div>
+                      <div>
+                        Placement Percentages:
+                        ${[1, 2, 3, 4]
+                          .map(
+                            (i) =>
+                              `${i}: ${
+                                Math.round(
+                                  (1000 * stats.placements[i - 1]) /
+                                    stats.placements.reduce(
+                                      (acc, val) => acc + val,
+                                      0
+                                    )
+                                ) / 10
+                              }%`
+                          )
+                          .join(", ")}
+                      </div>
+                    </div>
+                    <div style="width: 8%; margin-top: 3rem;"></div>
+                    <div style="width: 20%;">
+                      <canvas id="chartPlayer${stats.id}"></canvas>
+                    </div>
                   </div>
-                  <div>
-                    Average Placement:
-                    ${Math.round(stats.average_placement * 100) / 100}
-                  </div>
-                  <div>
-                    Placement Percentages:
-                    ${[1, 2, 3, 4]
-                      .map(
-                        (i) =>
-                          `${i}: ${
-                            Math.round(
-                              (1000 * stats.placements[i - 1]) /
-                                stats.placements.reduce(
-                                  (acc, val) => acc + val,
-                                  0
-                                )
-                            ) / 10
-                          }%`
-                      )
-                      .join(", ")}
-                  </div>
-                </div>
-                <div style="width: 8%; margin-top: 3rem;">
-                </div>
-                <div style="width: 20%;">
-                  <canvas id="chartPlayer${stats.id}"></canvas>
-                </div>
-              </div>
-            </a>
-            ${chartScript(stats.placements, stats.id)}
-          `
-        )}
+                </a>
+                ${chartScript(stats.placements, stats.id)}
+              `
+            )
+          : html`<div>No games have been added for this semester</div>`}
       </div>
     `,
   });

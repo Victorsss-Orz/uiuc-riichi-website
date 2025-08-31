@@ -77,7 +77,10 @@ async function setupRoutes() {
 
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)",
-    (await import("./middlewares/getSemester.js")).default
+    function (req: Request, res: Response, next: NextFunction) {
+      res.locals.semester = req.params.semester;
+      next();
+    }
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/players",
