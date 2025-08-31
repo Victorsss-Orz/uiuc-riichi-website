@@ -15,7 +15,7 @@ const sql = loadSqlEquiv(import.meta.url);
 
 export const data = new SlashCommandBuilder()
   .setName("result")
-  .setDescription("Report the result of a ranked game.")
+  .setDescription("Report the result of a ranked game")
   .addUserOption((opt) =>
     opt.setName("player1").setDescription("Player 1").setRequired(true)
   )

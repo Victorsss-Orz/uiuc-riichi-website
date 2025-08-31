@@ -11,11 +11,11 @@ const rest = new REST({ version: "10" }).setToken(
   process.env.DISCORD_TOKEN ?? ""
 );
 
-type DeployCommandsProps = {
+export async function deployCommands({
+  guildId,
+}: {
   guildId?: string;
-};
-
-export async function deployCommands({ guildId }: DeployCommandsProps = {}) {
+} = {}) {
   const appId = process.env.DISCORD_CLIENT_ID!;
   if (guildId) {
     await rest.put(Routes.applicationGuildCommands(appId, guildId), {

@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlags,
+  SlashCommandBuilder,
+} from "discord.js";
 
 import { queryRows, queryWrite } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
@@ -8,7 +12,7 @@ const sql = loadSqlEquiv(import.meta.url);
 
 export const data = new SlashCommandBuilder()
   .setName("semesters")
-  .setDescription("Manage semesters")
+  .setDescription("Manage semesters (only allowed by club officers)")
   .addSubcommand((sub) =>
     sub.setName("show").setDescription("Show the list of semesters")
   )
@@ -45,23 +49,34 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (sub === "show") {
     return interaction.reply({
       content: "Available semesters:\n" + semestersMsg,
+      flags: MessageFlags.Ephemeral,
     });
   }
   const semester_names = semesters.map((semester) => semester.semester);
   const name = interaction.options.getString("name", true);
   if (sub === "add") {
     if (semester_names.includes(name)) {
-      return interaction.reply({ content: `Semester ${name} already exists.` });
+      return interaction.reply({
+        content: `Semester ${name} already exists.`,
+        flags: MessageFlags.Ephemeral,
+      });
     }
     await queryWrite(sql.insert_semester, { semester: name });
-    return interaction.reply({ content: `Semester ${name} added!` });
+    return interaction.reply({
+      content: `Semester ${name} added!`,
+      flags: MessageFlags.Ephemeral,
+    });
   } else {
     if (!semester_names.includes(name)) {
       return interaction.reply({
         content: `Semester ${name} does not exist. Available semesters:\n${semestersMsg}`,
+        flags: MessageFlags.Ephemeral,
       });
     }
     await queryWrite(sql.activate_semester, { semester: name });
-    return interaction.reply({ content: `Semester ${name} activated!` });
+    return interaction.reply({
+      content: `Semester ${name} activated!`,
+      flags: MessageFlags.Ephemeral,
+    });
   }
 }

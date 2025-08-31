@@ -42,17 +42,15 @@ export async function startBot() {
     }
   });
 
-  // We don't need to register guild-specific commands
-  // client.on(Events.GuildCreate, async (guild) => {
-  //   await deployCommands({ guildId: guild.id });
-  // });
-
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     if (!interaction.isChatInputCommand()) return;
     const cmd = commandMap.get(interaction.commandName);
 
     if (!cmd) {
-      await interaction.reply({ content: "Unknown command.", ephemeral: true });
+      await interaction.reply({
+        content: "Unknown command.",
+        flags: MessageFlags.Ephemeral,
+      });
       return;
     }
 

@@ -12,3 +12,7 @@ export async function playerExists(player_id: string): Promise<boolean> {
 export async function addPlayer(player_id: string, player_name: string) {
   return await queryWrite(sql.add_player, { player_id, player_name });
 }
+
+export async function updatePlayerName(player_id: string, player_name: string) {
+  return await queryWrite(sql.update_player_name, { player_id, player_name });
+}
