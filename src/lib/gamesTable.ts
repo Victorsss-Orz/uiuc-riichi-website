@@ -1,4 +1,4 @@
-import { GamePlayer, GamePlayerRow } from "./db-types.js";
+import { GamePlayer } from "./db-types.js";
 import { queryRows } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 

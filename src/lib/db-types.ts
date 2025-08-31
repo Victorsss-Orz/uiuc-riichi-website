@@ -1,7 +1,4 @@
-import { RowDataPacket } from "mysql2/promise";
-
 export type Player = { id: string; player_name: string };
-export interface PlayerRow extends Player, RowDataPacket {}
 
 export type PlayerSemesterData = {
   player_id: string;
@@ -10,9 +7,6 @@ export type PlayerSemesterData = {
   points: number; // pt
   team_id: number | null;
 };
-export interface PlayerSemesterDataRow
-  extends PlayerSemesterData,
-    RowDataPacket {}
 
 export type Team = {
   id: number;
@@ -20,7 +14,6 @@ export type Team = {
   points: number;
   semester: string;
 };
-export interface TeamRow extends Team, RowDataPacket {}
 
 export type Game = {
   id: number;
@@ -28,7 +21,6 @@ export type Game = {
   is_team_game: boolean;
   semester: string; // TODO: add rule
 };
-export interface GameRow extends Game, RowDataPacket {}
 
 export enum StartingWind {
   "East",
@@ -45,7 +37,5 @@ export type GamePlayer = {
   placement: number;
   point_change: number;
 };
-export interface GamePlayerRow extends GamePlayer, RowDataPacket {}
 
 export type Semester = { semester: string; active: boolean };
-export interface SemesterRow extends Semester, RowDataPacket {}
