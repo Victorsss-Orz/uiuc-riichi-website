@@ -50,6 +50,8 @@ const pool = mysql.createPool({
   password: "uiucriichi1326", // MySQL password
   database: "uiucriichi_data", // Database name
   namedPlaceholders: true, // allows using :key in query
+  supportBigNumbers: true,
+  bigNumberStrings: true,
 });
 
 type queryParams = Record<string, any>;

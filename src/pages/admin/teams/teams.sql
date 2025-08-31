@@ -14,8 +14,7 @@ VALUES
 
 -- BLOCK select_players_of_team
 SELECT
-    CAST(p.id AS CHAR) AS id,
-    p.player_name
+    p.*
 FROM
     player_semester_data psd
     JOIN players p ON psd.player_id = p.id
@@ -24,8 +23,7 @@ WHERE
 
 -- BLOCK select_unassigned_players
 SELECT
-    CAST(p.id AS CHAR) AS id,
-    p.player_name
+    p.*
 FROM
     player_semester_data psd
     JOIN players p ON psd.player_id = p.id
