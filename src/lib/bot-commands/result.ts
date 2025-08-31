@@ -99,7 +99,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
               `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change}`
           )
           .join("\n") +
-        `Updated ranking can be found at https://uiucriichi.web.illinois.edu/semesters/${semester}/players`
+        `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semesters/${semester}/players`
     );
   } catch (err) {
     // TODO: maybe allow for faster editing when error instead of having to copy/paste from previous command
