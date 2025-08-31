@@ -23,6 +23,7 @@ export async function acquireSingleton(): Promise<boolean> {
   );
   // @ts-ignore
   if (!rows[0].ok) {
+    await lockConn.end();
     return false;
   }
   process.on("exit", async () => {
