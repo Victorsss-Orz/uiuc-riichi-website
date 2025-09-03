@@ -92,10 +92,12 @@ export function teamGames({
 
                       ${getTeamPointChange(game, team_players) < 0
                         ? html`<td style="color: green; font-weight: bold;">
-                            ${getTeamPointChange(game, team_players)}
+                            ${getTeamPointChange(game, team_players).toFixed(1)}
                           </td>`
                         : html`<td style="color: red; font-weight: bold;">
-                            +${getTeamPointChange(game, team_players)}
+                            +${getTeamPointChange(game, team_players).toFixed(
+                              1
+                            )}
                           </td>`}
                     </tr>`
                 )}

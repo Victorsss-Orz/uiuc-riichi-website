@@ -86,10 +86,10 @@ export function playerGames({
 
                       ${getPlayerPointChange(game, player_id) < 0
                         ? html`<td style="color: green; font-weight: bold;">
-                            ${getPlayerPointChange(game, player_id)}
+                            ${getPlayerPointChange(game, player_id).toFixed(1)}
                           </td>`
                         : html`<td style="color: red; font-weight: bold;">
-                            +${getPlayerPointChange(game, player_id)}
+                            +${getPlayerPointChange(game, player_id).toFixed(1)}
                           </td>`}
                     </tr>`
                 )}

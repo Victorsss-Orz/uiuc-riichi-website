@@ -118,6 +118,7 @@ setupRoutes().then(() => {
     console.log(`Server running at http://localhost:${PORT}`);
     try {
       const canStartBot = await acquireSingleton();
+      // const canStartBot = false; // This is only for local testing that doesn't require the bot
       if (canStartBot) {
         await startBot();
       } else {

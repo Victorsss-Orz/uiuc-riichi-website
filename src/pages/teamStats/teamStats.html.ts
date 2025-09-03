@@ -35,7 +35,7 @@ export function teamStats({
                   >
                     <div style="width: 60%">
                       <h4>${stats.name}</h4>
-                      <div>Points: ${stats.points}</div>
+                      <div>Points: ${stats.points.toFixed(1)}</div>
                       <div>
                         Games Played:
                         ${stats.placements.reduce((acc, val) => acc + val, 0)}
