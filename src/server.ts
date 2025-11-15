@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
+import MySQLStore from "express-mysql-session";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -6,7 +7,7 @@ import { fileURLToPath } from "url";
 import { isAuthenticated } from "./lib/auth.js";
 import { error } from "./pages/error/error.html.js";
 import { startBot } from "./lib/bot.js";
-import { acquireSingleton } from "./lib/sqlDatabase.js";
+import { acquireSingleton, databaseLoginInfo } from "./lib/sqlDatabase.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -16,12 +17,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function setupRoutes() {
+  const MySQLStoreFactory = MySQLStore(session);
+  const store = new MySQLStoreFactory(databaseLoginInfo());
   app.use(
     session({
       secret: "your-secret-key", // Change this to a secure, random string
       resave: false, // Prevents saving unchanged sessions
       saveUninitialized: false, // Prevents saving empty sessions
-      cookie: { secure: false }, // Set to true if using HTTPS
+      store,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        sameSite: "lax",
+        secure: false, // Set to true if using HTTPS
+      },
     })
   );
   app.use(express.json());
@@ -57,7 +65,7 @@ async function setupRoutes() {
 
   app.use(
     "/admin",
-    isAuthenticated, // TODO: remember to enable it back
+    isAuthenticated,
     (await import("./pages/admin/players/players.js")).default // TODO: add default admin panel page
   );
   app.use("/login", (await import("./pages/admin/login/login.js")).default);

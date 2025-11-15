@@ -35,25 +35,31 @@ export async function acquireSingleton(): Promise<boolean> {
 }
 
 export async function connectToDatabase(): Promise<Connection> {
-  const connection = await mysql.createConnection({
-    host: "localhost", // Use service name defined in docker-compose.yml
-    user: "uiucriichi_admin", // MySQL username
-    password: "uiucriichi1326", // MySQL password
-    database: "uiucriichi_data", // Database name
-  });
+  const connection = await mysql.createConnection(databaseLoginInfo());
 
   return connection;
 }
 
 const pool = mysql.createPool({
-  host: "localhost", // Use service name defined in docker-compose.yml
-  user: "uiucriichi_admin", // MySQL username
-  password: "uiucriichi1326", // MySQL password
-  database: "uiucriichi_data", // Database name
+  ...databaseLoginInfo(),
   namedPlaceholders: true, // allows using :key in query
   supportBigNumbers: true,
   bigNumberStrings: true,
 });
+
+export function databaseLoginInfo(): {
+  host: string;
+  user: string;
+  password: string;
+  database: string;
+} {
+  return {
+    host: "localhost", // Use service name defined in docker-compose.yml
+    user: "uiucriichi_admin", // MySQL username
+    password: "uiucriichi1326", // MySQL password
+    database: "uiucriichi_data", // Database name
+  };
+}
 
 type queryParams = Record<string, any>;
 
