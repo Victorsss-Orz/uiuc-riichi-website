@@ -11,6 +11,23 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
+const rankLookup = [
+  { num_games: 5, avg_placement: 3.0 }, // 4级
+  { num_games: 5, avg_placement: 2.9 },
+  { num_games: 5, avg_placement: 2.8 },
+  { num_games: 10, avg_placement: 2.7 }, // 1级
+  { num_games: 10, avg_placement: 2.6 }, // 初段
+  { num_games: 10, avg_placement: 2.5 },
+  { num_games: 15, avg_placement: 2.5 },
+  { num_games: 15, avg_placement: 2.4 },
+  { num_games: 20, avg_placement: 2.4 },
+  { num_games: 20, avg_placement: 2.3 },
+  { num_games: 25, avg_placement: 2.3 },
+  { num_games: 25, avg_placement: 2.2 },
+  { num_games: 25, avg_placement: 2.1 },
+  { num_games: 30, avg_placement: 2.0 }, // 十段
+];
+
 export type GameResult = {
   player_id: string;
   player_name: string;
@@ -318,8 +335,10 @@ export async function insertGameResults(
         { semester, player_id: result.player_id }
       );
       let new_ranking = player_data.ranking;
-      while (playerRankUp(player_games, new_ranking)) {
-        new_ranking++;
+      for (let r = player_data.ranking; r < rankLookup.length; r++) {
+        if (playerRankUp(player_games, r)) {
+          new_ranking = r + 1;
+        }
       }
       // Update
       await queryWrite(sql.update_player_semester_data, {
@@ -344,22 +363,9 @@ export async function insertGameResults(
 }
 
 function playerRankUp(player_games: GamePlayer[], ranking: number): boolean {
-  const rankLookup = [
-    { num_games: 5, avg_placement: 3.0 }, // 4级
-    { num_games: 5, avg_placement: 2.9 },
-    { num_games: 5, avg_placement: 2.8 },
-    { num_games: 10, avg_placement: 2.7 }, // 1级
-    { num_games: 10, avg_placement: 2.6 }, // 初段
-    { num_games: 10, avg_placement: 2.5 },
-    { num_games: 15, avg_placement: 2.5 },
-    { num_games: 15, avg_placement: 2.4 },
-    { num_games: 20, avg_placement: 2.4 },
-    { num_games: 20, avg_placement: 2.3 },
-    { num_games: 25, avg_placement: 2.3 },
-    { num_games: 25, avg_placement: 2.2 },
-    { num_games: 25, avg_placement: 2.1 },
-    { num_games: 30, avg_placement: 2.0 }, // 十段
-  ];
+  if (ranking >= rankLookup.length) {
+    return false;
+  }
   const requirement = rankLookup[ranking];
   if (player_games.length < requirement.num_games) {
     return false;

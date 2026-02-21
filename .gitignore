@@ -2,3 +2,4 @@ dist/
 !packages/*/dist
 node_modules/
 .env
+CLAUDE.md
