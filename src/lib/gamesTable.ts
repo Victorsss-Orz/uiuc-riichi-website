@@ -4,6 +4,25 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
+const CHICAGO_TIME_ZONE = "America/Chicago";
+
+function formatDateYyyyMmDdInTimeZone(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+
+  if (!year || !month || !day) {
+    throw new Error(`Failed to format date in time zone: ${timeZone}`);
+  }
+  return `${year}-${month}-${day}`;
+}
+
 type GameInformation = GamePlayer & {
   game_time: string;
   is_team_game: boolean;
@@ -91,9 +110,7 @@ function combineGameInfo(games: GameInformation[]): GameInfo[] {
       const date = new Date(game.game_time);
       curr_game_info = {
         game_id: game.game_id,
-        game_date: `${date.getUTCFullYear().toString()}-${(
-          date.getUTCMonth() + 1
-        ).toString()}-${date.getUTCDate().toString()}`,
+        game_date: formatDateYyyyMmDdInTimeZone(date, CHICAGO_TIME_ZONE),
         is_team_game: game.is_team_game,
       };
       curr_game_players = [];
