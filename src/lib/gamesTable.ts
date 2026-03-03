@@ -4,9 +4,8 @@ import { loadSqlEquiv } from "./sqlLoader.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
-const CHICAGO_TIME_ZONE = "America/Chicago";
-
-function formatDateYyyyMmDdInTimeZone(date: Date, timeZone: string): string {
+function formatDateYyyyMmDdInTimeZone(date: Date): string {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,
     year: "numeric",
@@ -43,7 +42,7 @@ export type GameInfo = {
 
 export function getPlayerPointChange(
   game: GameInfo,
-  player_id: string
+  player_id: string,
 ): number {
   if (game.player_1?.player_id == player_id) {
     return game.player_1.point_change;
@@ -58,7 +57,7 @@ export function getPlayerPointChange(
 
 export function getTeamPointChange(
   game: GameInfo,
-  team_players: string[]
+  team_players: string[],
 ): number {
   if (game.player_1 && team_players.includes(game.player_1.player_id)) {
     return game.player_1.point_change;
@@ -73,7 +72,7 @@ export function getTeamPointChange(
 
 export async function getGamesForPlayer(
   player_id: string,
-  semester: string
+  semester: string,
 ): Promise<GameInfo[]> {
   const games = await queryRows<GameInformation>(sql.select_player_games, {
     player_id,
@@ -110,7 +109,7 @@ function combineGameInfo(games: GameInformation[]): GameInfo[] {
       const date = new Date(game.game_time);
       curr_game_info = {
         game_id: game.game_id,
-        game_date: formatDateYyyyMmDdInTimeZone(date, CHICAGO_TIME_ZONE),
+        game_date: formatDateYyyyMmDdInTimeZone(date),
         is_team_game: game.is_team_game,
       };
       curr_game_players = [];
