@@ -60,7 +60,7 @@ export async function processGameResults(
     teamGame: boolean;
     semester: string;
   },
-  context: "website" | "discord" = "discord"
+  context: "website" | "discord" = "discord",
 ): Promise<GameResult[]> {
   const {
     player1ID,
@@ -242,7 +242,7 @@ export async function removeGameResults(game_id: number): Promise<void> {
       // Total points
       const player_data = await queryRow<PlayerSemesterData>(
         sql.select_player_semester_data,
-        { player_id: game.player_id, semester }
+        { player_id: game.player_id, semester },
       );
       const new_points = player_data.points - game.point_change;
 
@@ -282,7 +282,7 @@ export async function removeGameResults(game_id: number): Promise<void> {
 export async function insertGameResults(
   results: GameResult[],
   semester: string,
-  is_team_game: boolean
+  is_team_game: boolean,
 ): Promise<void> {
   // Create game
   const inserted_game = await queryWrite(sql.insert_game, {
@@ -301,7 +301,7 @@ export async function insertGameResults(
       point_change: result.point_change,
     });
     console.log(
-      `Inserted player ${result.player_id} results for game ${inserted_game.insertId}`
+      `Inserted player ${result.player_id} results for game ${inserted_game.insertId}`,
     );
 
     if (!is_team_game) {
@@ -309,13 +309,13 @@ export async function insertGameResults(
       // Total points
       const player_data = await queryRow<PlayerSemesterData>(
         sql.select_player_semester_data,
-        { player_id: result.player_id, semester }
+        { player_id: result.player_id, semester },
       );
       const new_points = player_data.points + result.point_change;
       // Ranking
       const player_games = await queryRows<GamePlayer>(
         sql.select_player_game_history,
-        { semester, player_id: result.player_id }
+        { semester, player_id: result.player_id },
       );
       let new_ranking = player_data.ranking;
       while (playerRankUp(player_games, new_ranking)) {
@@ -360,6 +360,9 @@ function playerRankUp(player_games: GamePlayer[], ranking: number): boolean {
     { num_games: 25, avg_placement: 2.1 },
     { num_games: 30, avg_placement: 2.0 }, // 十段
   ];
+  if (ranking >= rankLookup.length) {
+    return false;
+  }
   const requirement = rankLookup[ranking];
   if (player_games.length < requirement.num_games) {
     return false;
