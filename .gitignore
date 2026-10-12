@@ -2,3 +2,5 @@ dist/
 !packages/*/dist
 node_modules/
 .env
+
+local_notes.txt
