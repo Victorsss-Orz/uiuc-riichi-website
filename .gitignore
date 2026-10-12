@@ -5,3 +5,5 @@ node_modules/
 .env.*
 .local/
 uiucriichi_data.sql
+
+local_notes.txt
