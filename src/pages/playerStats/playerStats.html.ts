@@ -12,7 +12,7 @@ export function playerStats({ allStats, term, sort, positions, hasMore, resLocal
   const rateHref = `${basePath}?sort=rate${searchQuery ? `&${searchQuery}` : ""}`;
   const clearHref = sort === "rate" ? `${basePath}?sort=rate` : basePath;
   return PageLayout({ resLocals, pageTitle: "Player rankings",
-    headContent: html`<link rel="stylesheet" href="/assets/profile.css" />`,
+    headContent: html`<link rel="stylesheet" href="/assets/profile.css" /><script src="/assets/player-search.js" defer></script>`,
     content: html`<div class="player-directory"><p class="eyebrow">UIUC RIICHI · ${resLocals.semester}</p><h1>Player rankings</h1>
       ${playerSearch(term, resLocals.semester, sort)}
       ${term ? html`<div class="search-summary"><span>Results for “${term}”</span><a href="${clearHref}">Clear search</a></div>` : ""}
