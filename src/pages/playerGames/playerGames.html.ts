@@ -1,5 +1,5 @@
 import { html } from "../../../packages/html/dist/index.js";
-import { PageLayout } from "../../components/pageLayout.html.js";
+import { PageLayout, SemesterPageLocals } from "../../components/pageLayout.html.js";
 import { playerLink } from "../../components/playerLink.html.js";
 import { PlayerProfile } from "../../lib/playerProfile.js";
 import { rankNames } from "../../lib/rankRules.js";
@@ -11,7 +11,7 @@ const signedRate = (n: number | null) => n === null ? "—" :
   `${n >= 0.005 ? "+" : ""}${Math.abs(n) < 0.005 ? "0.00" : n.toFixed(2)}`;
 const signedIndex = (n: number) => { const rounded = Math.round(Math.abs(n)); return rounded ? `${n > 0 ? "+" : "−"}${rounded}` : "0"; };
 
-export function playerGames({ profile: p, resLocals }: { profile: PlayerProfile; resLocals: Record<string, any> }) {
+export function playerGames({ profile: p, resLocals }: { profile: PlayerProfile; resLocals: SemesterPageLocals }) {
   const semester = resLocals.semester;
   const id = String(p.player.id);
   const s = p.stats;

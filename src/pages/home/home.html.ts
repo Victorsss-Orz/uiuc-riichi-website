@@ -1,8 +1,8 @@
 import { html } from "../../../packages/html/dist/index.js";
-import { PageLayout } from "../../components/pageLayout.html.js";
+import { PageLayout, PageLocals } from "../../components/pageLayout.html.js";
 
-export function home({ resLocals }: { resLocals: Record<string, any> }) {
-  const semesters: string[] = resLocals.semesters;
+export function home({ resLocals }: { resLocals: PageLocals }) {
+  const semesters = resLocals.semesters ?? [];
   return PageLayout({ resLocals, pageTitle: "UIUC Riichi Mahjong Club",
     headContent: html`<link rel="stylesheet" href="/assets/profile.css" />`,
     content: html`<div class="club-welcome"><p class="eyebrow">UIUC RIICHI MAHJONG CLUB</p>

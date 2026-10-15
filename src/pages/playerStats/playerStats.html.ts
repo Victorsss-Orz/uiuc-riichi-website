@@ -1,11 +1,11 @@
 import { html } from "../../../packages/html/dist/index.js";
-import { PageLayout } from "../../components/pageLayout.html.js";
+import { PageLayout, SemesterPageLocals } from "../../components/pageLayout.html.js";
 import { SeasonStats } from "../../lib/playerProfile.js";
 import { playerSearch } from "../../components/playerSearch.html.js";
 import { playerCard } from "../../components/playerCard.html.js";
 import {RankingSort} from "../../lib/playerRankings.js";
 
-export function playerStats({ allStats, term, sort, positions, hasMore, resLocals }: { allStats: SeasonStats[]; term: string; sort: RankingSort; positions: Map<string, number>; hasMore: boolean; resLocals: Record<string, any> }) {
+export function playerStats({ allStats, term, sort, positions, hasMore, resLocals }: { allStats: SeasonStats[]; term: string; sort: RankingSort; positions: Map<string, number>; hasMore: boolean; resLocals: SemesterPageLocals }) {
   const basePath = `/semester/${resLocals.semester}/players`;
   const searchQuery = term ? `q=${encodeURIComponent(term)}` : "";
   const ptHref = `${basePath}${searchQuery ? `?${searchQuery}` : ""}`;

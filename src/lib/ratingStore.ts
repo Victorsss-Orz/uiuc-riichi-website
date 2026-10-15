@@ -26,7 +26,7 @@ export async function recordGameRating(gameId: number,
     const id = String(p.player_id), rating = state.get(id)!;
     await queryWrite(sql.save_rating, { player_id: id, rate: rating.rate,
       games: rating.games, handicap: rating.rookieHandicap });
-    const saved = await queryWrite(sql.save_change, { game_id: gameId, player_id: id, change: changes.get(id) });
+    const saved = await queryWrite(sql.save_change, { game_id: gameId, player_id: id, change: changes.get(id)! });
     if (saved.affectedRows !== 1) throw new Error("Expected an unsettled game result.");
   }
 }

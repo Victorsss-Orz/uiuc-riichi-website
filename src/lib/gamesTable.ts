@@ -22,7 +22,7 @@ function formatDateYyyyMmDdInTimeZone(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-type GameInformation = GamePlayer & {
+export type GameInformation = GamePlayer & {
   game_time: string;
   is_team_game: boolean;
   player_name: string;
