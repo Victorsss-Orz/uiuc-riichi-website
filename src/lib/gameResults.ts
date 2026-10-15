@@ -1,3 +1,4 @@
+import { playerRankUp } from "./rankRules.js";
 import {
   StartingWind,
   Game,
@@ -6,10 +7,43 @@ import {
   Player,
   PlayerSemesterData,
 } from "./db-types.js";
-import { queryRow, queryRows, queryWrite } from "./sqlDatabase.js";
+import { queryRow, queryRows, queryWrite, withGameTransaction } from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
+import { recordGameRating, removeGameRating } from "./ratingStore.js";
 
 const sql = loadSqlEquiv(import.meta.url);
+
+export class GameValidationError extends Error {}
+
+export function parseHundreds(value: unknown): number {
+  if (typeof value !== "string" || !/^-?\d+$/.test(value.trim())) {
+    throw new GameValidationError("Scores must be whole numbers of 100 points.");
+  }
+  const score = Number(value) * 100;
+  if (!Number.isSafeInteger(score)) {
+    throw new GameValidationError("Score is outside the supported range.");
+  }
+  return score;
+}
+
+export function validateGameEntries(entries: { player_id: string; score: number }[]): void {
+  if (entries.length !== 4 || entries.some(({ player_id }) =>
+    typeof player_id !== "string" || !/^[1-9]\d*$/.test(player_id) ||
+    BigInt(player_id) > 18446744073709551615n)) {
+    throw new GameValidationError("You must select 4 valid players.");
+  }
+  if (new Set(entries.map(({ player_id }) => player_id)).size !== 4) {
+    throw new GameValidationError("You must select 4 distinct players.");
+  }
+  if (entries.some(({ score }) => !Number.isSafeInteger(score) || score % 100 !== 0)) {
+    throw new GameValidationError("Scores must be whole multiples of 100 points.");
+  }
+  // BigInt keeps even unusually large, but valid, integer inputs exact.
+  const total = entries.reduce((sum, { score }) => sum + BigInt(score), 0n);
+  if (total !== 100000n) {
+    throw new GameValidationError(`Total score does not add up to 100000. Current total score: ${total}`);
+  }
+}
 
 export type GameResult = {
   player_id: string;
@@ -60,7 +94,6 @@ export async function processGameResults(
     teamGame: boolean;
     semester: string;
   },
-  context: "website" | "discord" = "discord",
 ): Promise<GameResult[]> {
   const {
     player1ID,
@@ -79,13 +112,16 @@ export async function processGameResults(
     semester,
   } = data;
 
-  const player1ScoreVal = parseInt(player1Score, 10) * 100;
-  const player2ScoreVal = parseInt(player2Score, 10) * 100;
-  const player3ScoreVal = parseInt(player3Score, 10) * 100;
-  const player4ScoreVal = parseInt(player4Score, 10) * 100;
-
-  const totalScore =
-    player1ScoreVal + player2ScoreVal + player3ScoreVal + player4ScoreVal;
+  const player1ScoreVal = parseHundreds(player1Score);
+  const player2ScoreVal = parseHundreds(player2Score);
+  const player3ScoreVal = parseHundreds(player3Score);
+  const player4ScoreVal = parseHundreds(player4Score);
+  validateGameEntries([
+    { player_id: player1ID, score: player1ScoreVal },
+    { player_id: player2ID, score: player2ScoreVal },
+    { player_id: player3ID, score: player3ScoreVal },
+    { player_id: player4ID, score: player4ScoreVal },
+  ]);
 
   if (teamGame) {
     if (
@@ -98,19 +134,19 @@ export async function processGameResults(
 
     const teams = [
       await queryRow<{ team_id: number }>(sql.select_team_of_player, {
-        player_id: parseInt(player1ID, 10),
+        player_id: player1ID,
         semester,
       }),
       await queryRow<{ team_id: number }>(sql.select_team_of_player, {
-        player_id: parseInt(player2ID, 10),
+        player_id: player2ID,
         semester,
       }),
       await queryRow<{ team_id: number }>(sql.select_team_of_player, {
-        player_id: parseInt(player3ID, 10),
+        player_id: player3ID,
         semester,
       }),
       await queryRow<{ team_id: number }>(sql.select_team_of_player, {
-        player_id: parseInt(player4ID, 10),
+        player_id: player4ID,
         semester,
       }),
     ].filter((item) => item.team_id);
@@ -118,28 +154,6 @@ export async function processGameResults(
       throw new Error(`
         <p style="color:red;">All players should come from different teams for team games</p>
       `);
-    }
-  }
-
-  if (Math.abs(totalScore - 100000) > 0.1) {
-    if (context === "website") {
-      throw new Error(`
-      <p style="color:red;">Total score does not add up to <b>100000</b></p>
-      <p>Current total score: <b>${totalScore}</b></p>
-    `);
-    } else {
-      throw new Error(`Total score does not add up to *100000*
-Current total score: *${totalScore}*`);
-    }
-  }
-
-  if (new Set([player1ID, player2ID, player3ID, player4ID]).size < 4) {
-    if (context === "website") {
-      throw new Error(`
-      <p style="color:red;">You must select 4 distinct players</p>
-    `);
-    } else {
-      throw new Error("You must select 4 distinct players");
     }
   }
 
@@ -227,6 +241,10 @@ Current total score: *${totalScore}*`);
 }
 
 export async function removeGameResults(game_id: number): Promise<void> {
+  return withGameTransaction(() => removeGameResultsInTransaction(game_id));
+}
+
+async function removeGameResultsInTransaction(game_id: number): Promise<void> {
   console.log(`Removing game ${game_id}`);
   const games = await queryRows<GameAndPlayer>(sql.select_game_information, {
     game_id,
@@ -235,6 +253,7 @@ export async function removeGameResults(game_id: number): Promise<void> {
     return;
   }
   const { semester, is_team_game } = games[0];
+  await removeGameRating(games);
 
   for (const game of games) {
     if (!is_team_game) {
@@ -283,6 +302,12 @@ export async function insertGameResults(
   results: GameResult[],
   semester: string,
   is_team_game: boolean,
+): Promise<void> {
+  return withGameTransaction(() => insertGameResultsInTransaction(results, semester, is_team_game));
+}
+
+async function insertGameResultsInTransaction(
+  results: GameResult[], semester: string, is_team_game: boolean,
 ): Promise<void> {
   // Create game
   const inserted_game = await queryWrite(sql.insert_game, {
@@ -341,41 +366,5 @@ export async function insertGameResults(
       });
     }
   }
-}
-
-function playerRankUp(player_games: GamePlayer[], ranking: number): boolean {
-  const rankLookup = [
-    { num_games: 5, avg_placement: 3.0 }, // 4级
-    { num_games: 5, avg_placement: 2.9 },
-    { num_games: 5, avg_placement: 2.8 },
-    { num_games: 10, avg_placement: 2.7 }, // 1级
-    { num_games: 10, avg_placement: 2.6 }, // 初段
-    { num_games: 10, avg_placement: 2.5 },
-    { num_games: 15, avg_placement: 2.5 },
-    { num_games: 15, avg_placement: 2.4 },
-    { num_games: 20, avg_placement: 2.4 },
-    { num_games: 20, avg_placement: 2.3 },
-    { num_games: 25, avg_placement: 2.3 },
-    { num_games: 25, avg_placement: 2.2 },
-    { num_games: 25, avg_placement: 2.1 },
-    { num_games: 30, avg_placement: 2.0 }, // 十段
-  ];
-  if (ranking >= rankLookup.length) {
-    return false;
-  }
-  const requirement = rankLookup[ranking];
-  if (player_games.length < requirement.num_games) {
-    return false;
-  }
-  const game_placements = [];
-  for (
-    let i = player_games.length - requirement.num_games;
-    i < player_games.length;
-    i++
-  ) {
-    game_placements.push(player_games[i].placement);
-  }
-  const player_avg_placement =
-    game_placements.reduce((acc, val) => acc + val, 0) / game_placements.length;
-  return player_avg_placement <= requirement.avg_placement;
+  await recordGameRating(inserted_game.insertId, results);
 }

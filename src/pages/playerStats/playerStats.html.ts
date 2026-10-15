@@ -1,115 +1,27 @@
 import { html } from "../../../packages/html/dist/index.js";
-import { PageLayout } from "../../components/pageLayout.html.js";
-import { PlayerSemesterStats } from "../../lib/stats.js";
+import { PageLayout, SemesterPageLocals } from "../../components/pageLayout.html.js";
+import { SeasonStats } from "../../lib/playerProfile.js";
+import { playerSearch } from "../../components/playerSearch.html.js";
+import { playerCard } from "../../components/playerCard.html.js";
+import {RankingSort} from "../../lib/playerRankings.js";
 
-export function playerStats({
-  allStats,
-  resLocals,
-}: {
-  allStats: PlayerSemesterStats[];
-  resLocals: Record<string, any>;
-}) {
-  const htmlContent = PageLayout({
-    resLocals,
-    pageTitle: "Player Stats",
-    preContent: html`<script src="/chart.js/chart.umd.js"></script>`,
-    content: html`
-      <div style="max-width: 800px; margin: 0 auto;">
-        <h1>Player rankings ${resLocals.semester}</h1>
-        ${allStats.length
-          ? allStats.map(
-              (stats) => html`
-                <a
-                  href="/semester/${resLocals.semester}/player/${stats.id}"
-                  style="text-decoration: none;"
-                >
-                  <div
-                    class="card"
-                    style="
-                  justify-content: center; 
-                  margin-top: 1rem; 
-                  padding-top: 1rem; 
-                  padding-bottom: 1rem; 
-                  flex-direction: row; 
-                  gap: 2%;"
-                  >
-                    <div style="width: 60%">
-                      <h4>${stats.name}</h4>
-                      <div>Points: ${stats.points.toFixed(1)}</div>
-                      <div>
-                        Games Played:
-                        ${stats.placements.reduce((acc, val) => acc + val, 0)}
-                      </div>
-                      <div>
-                        Average Placement:
-                        ${Math.round(stats.average_placement * 100) / 100}
-                      </div>
-                      <div>
-                        Placement Percentages:
-                        ${[1, 2, 3, 4]
-                          .map(
-                            (i) =>
-                              `${i}: ${
-                                Math.round(
-                                  (1000 * stats.placements[i - 1]) /
-                                    stats.placements.reduce(
-                                      (acc, val) => acc + val,
-                                      0
-                                    )
-                                ) / 10
-                              }%`
-                          )
-                          .join(", ")}
-                      </div>
-                    </div>
-                    <h4 style="width: 8%; color: red; margin-top: 3rem;">
-                      ${stats.ranking}
-                    </h4>
-                    <div style="width: 20%;">
-                      <canvas id="chartPlayer${stats.id}"></canvas>
-                    </div>
-                  </div>
-                </a>
-                ${chartScript(stats.placements, stats.id)}
-              `
-            )
-          : html`<div>No games have been added for this semester</div>`}
-      </div>
-    `,
-  });
-  return htmlContent;
-}
-
-function chartScript(placements: number[], id: string) {
-  return html`
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const ctx = document
-          .getElementById("chartPlayer${id}")
-          .getContext("2d");
-        const myChart = new Chart(ctx, {
-          type: "pie",
-          data: {
-            labels: [1, 2, 3, 4],
-            datasets: [
-              {
-                backgroundColor: [
-                  "rgb(0, 255, 0)",
-                  "rgb(255, 255, 0)",
-                  "rgb(255, 123, 0)",
-                  "rgb(255, 0, 0)",
-                ],
-                data: [${placements.map((p) => `${p}`).join(",")}],
-              },
-            ],
-          },
-          options: {
-            plugins: {
-              legend: { display: false },
-            },
-          },
-        });
-      });
-    </script>
-  `;
+export function playerStats({ allStats, term, sort, positions, hasMore, resLocals }: { allStats: SeasonStats[]; term: string; sort: RankingSort; positions: Map<string, number>; hasMore: boolean; resLocals: SemesterPageLocals }) {
+  const basePath = `/semester/${resLocals.semester}/players`;
+  const searchQuery = term ? `q=${encodeURIComponent(term)}` : "";
+  const ptHref = `${basePath}${searchQuery ? `?${searchQuery}` : ""}`;
+  const rateHref = `${basePath}?sort=rate${searchQuery ? `&${searchQuery}` : ""}`;
+  const clearHref = sort === "rate" ? `${basePath}?sort=rate` : basePath;
+  return PageLayout({ resLocals, pageTitle: "Player rankings",
+    headContent: html`<link rel="stylesheet" href="/assets/profile.css" />`,
+    content: html`<div class="player-directory"><p class="eyebrow">UIUC RIICHI · ${resLocals.semester}</p><h1>Player rankings</h1>
+      ${playerSearch(term, resLocals.semester, sort)}
+      ${term ? html`<div class="search-summary"><span>Results for “${term}”</span><a href="${clearHref}">Clear search</a></div>` : ""}
+      <div class="rankings-sort"><span>Rank by</span><nav class="rankings-sort-switch" aria-label="Ranking order">
+        <a class="${sort === "pt" ? "is-active" : ""}" aria-current="${sort === "pt" ? "page" : "false"}" href="${ptHref}">Season PT</a>
+        <a class="${sort === "rate" ? "is-active" : ""}" aria-current="${sort === "rate" ? "page" : "false"}" href="${rateHref}">All-time Rate</a>
+      </nav></div>
+      <div class="player-cards">${allStats.map(stats => playerCard(stats, resLocals.semester, positions.get(stats.id)))}</div>
+      ${allStats.length ? "" : html`<p>${term ? "No matching players in this semester." : "No games have been added for this semester."}</p>`}
+      ${hasMore ? html`<p>Showing the first 50 matches. Refine your search to find more.</p>` : ""}
+    </div>` });
 }

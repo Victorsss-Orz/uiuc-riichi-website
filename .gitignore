@@ -2,5 +2,8 @@ dist/
 !packages/*/dist
 node_modules/
 .env
+.env.*
+.local/
+uiucriichi_data.sql
 
 local_notes.txt

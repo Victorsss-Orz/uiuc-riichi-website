@@ -12,8 +12,10 @@
         "typescript": "^5.8.2"
     },
     "scripts": {
+        "build": "tsc && npm run postbundle",
         "dev": "nodemon dist/server.js",
         "start": "node app.js",
+        "db:migrate:rate": "npm run build && node scripts/migrate-rate.mjs",
         "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/"
     },
     "dependencies": {

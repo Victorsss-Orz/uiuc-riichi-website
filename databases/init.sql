@@ -11,7 +11,10 @@ players;
 
 CREATE TABLE IF NOT EXISTS players (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    player_name TEXT NOT NULL
+    player_name TEXT NOT NULL,
+    rate DOUBLE NOT NULL DEFAULT 1500,
+    rate_games INT UNSIGNED NOT NULL DEFAULT 0,
+    rate_rookie_handicap DOUBLE NULL
 );
 
 CREATE TABLE IF NOT EXISTS semesters (
@@ -49,6 +52,9 @@ CREATE TABLE IF NOT EXISTS game_players (
     score BIGINT NOT NULL,
     placement INT NOT NULL,
     point_change FLOAT NOT NULL,
+    rate_change DOUBLE NULL,
+    KEY idx_game_players_player (player_id),
+    KEY idx_game_players_game (game_id),
     CONSTRAINT chk_placement CHECK (placement IN (1, 2, 3, 4))
 );
 

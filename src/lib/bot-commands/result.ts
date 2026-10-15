@@ -2,13 +2,12 @@ import {
   ChatInputCommandInteraction,
   MessageFlags,
   SlashCommandBuilder,
-  User,
 } from "discord.js";
 
-import { queryRows } from "../sqlDatabase.js";
+import { queryRows, withGameTransaction } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
 import { Semester } from "../db-types.js";
-import { insertGameResults, processGameResults } from "../gameResults.js";
+import { insertGameResults, processGameResults, GameValidationError, validateGameEntries } from "../gameResults.js";
 import { addPlayer, playerExists } from "../addPlayer.js";
 
 const sql = loadSqlEquiv(import.meta.url);
@@ -42,82 +41,66 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const active_semesters = await queryRows<Semester>(
-    sql.select_active_semesters
-  );
-  if (!active_semesters.length) {
+  // Keep entries in an array: a map keyed by ID silently overwrites duplicates.
+  const entries = [1, 2, 3, 4].map((idx) => ({
+    player: interaction.options.getUser(`player${idx}`, true),
+    score: interaction.options.getInteger(`score${idx}`, true),
+  }));
+  try {
+    validateGameEntries(entries.map(({ player, score }) => ({ player_id: player.id, score })));
+  } catch (error) {
     return interaction.reply({
-      content:
-        "There is no activates semester. Please contact a club officer for help.",
+      content: error instanceof Error ? error.message : "Invalid game results.",
       flags: MessageFlags.Ephemeral,
     });
   }
-  // There should be just one active semester in this case
-  // Maybe implement queryOptionalRow later, but this works for now
-  const semester = active_semesters[0].semester;
 
-  const data: Record<string, { player: User; score: number }> = {};
-  [1, 2, 3, 4].forEach((idx) => {
-    const player = interaction.options.getUser(`player${idx}`, true);
-    const score = interaction.options.getInteger(`score${idx}`, true);
-    data[player.id] = { player, score };
-  });
-  const player_ids = Object.keys(data);
-
-  for (const { player } of Object.values(data)) {
-    if (!(await playerExists(player.id))) {
-      await addPlayer(player.id, player.displayName);
-    }
-  }
-
+  // Acknowledge before database work, which may exceed Discord's response deadline.
+  await interaction.deferReply();
+  let saved;
   try {
-    const results = await processGameResults(
-      {
-        player1ID: player_ids[0],
-        player2ID: player_ids[1],
-        player3ID: player_ids[2],
-        player4ID: player_ids[3],
-        player1Score: `${data[player_ids[0]].score / 100}`,
-        player2Score: `${data[player_ids[1]].score / 100}`,
-        player3Score: `${data[player_ids[2]].score / 100}`,
-        player4Score: `${data[player_ids[3]].score / 100}`,
+    saved = await withGameTransaction(async () => {
+      const activeSemesters = await queryRows<Semester>(sql.select_active_semesters);
+      if (activeSemesters.length !== 1) {
+        throw new GameValidationError("Exactly one semester must be active. Please contact a club officer.");
+      }
+      const semester = activeSemesters[0].semester;
+      for (const { player } of entries) {
+        if (!(await playerExists(player.id))) {
+          await addPlayer(player.id, player.displayName);
+        }
+      }
+      const results = await processGameResults({
+        player1ID: entries[0].player.id,
+        player2ID: entries[1].player.id,
+        player3ID: entries[2].player.id,
+        player4ID: entries[3].player.id,
+        player1Score: `${entries[0].score / 100}`,
+        player2Score: `${entries[1].score / 100}`,
+        player3Score: `${entries[2].score / 100}`,
+        player4Score: `${entries[3].score / 100}`,
         player1Wind: null,
         player2Wind: null,
         player3Wind: null,
         player4Wind: null,
         teamGame: false,
         semester,
-      },
-      "discord"
-    );
-    await insertGameResults(results, semester, false);
-    return interaction.reply(
-      "Game result:\n" +
-        results
-          .map(
-            (result) =>
-              `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change}`
-          )
-          .join("\n") +
-        `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semester/${semester}/players`
-    );
-  } catch (err) {
-    // TODO: maybe allow for faster editing when error instead of having to copy/paste from previous command
-    if (typeof err === "string") {
-      return interaction.reply({
-        content: err.toUpperCase(),
-        flags: MessageFlags.Ephemeral,
       });
-    } else if (err instanceof Error) {
-      return interaction.reply({
-        content: err.message,
-        flags: MessageFlags.Ephemeral,
-      });
-    } else {
-      return interaction.reply({
-        content: "Unknow error",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
+      await insertGameResults(results, semester, false);
+      return { results, semester };
+    });
+  } catch (error) {
+    if (!(error instanceof GameValidationError)) console.error(error);
+    return interaction.editReply(error instanceof GameValidationError
+      ? error.message
+      : "Unable to save the game. Please ask an officer to check the game history before resubmitting.");
   }
+  // Reply only after the transaction commits. A Discord delivery failure must
+  // not be reported as a database rollback.
+  return interaction.editReply(
+    "Game result:\n" + saved.results.map((result) =>
+      `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change.toFixed(1)}`,
+    ).join("\n") +
+    `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semester/${saved.semester}/players`,
+  );
 }

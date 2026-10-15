@@ -22,7 +22,7 @@ function formatDateYyyyMmDdInTimeZone(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-type GameInformation = GamePlayer & {
+export type GameInformation = GamePlayer & {
   game_time: string;
   is_team_game: boolean;
   player_name: string;
@@ -53,6 +53,11 @@ export function getPlayerPointChange(
   } else {
     return game.player_4 ? game.player_4.point_change : 0;
   }
+}
+
+export function getPlayerRateChange(game: GameInfo, player_id: string): number | null {
+  return [game.player_1, game.player_2, game.player_3, game.player_4]
+    .find(player => player?.player_id === player_id)?.rate_change ?? null;
 }
 
 export function getTeamPointChange(
@@ -86,7 +91,7 @@ export async function getAllGames(): Promise<GameInfo[]> {
   return combineGameInfo(games);
 }
 
-function combineGameInfo(games: GameInformation[]): GameInfo[] {
+export function combineGameInfo(games: GameInformation[]): GameInfo[] {
   const info: GameInfo[] = [];
   let curr_game_info = { game_id: -1, game_date: "", is_team_game: false };
   let curr_game_players: (ExtendedGamePlayer | null)[] = [];
@@ -121,6 +126,7 @@ function combineGameInfo(games: GameInformation[]): GameInfo[] {
       score: game.score,
       placement: game.placement,
       point_change: game.point_change,
+      rate_change: game.rate_change,
       player_name: game.player_name,
     });
   }

@@ -58,6 +58,10 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     const semester = req.query.semester?.toString();
+    if (!semester) {
+      res.status(400).send("Select a semester before editing teams.");
+      return;
+    }
     if (req.body.__action === "add") {
       await queryWrite(sql.insert_team, {
         team_name: req.body.teamName,

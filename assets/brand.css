@@ -1,0 +1,69 @@
+/* Official Illinois brand palette: https://brand.illinois.edu/visual-identity/color */
+:root { --club-navy:#13294B; --club-orange:#FF5F05; --club-ink:#13294B; }
+body { background:#f4f5f6; color:var(--club-ink); }
+.navbar { background:var(--club-navy) !important; border-bottom:3px solid var(--club-orange); }
+.navbar .navbar-brand,.navbar .nav-link { color:white; }
+.navbar .nav-link:hover { color:var(--club-orange); }
+a { color:var(--club-navy); text-underline-offset:2px; }
+.player-link,.player-link:hover,.player-link:focus { text-decoration:none; }
+.player-link:hover { color:#1d5d9b; }
+.player-link:focus-visible { outline:2px solid var(--club-orange); outline-offset:2px; border-radius:2px; }
+.btn-primary { --bs-btn-bg:#13294B; --bs-btn-border-color:#13294B; --bs-btn-hover-bg:#000033; --bs-btn-hover-border-color:#000033; --bs-btn-active-bg:#000033; }
+.btn-outline-primary { --bs-btn-color:#13294B; --bs-btn-border-color:#13294B; --bs-btn-hover-bg:#13294B; --bs-btn-hover-border-color:#13294B; }
+.profile-header { background:var(--club-navy); color:white; padding:1rem; margin-top:.3rem; border-radius:.2rem; }
+.profile-header .eyebrow { color:var(--club-orange); }
+.profile-header h1 { font-style:italic; font-weight:850; }
+.eyebrow { color:var(--club-navy); }
+.rank-badge { border:1.5px solid var(--club-orange); background:transparent; padding:.45rem .75rem; border-radius:3px; text-align:center; }
+.rank-badge span { color:#bfc9d9; }
+.rank-badge strong { color:white; font-weight:800; }
+.profile-panel,.profile-metrics { border-radius:.2rem; border:0; box-shadow:0 2px 0 #d9dce0; }
+.metric strong { font-weight:800; }
+.promotion-panel { border-top:3px solid var(--club-orange); }
+.earliest-result strong { color:var(--club-navy); }
+.scenario { background:#f1f3f6; }
+summary { color:var(--club-navy); }
+.player-directory { max-width:850px; margin:0 auto; }
+.player-directory h1 { font-size:1.55rem; font-weight:800; margin-bottom:.5rem; }
+body:has(.player-directory) .navbar { margin-bottom:.65rem !important; }
+.player-cards { display:grid; gap:.5rem; }
+.player-card { display:block; text-decoration:none; color:var(--club-navy); background:white; border:1px solid #d9dce0; border-left:3px solid var(--club-orange); padding:.6rem .7rem; border-radius:.25rem; transition:box-shadow .15s,border-color .15s; }
+.player-card:hover { color:var(--club-navy); border-color:var(--club-navy); box-shadow:0 3px 10px #13294b15; }
+.player-card:focus-visible { outline:3px solid var(--club-navy); outline-offset:3px; }
+.player-card-heading { display:flex; align-items:center; justify-content:space-between; gap:.7rem; }
+.player-card-heading h3 { font-size:1.05rem; font-weight:750; margin:0; overflow-wrap:anywhere; }
+.campus-position { font-size:.8rem; font-weight:500; color:#526079; margin-right:.6rem; }
+.card-rank { flex-shrink:0; padding:.18rem .55rem; background:var(--club-navy); color:white; font-weight:700; }
+.card-rank-rate { display:flex; align-items:center; gap:.45rem; flex-shrink:0; }
+.card-rank-rate small { color:#526079; font-size:.72rem; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.profile-rate { margin:.2rem 0 0; color:#d5deec; font-size:.75rem; font-variant-numeric:tabular-nums; }
+.profile-rate strong { color:white; font-size:1rem; }
+.player-card-body { display:flex; gap:.7rem; align-items:center; margin-top:.4rem; }
+.player-card-details { flex:1; min-width:0; max-width:460px; }
+.player-card-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0 0 .4rem; gap:.4rem; }
+.player-card-stats dt { font-size:.65rem; color:#526079; font-weight:500; line-height:1.25; }
+.player-card-stats > div { display:flex; flex-direction:column; justify-content:space-between; gap:.15rem; }
+.player-card-stats dd { font-size:1.05rem; font-weight:750; margin:0; font-variant-numeric:tabular-nums; line-height:1.25; }
+.placement-pie { width:76px; height:76px; flex-shrink:0; margin-left:auto; }
+.placement-pie path,.placement-pie circle { stroke:white; stroke-width:1.8; }
+/* Podium order: gold, silver, bronze; fourth place uses dark slate. */
+.slice-1 { fill:#D6A400; background:#D6A400; }.slice-2 { fill:#B8C1CC; background:#B8C1CC; }.slice-3 { fill:#A45A2A; background:#A45A2A; }.slice-4 { fill:#34445A; background:#34445A; }
+.placement-breakdown { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.35rem; border-top:1px solid #e5e9ef; padding-top:.35rem; font-variant-numeric:tabular-nums; }
+.placement-share { display:flex; flex-direction:column; gap:.05rem; font-size:.68rem; }
+.placement-share > span { white-space:nowrap; }
+.placement-share strong { font-weight:650; }
+.placement-share i { display:inline-block; width:7px; height:7px; margin-right:.25rem; border-radius:1px; }
+.search-summary { display:flex; justify-content:space-between; gap:.5rem; margin-bottom:.6rem; font-size:.8rem; }
+.rankings-sort { display:flex; align-items:center; justify-content:flex-end; gap:.5rem; margin:0 0 .6rem; font-size:.75rem; color:#526079; }
+.rankings-sort-switch { display:inline-flex; overflow:hidden; border:1px solid #bfc9d9; border-radius:4px; font-weight:700; }
+.rankings-sort-switch a { padding:.32rem .7rem; color:var(--club-navy); text-decoration:none; white-space:nowrap; }
+.rankings-sort-switch a + a { border-left:1px solid #bfc9d9; }
+.rankings-sort-switch a.is-active { background:var(--club-navy); color:white; }
+.rankings-sort-switch a:not(.is-active):hover { background:#edf2f8; }
+.rankings-sort-switch a:focus-visible { outline:2px solid var(--club-orange); outline-offset:-2px; }
+.semester-list { display:grid; gap:.65rem; margin-top:1.5rem; }
+.semester-list a { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem; background:white; border:1px solid #d9dce0; border-left:3px solid var(--club-orange); text-decoration:none; }
+.semester-list span { font-size:.85rem; }
+@media(max-width:650px) { .profile-header { padding:.8rem; }.rank-badge { padding:.4rem .65rem; } }
+@media(max-width:650px) { .rankings-sort { justify-content:space-between; } }
+@media(max-width:359px) { .placement-pie { width:62px; height:62px; }.player-card-body { gap:.5rem; }.player-card-stats { gap:.25rem; }.player-card-stats dd { font-size:.95rem; } }

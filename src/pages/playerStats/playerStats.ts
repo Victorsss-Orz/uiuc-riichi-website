@@ -1,40 +1,19 @@
 import * as express from "express";
+import { PageLocals } from "../../components/pageLayout.html.js";
 import asyncHandler from "express-async-handler";
 import { playerStats } from "./playerStats.html.js";
-import { queryRows } from "../../lib/sqlDatabase.js";
-import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { Player } from "../../lib/db-types.js";
-import {
-  getSemesterIndividualStats,
-  PlayerSemesterStats,
-} from "../../lib/stats.js";
+import { getSeasonStats, searchTerm } from "../../lib/playerProfile.js";
+import { orderSeasonStats, RankingSort } from "../../lib/playerRankings.js";
 
 const router = express.Router();
-const sql = loadSqlEquiv(import.meta.url);
-
-router.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const players = await queryRows<Player>(sql.select_players);
-    const semester = res.locals.semester;
-    const allStats: PlayerSemesterStats[] = [];
-    for (const player of players) {
-      const stats = await getSemesterIndividualStats(player, semester);
-      if (stats) {
-        allStats.push(stats);
-      }
-    }
-    allStats.sort((a, b) => {
-      if (a.points - b.points > 1e-6) {
-        return -1;
-      } else if (a.points - b.points < 1e-6) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    res.send(playerStats({ allStats, resLocals: res.locals }));
-  })
-);
-
+router.get("/", asyncHandler(async (req, res: express.Response<string, PageLocals>) => {
+  const semester = res.locals.semester;
+  if (!semester) { res.sendStatus(404); return; }
+  const term = searchTerm(req.query.q);
+  const sort: RankingSort = req.query.sort === "rate" ? "rate" : "pt";
+  const stats = await getSeasonStats(semester, term, sort);
+  const ranked = orderSeasonStats(term ? stats.slice(0, 50) : stats);
+  res.send(playerStats({ allStats: ranked.players, term, sort, positions: ranked.positions,
+    hasMore: Boolean(term) && stats.length > 50, resLocals: { ...res.locals, semester } }));
+}));
 export default router;

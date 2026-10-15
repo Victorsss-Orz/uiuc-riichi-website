@@ -1,5 +1,15 @@
 import { html, HtmlValue } from "../../packages/html/dist/index.js";
 
+export type PageLocals = {
+  semesters?: string[];
+  activeSemester?: string;
+  semester?: string;
+  isAdmin?: boolean;
+  player_id?: string;
+};
+
+export type SemesterPageLocals = PageLocals & { semester: string };
+
 export type navContext = {
   type: "user" | "admin";
   page: "semester" | "non-semester";
@@ -14,7 +24,7 @@ export function PageLayout({
   postContent,
 }: {
   /** The locals object from the Express response. */
-  resLocals: Record<string, any>;
+  resLocals: PageLocals;
   /** The title of the page in the browser. */
   pageTitle: string;
   /** The information used to configure the navbar. */
@@ -44,7 +54,7 @@ export function PageLayout({
   `;
 }
 
-function navBar({ resLocals }: { resLocals: Record<string, any> }) {
+function navBar({ resLocals }: { resLocals: PageLocals }) {
   return html`
     <nav
       class="navbar navbar-dark bg-dark navbar-expand-md mb-4 sticky-top"
@@ -75,8 +85,8 @@ function navBar({ resLocals }: { resLocals: Record<string, any> }) {
                 Semesters
               </a>
               <ul class="dropdown-menu">
-                ${resLocals.semesters.map(
-                  (semester: any) =>
+                ${resLocals.semesters?.map(
+                  (semester) =>
                     html`<li>
                       <a
                         class="dropdown-item"
@@ -135,5 +145,6 @@ export function HeadContents(title: string) {
     <script src="/bootstrap-table/bootstrap-table.min.js"></script>
     <link rel="stylesheet" href="/bootstrap-table/bootstrap-table.min.css" />
     <script src="/bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+    <link rel="stylesheet" href="/assets/brand.css" />
   `.toString();
 }

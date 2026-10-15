@@ -1,34 +1,31 @@
 import * as express from "express";
+import { PageLocals } from "../../components/pageLayout.html.js";
 import asyncHandler from "express-async-handler";
-import { playerGames } from "./playerGames.html.js";
-import { queryRows } from "../../lib/sqlDatabase.js";
-import { loadSqlEquiv } from "../../lib/sqlLoader.js";
-import { getGamesForPlayer } from "../../lib/gamesTable.js";
-import { Player } from "../../lib/db-types.js";
-import { findPlayerById } from "../../lib/gameResults.js";
+import { playerGames, playerHistoryContent } from "./playerGames.html.js";
+import { getPlayerHistory, getPlayerProfile } from "../../lib/playerProfile.js";
+import { error } from "../error/error.html.js";
 
 const router = express.Router();
-const sql = loadSqlEquiv(import.meta.url);
-
-router.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const semester = res.locals.semester;
-    const player_id = res.locals.player_id;
-
-    const players = await queryRows<Player>(sql.select_players);
-    const player_name = findPlayerById(players, player_id);
-
-    const info = await getGamesForPlayer(player_id, semester);
-
-    res.send(
-      playerGames({
-        info: info.filter((item) => !item.is_team_game),
-        player_name,
-        resLocals: res.locals,
-      })
-    );
-  })
-);
-
+router.get("/history", asyncHandler(async (req, res: express.Response<string, PageLocals>) => {
+  const { semester, player_id } = res.locals;
+  if (!semester || !player_id || !res.locals.semesters?.includes(semester)) {
+    res.status(404).send(error({ resLocals: res.locals }));
+    return;
+  }
+  const history = await getPlayerHistory(player_id, semester,
+    typeof req.query.page === "string" ? Number(req.query.page) : 1);
+  if (!history) { res.status(404).send(error({ resLocals: res.locals })); return; }
+  res.type("html").send(playerHistoryContent({ ...history, id: player_id, semester }).toString());
+}));
+router.get("/", asyncHandler(async (req, res: express.Response<string, PageLocals>) => {
+  const { semester, player_id } = res.locals;
+  if (!semester || !player_id || !res.locals.semesters?.includes(semester)) {
+    res.status(404).send(error({ resLocals: res.locals }));
+    return;
+  }
+  const profile = await getPlayerProfile(player_id, semester,
+    typeof req.query.page === "string" ? Number(req.query.page) : 1);
+  if (!profile) { res.status(404).send(error({ resLocals: res.locals })); return; }
+  res.send(playerGames({ profile, resLocals: { ...res.locals, semester } }));
+}));
 export default router;

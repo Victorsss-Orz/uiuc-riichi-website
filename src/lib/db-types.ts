@@ -1,4 +1,13 @@
-export type Player = { id: string; player_name: string };
+export type Player = {
+  id: string;
+  player_name: string;
+  rate: number;
+  rate_games: number;
+  rate_rookie_handicap: number | null;
+};
+
+// mysql2 returns BIGINT/DECIMAL aggregates as strings with our connection options.
+export type SqlNumber = number | string;
 
 export type PlayerSemesterData = {
   player_id: string;
@@ -36,6 +45,7 @@ export type GamePlayer = {
   score: number;
   placement: number;
   point_change: number;
+  rate_change: number | null;
 };
 
 export type Semester = { semester: string; active: boolean };
