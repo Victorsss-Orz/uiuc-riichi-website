@@ -115,7 +115,7 @@ export async function withGameTransaction<T>(work: () => Promise<T>): Promise<T>
   }
 }
 
-type queryParams = Record<string, string | number | boolean | Date | Buffer | null>;
+type queryParams = Record<string, any>;
 
 export async function queryRows<T>(
   query: string,
