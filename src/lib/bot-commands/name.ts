@@ -4,7 +4,9 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 
+import { withGameTransaction } from "../sqlDatabase.js";
 import { addPlayer, playerExists, updatePlayerName } from "../addPlayer.js";
+import { getPlayerRedirects } from "../playerMerge.js";
 
 export const data = new SlashCommandBuilder()
   .setName("updatename")
@@ -16,13 +18,20 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction: ChatInputCommandInteraction) {
   const id = interaction.user.id;
   const name = interaction.options.getString("name", true);
-  if (!(await playerExists(id))) {
-    await addPlayer(id, name);
-  } else {
-    await updatePlayerName(id, name);
-  }
-  return interaction.reply({
-    content: "Your name has been updated!",
-    flags: MessageFlags.Ephemeral,
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+  const redirectedTo = await withGameTransaction(async () => {
+    const [redirect] = await getPlayerRedirects([id]);
+    if (redirect) return redirect.target_id;
+    if (!(await playerExists(id))) {
+      await addPlayer(id, name);
+    } else {
+      await updatePlayerName(id, name);
+    }
+    return null;
+  });
+  return interaction.editReply({
+    content: redirectedTo
+      ? `This account was merged into <@${redirectedTo}>. Use the main account to update its name.`
+      : "Your name has been updated!",
   });
 }

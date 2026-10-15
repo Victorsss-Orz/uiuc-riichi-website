@@ -4,7 +4,7 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 
-import { queryRows, queryWrite } from "../sqlDatabase.js";
+import { queryRows, queryWrite, withGameTransaction } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
 import { Semester } from "../db-types.js";
 
@@ -54,29 +54,26 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   }
   const semester_names = semesters.map((semester) => semester.semester);
   const name = interaction.options.getString("name", true);
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
   if (sub === "add") {
     if (semester_names.includes(name)) {
-      return interaction.reply({
+      return interaction.editReply({
         content: `Semester ${name} already exists.`,
-        flags: MessageFlags.Ephemeral,
       });
     }
-    await queryWrite(sql.insert_semester, { semester: name });
-    return interaction.reply({
+    await withGameTransaction(() => queryWrite(sql.insert_semester, { semester: name }));
+    return interaction.editReply({
       content: `Semester ${name} added!`,
-      flags: MessageFlags.Ephemeral,
     });
   } else {
     if (!semester_names.includes(name)) {
-      return interaction.reply({
+      return interaction.editReply({
         content: `Semester ${name} does not exist. Available semesters:\n${semestersMsg}`,
-        flags: MessageFlags.Ephemeral,
       });
     }
-    await queryWrite(sql.activate_semester, { semester: name });
-    return interaction.reply({
+    await withGameTransaction(() => queryWrite(sql.activate_semester, { semester: name }));
+    return interaction.editReply({
       content: `Semester ${name} activated!`,
-      flags: MessageFlags.Ephemeral,
     });
   }
 }

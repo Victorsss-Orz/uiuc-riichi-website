@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import { games, gameResultConfirmation } from "./games.html.js";
 
 import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
-import { queryRows } from "../../../lib/sqlDatabase.js";
+import { queryRows, withGameTransaction } from "../../../lib/sqlDatabase.js";
 import { Player } from "../../../lib/db-types.js";
 import {
   insertGameResults,
@@ -59,12 +59,14 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     if (req.body.__action == "add") {
-      const results = await processGameResults(req.body);
-      await insertGameResults(
-        results,
-        req.body.semester,
-        req.body.teamGame ? true : false
-      );
+      await withGameTransaction(async () => {
+        const results = await processGameResults(req.body);
+        await insertGameResults(
+          results,
+          req.body.semester,
+          req.body.teamGame ? true : false
+        );
+      });
       res.redirect(req.originalUrl);
     } else if (req.body.__action == "remove") {
       const { gameToRemove } = req.body;

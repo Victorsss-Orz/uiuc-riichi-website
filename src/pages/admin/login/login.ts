@@ -15,6 +15,8 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   const { username, password } = req.body;
   if (
+    process.env.ADMIN_USERNAME &&
+    process.env.ADMIN_PASSWORD &&
     username === process.env.ADMIN_USERNAME &&
     password === process.env.ADMIN_PASSWORD
   ) {

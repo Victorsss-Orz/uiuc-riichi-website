@@ -1,0 +1,28 @@
+.merge-page { max-width:850px; margin:auto; }
+.merge-page h1 { font-size:1.55rem; }
+.merge-page h2 { font-size:1.25rem; }
+.merge-change > summary { padding:.7rem .85rem; border:1px solid #bfc9d9; border-radius:.25rem; background:white; font-size:1rem; font-weight:600; cursor:pointer; }
+.merge-search { position:relative; }
+.merge-search-results { position:absolute; top:100%; left:0; right:0; z-index:10; max-height:15rem; overflow-y:auto; overscroll-behavior:contain; margin-top:.25rem; background:white; box-shadow:0 4px 12px #13294b26; border:1px solid #bfc9d9; border-radius:.25rem; }
+.merge-search-results[hidden] { display:none; }
+.merge-search-results .list-group-item { border-width:0 0 1px; overflow-wrap:anywhere; }
+.merge-search-results .list-group-item:focus-visible { outline:2px solid var(--club-orange); outline-offset:-2px; }
+.merge-accounts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+.merge-account { display:flex; flex-direction:column; gap:.2rem; border-left:3px solid var(--club-orange); padding:.5rem .65rem; background:#f4f5f6; overflow-wrap:anywhere; }
+.merge-account:last-child { border-color:var(--club-navy); }
+.merge-account-id { font-size:.8rem; font-variant-numeric:tabular-nums; }
+.merge-comparison { width:100%; table-layout:fixed; font-size:.9rem; font-variant-numeric:tabular-nums; }
+.merge-comparison .merge-metric { width:25%; }
+.merge-comparison th,.merge-comparison td { padding:.5rem .35rem; vertical-align:middle; overflow-wrap:anywhere; }
+.merge-comparison thead th { background:var(--club-navy); color:white; font-weight:600; }
+.merge-comparison td,.merge-comparison thead th:not(:first-child) { text-align:right; }
+.merge-comparison td:last-child { font-weight:700; }
+.merge-comparison .merge-semester th { background:#edf0f4; padding-top:.75rem; }
+.merge-semester small { display:block; color:#526079; font-weight:400; }
+.merge-confirm { display:flex; align-items:flex-start; gap:.5rem; }
+.merge-confirm input { flex-shrink:0; margin-top:.3rem; }
+@media(max-width:575px) {
+  .merge-accounts { grid-template-columns:1fr; }
+  .merge-comparison { font-size:.78rem; }
+  .merge-comparison th,.merge-comparison td { padding:.5rem .2rem; }
+}
