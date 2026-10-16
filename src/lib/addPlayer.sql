@@ -9,8 +9,8 @@ WHERE
 -- BLOCK add_player
 INSERT INTO
     players (id, player_name)
-VALUES
-    (:player_id, :player_name);
+SELECT :player_id, :player_name
+WHERE NOT EXISTS (SELECT 1 FROM player_merges WHERE source_id = :player_id);
 
 -- BLOCK update_player_name
 UPDATE players

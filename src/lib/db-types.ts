@@ -6,6 +6,8 @@ export type Player = {
   rate_rookie_handicap: number | null;
 };
 
+export type PlayerMerge = { source_id: string; target_id: string };
+
 // mysql2 returns BIGINT/DECIMAL aggregates as strings with our connection options.
 export type SqlNumber = number | string;
 
