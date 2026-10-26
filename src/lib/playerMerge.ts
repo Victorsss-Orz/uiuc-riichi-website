@@ -1,12 +1,11 @@
 import { createHash } from "node:crypto";
 import { GamePlayer, Player, PlayerMerge, SqlNumber, StartingWind } from "./db-types.js";
 import { RATING_INITIAL } from "./rating.js";
-import { playerRankUp, rankRequirements } from "./rankRules.js";
+import { playerRankUp } from "./rankRules.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import { queryRows, queryWrite, withGameTransaction } from "./sqlDatabase.js";
 
 const sql = loadSqlEquiv(import.meta.url);
-const rankWindow = Math.max(...rankRequirements.map(r => r.num_games));
 const validId = (id: string): boolean => id.length <= 20 && /^[1-9]\d*$/.test(id) && BigInt(id) <= 18446744073709551615n;
 
 export class PlayerMergeError extends Error {
@@ -115,9 +114,7 @@ function preview(snapshot: Snapshot, source_id: string, target_id: string, rankM
     let ranking = rankMode === "highest" ? Math.max(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0) : 0;
     if (rankMode === "reset") {
       // History is ordered by game ID, matching the existing promotion writer.
-      // Only the largest required window is needed; do not replay old promotions.
-      const recent = individual.slice(-rankWindow);
-      while (playerRankUp(recent, ranking)) ranking++;
+      while (playerRankUp(individual, ranking)) ranking++;
     }
     const current = (id: string, row: MergeSemesterRow | undefined): SemesterStats => ({
       games: individual.filter(g => g.player_id === id).length,
