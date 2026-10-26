@@ -8,7 +8,7 @@ import { loadSqlEquiv } from "../../../lib/sqlLoader.js";
 import { Player } from "../../../lib/db-types.js";
 import { PageLocals } from "../../../components/pageLayout.html.js";
 import { searchTerm } from "../../../lib/playerProfile.js";
-import { getPlayerMergePreview, mergePlayers, PlayerMergeError, searchMergeCandidates } from "../../../lib/playerMerge.js";
+import { getPlayerMergePreview, mergePlayers, PlayerMergeError, PlayerMergeRankMode, searchMergeCandidates } from "../../../lib/playerMerge.js";
 
 const router = express.Router();
 const sql = loadSqlEquiv(import.meta.url);
@@ -17,6 +17,11 @@ function formValue(body: unknown, name: string): string {
   if (body === null || typeof body !== "object") return "";
   const value = (body as Record<string, unknown>)[name];
   return typeof value === "string" ? value : "";
+}
+function rankMode(body: unknown): PlayerMergeRankMode {
+  const value = formValue(body, "rank_mode");
+  if (value === "reset" || value === "highest") return value;
+  throw new PlayerMergeError("Select how ranks should be handled before previewing the merge.", 400);
 }
 function mergeToken(req: express.Request): string {
   return req.session.playerMergeToken ??= randomBytes(32).toString("hex");
@@ -40,7 +45,7 @@ router.get("/merge-search", asyncHandler(async (req, res) => {
 router.post("/merge-preview", asyncHandler(async (req, res: express.Response<string, PageLocals>) => {
   if (!validToken(req)) { res.status(403).send("Invalid request token. Reload Merge accounts."); return; }
   try {
-    const preview = await getPlayerMergePreview(formValue(req.body, "source_id"), formValue(req.body, "target_id"));
+    const preview = await getPlayerMergePreview(formValue(req.body, "source_id"), formValue(req.body, "target_id"), rankMode(req.body));
     res.send(mergePreviewPage({ resLocals: res.locals, token: mergeToken(req), preview }));
   } catch (error) {
     if (!(error instanceof PlayerMergeError)) throw error;
@@ -52,7 +57,7 @@ router.post("/merge", asyncHandler(async (req, res: express.Response<string, Pag
   if (!validToken(req)) { res.status(403).send("Invalid request token. Reload Merge accounts."); return; }
   try {
     if (formValue(req.body, "confirm") !== "yes") throw new PlayerMergeError("Confirm the merge direction before proceeding.", 400);
-    const merged = await mergePlayers(formValue(req.body, "source_id"), formValue(req.body, "target_id"), formValue(req.body, "expected_preview"));
+    const merged = await mergePlayers(formValue(req.body, "source_id"), formValue(req.body, "target_id"), formValue(req.body, "expected_preview"), rankMode(req.body));
     delete req.session.playerMergeToken;
     req.session.playerMergeNotice = { targetId: merged.target.id, games: merged.moveGames };
     res.redirect(303, "/admin/players");

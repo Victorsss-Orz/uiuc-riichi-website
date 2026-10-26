@@ -26,6 +26,23 @@ function mergeForm(token: string, preview?: PlayerMergePreview): HtmlSafeString 
           <p class="small text-secondary mt-1 mb-0">${kind === "source" ? "Its results move to the main account before removal." : "Keeps all combined results."}</p>
         </div>`;
       })}</div>
+      <fieldset class="mt-3">
+        <legend class="fs-6 fw-semibold">Rank after merge</legend>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" name="rank_mode" id="merge-rank-reset" value="reset" required
+            ${!preview || preview.rankMode === "reset" ? "checked" : ""} />
+          <label class="form-check-label" for="merge-rank-reset">Reset and recalculate
+            <small class="d-block text-secondary">For alternate-account penalties. Start each semester at 5级 and check the latest games required for promotion.</small>
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="rank_mode" id="merge-rank-highest" value="highest"
+            ${preview?.rankMode === "highest" ? "checked" : ""} />
+          <label class="form-check-label" for="merge-rank-highest">Keep highest rank
+            <small class="d-block text-secondary">For account recovery. Keep the higher existing rank in each semester.</small>
+          </label>
+        </div>
+      </fieldset>
       <button class="btn btn-primary mt-3" type="submit">Preview merge</button>
     </form>
   </section>`;
@@ -69,13 +86,16 @@ function mergeSummary(p: PlayerMergePreview, token: string): HtmlSafeString {
         <tr><th scope="row">Rank</th>${[s.source, s.target, s.merged].map(stats => html`<td>${rankNames[stats.ranking] ?? "Unknown"}</td>`)}</tr>
       </tbody>`)}
     </table>
-    <p class="small text-secondary">Each semester keeps the lower existing rank. Team totals stay unchanged.</p>
+    <p class="small text-secondary">${p.rankMode === "reset"
+      ? "Ranks are recalculated from 5级 in each semester using the latest games required for promotion."
+      : "Each semester keeps the higher existing rank."} Team totals stay unchanged.</p>
     ${p.conflicts.length ? html`<div class="alert alert-danger"><strong>Merge blocked</strong><ul class="mb-0">${p.conflicts.map(c => html`<li>${c}</li>`)}</ul></div>` : html`
       <form action="/admin/players/merge" method="post">
         <input type="hidden" name="csrf" value="${token}" />
         <input type="hidden" name="source_id" value="${p.source.id}" />
         <input type="hidden" name="target_id" value="${p.target.id}" />
         <input type="hidden" name="expected_preview" value="${p.fingerprint}" />
+        <input type="hidden" name="rank_mode" value="${p.rankMode}" />
         <label class="merge-confirm mb-3"><input type="checkbox" name="confirm" value="yes" required />
           <span>I confirm the Discord IDs above. Delete the source account and keep all combined results under the main account. There is no undo button.</span></label>
         <button class="btn btn-danger" type="submit">Confirm merge</button>

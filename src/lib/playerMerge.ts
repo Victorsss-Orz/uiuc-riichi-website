@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 import { GamePlayer, Player, PlayerMerge, SqlNumber, StartingWind } from "./db-types.js";
 import { RATING_INITIAL } from "./rating.js";
+import { playerRankUp, rankRequirements } from "./rankRules.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import { queryRows, queryWrite, withGameTransaction } from "./sqlDatabase.js";
 
 const sql = loadSqlEquiv(import.meta.url);
+const rankWindow = Math.max(...rankRequirements.map(r => r.num_games));
 const validId = (id: string): boolean => id.length <= 20 && /^[1-9]\d*$/.test(id) && BigInt(id) <= 18446744073709551615n;
 
 export class PlayerMergeError extends Error {
@@ -25,11 +27,13 @@ type GameCheck = {
 };
 type Snapshot = { players: Player[]; history: MergeHistory[]; semesters: MergeSemesterRow[]; checks: GameCheck[]; mappings: PlayerMerge[] };
 type SemesterStats = { games: number; points: number; ranking: number };
+export type PlayerMergeRankMode = "reset" | "highest";
 export type MergeSemester = {
   semester: string; source: SemesterStats; target: SemesterStats;
   merged: SemesterStats; team_id: string | null;
 };
 export type PlayerMergePreview = {
+  rankMode: PlayerMergeRankMode;
   source: Player; target: Player; moveGames: number; games: number; rate: number;
   createTarget: boolean; previousTarget: string | null;
   handicap: number | null; semesters: MergeSemester[]; conflicts: string[]; fingerprint: string;
@@ -59,7 +63,7 @@ function gameConflicts(snapshot: Snapshot): string[] {
     .map(g => `Game ${g.game_id} does not have four complete, settled player results.`);
 }
 
-function preview(snapshot: Snapshot, source_id: string, target_id: string): PlayerMergePreview {
+function preview(snapshot: Snapshot, source_id: string, target_id: string, rankMode: PlayerMergeRankMode): PlayerMergePreview {
   const source = snapshot.players.find(p => p.id === source_id);
   if (!source) throw new PlayerMergeError("Source account no longer exists. Refresh the player list.", 404);
   const existingTarget = snapshot.players.find(p => p.id === target_id);
@@ -108,8 +112,13 @@ function preview(snapshot: Snapshot, source_id: string, target_id: string): Play
       conflicts.push(`Team games in ${semester} have no team assignment for ${p.player_name}.`);
     if (teamGames.length && a[0]?.team_id && b[0]?.team_id && a[0].team_id !== b[0].team_id)
       conflicts.push(`Different teams in ${semester}; historical team results cannot be reassigned safely.`);
-    // Keep the lower semester rank; merging does not award new promotions.
-    const ranking = Math.min(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0);
+    let ranking = rankMode === "highest" ? Math.max(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0) : 0;
+    if (rankMode === "reset") {
+      // History is ordered by game ID, matching the existing promotion writer.
+      // Only the largest required window is needed; do not replay old promotions.
+      const recent = individual.slice(-rankWindow);
+      while (playerRankUp(recent, ranking)) ranking++;
+    }
     const current = (id: string, row: MergeSemesterRow | undefined): SemesterStats => ({
       games: individual.filter(g => g.player_id === id).length,
       points: row?.points ?? 0, ranking: row?.ranking ?? 0,
@@ -121,23 +130,23 @@ function preview(snapshot: Snapshot, source_id: string, target_id: string): Play
   const earliest = snapshot.history.reduce<MergeHistory | null>((first, g) =>
     !first || Number(g.game_time) < Number(first.game_time) ||
     (Number(g.game_time) === Number(first.game_time) && BigInt(g.game_id) < BigInt(first.game_id)) ? g : first, null);
-  return { source, target, createTarget: !existingTarget,
+  return { source, target, rankMode, createTarget: !existingTarget,
     previousTarget: snapshot.mappings.find(m => m.source_id === target_id)?.target_id ?? null,
     moveGames: sourceGames.size, games: snapshot.history.length,
     rate: RATING_INITIAL + snapshot.history.reduce((sum, g) => sum + (g.rate_change ?? 0), 0),
     handicap: earliest ? (earliest.player_id === source_id ? source : target).rate_rookie_handicap : null,
     semesters, conflicts: [...new Set(conflicts)],
-    fingerprint: createHash("sha256").update(JSON.stringify({ source_id, target_id, snapshot })).digest("hex") };
+    fingerprint: createHash("sha256").update(JSON.stringify({ source_id, target_id, rankMode, snapshot })).digest("hex") };
 }
 
-export function getPlayerMergePreview(source_id: string, target_id: string): Promise<PlayerMergePreview> {
-  return withGameTransaction(async () => preview(await readSnapshot(source_id, target_id), source_id, target_id));
+export function getPlayerMergePreview(source_id: string, target_id: string, rankMode: PlayerMergeRankMode = "reset"): Promise<PlayerMergePreview> {
+  return withGameTransaction(async () => preview(await readSnapshot(source_id, target_id), source_id, target_id, rankMode));
 }
 
-export function mergePlayers(source_id: string, target_id: string, expectedPreview: string): Promise<PlayerMergePreview> {
+export function mergePlayers(source_id: string, target_id: string, expectedPreview: string, rankMode: PlayerMergeRankMode = "reset"): Promise<PlayerMergePreview> {
   return withGameTransaction(async () => {
     const before = await readSnapshot(source_id, target_id);
-    const p = preview(before, source_id, target_id);
+    const p = preview(before, source_id, target_id, rankMode);
     if (p.fingerprint !== expectedPreview) throw new PlayerMergeError("The accounts changed after preview. Generate a new preview.");
     if (p.conflicts.length) throw new PlayerMergeError(p.conflicts.join(" "));
     const params = parameters(source_id, target_id);
