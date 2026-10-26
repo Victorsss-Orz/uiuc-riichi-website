@@ -111,10 +111,12 @@ function preview(snapshot: Snapshot, source_id: string, target_id: string, rankM
       conflicts.push(`Team games in ${semester} have no team assignment for ${p.player_name}.`);
     if (teamGames.length && a[0]?.team_id && b[0]?.team_id && a[0].team_id !== b[0].team_id)
       conflicts.push(`Different teams in ${semester}; historical team results cannot be reassigned safely.`);
-    let ranking = rankMode === "highest" ? Math.max(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0) : 0;
+    let ranking = 0;
     if (rankMode === "reset") {
       // History is ordered by game ID, matching the existing promotion writer.
       while (playerRankUp(individual, ranking)) ranking++;
+    } else {
+      ranking = Math.max(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0);
     }
     const current = (id: string, row: MergeSemesterRow | undefined): SemesterStats => ({
       games: individual.filter(g => g.player_id === id).length,
