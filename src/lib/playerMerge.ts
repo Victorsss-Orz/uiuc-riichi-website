@@ -108,8 +108,8 @@ function preview(snapshot: Snapshot, source_id: string, target_id: string): Play
       conflicts.push(`Team games in ${semester} have no team assignment for ${p.player_name}.`);
     if (teamGames.length && a[0]?.team_id && b[0]?.team_id && a[0].team_id !== b[0].team_id)
       conflicts.push(`Different teams in ${semester}; historical team results cannot be reassigned safely.`);
-    // Merging identities preserves earned ranks; it does not award new promotions.
-    const ranking = Math.max(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0);
+    // Keep the lower semester rank; merging does not award new promotions.
+    const ranking = Math.min(a[0]?.ranking ?? 0, b[0]?.ranking ?? 0);
     const current = (id: string, row: MergeSemesterRow | undefined): SemesterStats => ({
       games: individual.filter(g => g.player_id === id).length,
       points: row?.points ?? 0, ranking: row?.ranking ?? 0,

@@ -69,7 +69,7 @@ function mergeSummary(p: PlayerMergePreview, token: string): HtmlSafeString {
         <tr><th scope="row">Rank</th>${[s.source, s.target, s.merged].map(stats => html`<td>${rankNames[stats.ranking] ?? "Unknown"}</td>`)}</tr>
       </tbody>`)}
     </table>
-    <p class="small text-secondary">Each semester keeps the higher existing rank. Team totals stay unchanged.</p>
+    <p class="small text-secondary">Each semester keeps the lower existing rank. Team totals stay unchanged.</p>
     ${p.conflicts.length ? html`<div class="alert alert-danger"><strong>Merge blocked</strong><ul class="mb-0">${p.conflicts.map(c => html`<li>${c}</li>`)}</ul></div>` : html`
       <form action="/admin/players/merge" method="post">
         <input type="hidden" name="csrf" value="${token}" />
