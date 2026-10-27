@@ -73,116 +73,122 @@ export function teams({
                     ${semester == row ? "selected" : ""}
                   >
                     ${row}
-                  </option>`
+                  </option>`,
               )}
             </select>
           </div>
         </form>
-        ${semester
-          ? html`
-              <nav
-                class="navbar bg-light position-fixed top-0 end-0 d-flex flex-column p-3"
-                style="height: 100vh; width: 25%; z-index: 1000;"
-              >
-                <div
-                  class="card team unassigned"
-                  id="team-unassigned"
-                  data-team-id="-1"
+        ${
+          semester
+            ? html`
+                <nav
+                  class="navbar bg-light position-fixed top-0 end-0 d-flex flex-column p-3"
+                  style="height: 100vh; width: 25%; z-index: 1000;"
                 >
-                  <h3>Unassigned</h3>
-                  ${unassigned_players.map(
-                    (player) =>
-                      html`<div class="player" data-player-id="${player.id}">
-                        ${player.player_name}
-                      </div>`
-                  )}
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-lg"
-                  onclick="submitTeamAssignment()"
-                  title="Save current team assignment"
-                >
-                  Save
-                </button>
-              </nav>
-
-              <div class="card" style="padding: 1rem;">
-                <form id="addTeamForm" method="POST">
-                  <label for="teamName">Team Name:</label>
-                  <input type="text" id="teamName" name="teamName" required />
-                  <button
-                    type="submit"
-                    name="__action"
-                    value="add"
-                    class="btn btn-primary"
+                  <div
+                    class="card team unassigned"
+                    id="team-unassigned"
+                    data-team-id="-1"
                   >
-                    Add
-                  </button>
-                </form>
-                <div class="container" style="margin-top: 1rem;">
-                  <div class="row">
-                    ${teamInfo.map(
-                      (team) =>
-                        html`<div
-                          class="team"
-                          id="team-${team.id}"
-                          data-team-id="${team.id}"
-                        >
-                          <div
-                            style="display: flex; flex-direction: row; align-items: center;"
-                          >
-                            <h5 class="me-3">${team.team_name}</h5>
-                            <form name="removeTeam${team.id}Form" method="POST">
-                              <button
-                                type="submit"
-                                class="btn btn-danger"
-                                name="__action"
-                                value="remove"
-                                data-toggle="tooltip"
-                                data-placement="right"
-                                title="Remove this team"
-                              >
-                                Remove
-                              </button>
-                              <input
-                                type="hidden"
-                                name="teamToRemove"
-                                value=${team.id}
-                              />
-                            </form>
-                          </div>
-                          ${team.players.map(
-                            (player) =>
-                              html`<div
-                                class="player"
-                                data-player-id="${player.id}"
-                              >
-                                ${player.player_name}
-                              </div>`
-                          )}
-                        </div>`
+                    <h3>Unassigned</h3>
+                    ${unassigned_players.map(
+                      (player) =>
+                        html`<div class="player" data-player-id="${player.id}">
+                          ${player.player_name}
+                        </div>`,
                     )}
                   </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-lg"
+                    onclick="submitTeamAssignment()"
+                    title="Save current team assignment"
+                  >
+                    Save
+                  </button>
+                </nav>
+
+                <div class="card" style="padding: 1rem;">
+                  <form id="addTeamForm" method="POST">
+                    <label for="teamName">Team Name:</label>
+                    <input type="text" id="teamName" name="teamName" required />
+                    <button
+                      type="submit"
+                      name="__action"
+                      value="add"
+                      class="btn btn-primary"
+                    >
+                      Add
+                    </button>
+                  </form>
+                  <div class="container" style="margin-top: 1rem;">
+                    <div class="row">
+                      ${teamInfo.map(
+                        (team) =>
+                          html`<div
+                            class="team"
+                            id="team-${team.id}"
+                            data-team-id="${team.id}"
+                          >
+                            <div
+                              style="display: flex; flex-direction: row; align-items: center;"
+                            >
+                              <h5 class="me-3">${team.team_name}</h5>
+                              <form
+                                name="removeTeam${team.id}Form"
+                                method="POST"
+                              >
+                                <button
+                                  type="submit"
+                                  class="btn btn-danger"
+                                  name="__action"
+                                  value="remove"
+                                  data-toggle="tooltip"
+                                  data-placement="right"
+                                  title="Remove this team"
+                                >
+                                  Remove
+                                </button>
+                                <input
+                                  type="hidden"
+                                  name="teamToRemove"
+                                  value=${team.id}
+                                />
+                              </form>
+                            </div>
+                            ${team.players.map(
+                              (player) =>
+                                html`<div
+                                  class="player"
+                                  data-player-id="${player.id}"
+                                >
+                                  ${player.player_name}
+                                </div>`,
+                            )}
+                          </div>`,
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            `
-          : ""}
+              `
+            : ""
+        }
       </div>
     `,
     postContent: html`
       ${teamInfo.map(
-        (team) => html`<script>
-          $(document).ready(function () {
-            new Sortable(document.getElementById("team-${team.id}"), {
-              group: "team",
-              animation: 150,
-              draggable: ".player",
-              multiDrag: true,
-              selectedClass: "player-selected",
+        (team) =>
+          html`<script>
+            $(document).ready(function () {
+              new Sortable(document.getElementById("team-${team.id}"), {
+                group: "team",
+                animation: 150,
+                draggable: ".player",
+                multiDrag: true,
+                selectedClass: "player-selected",
+              });
             });
-          });
-        </script>`
+          </script>`,
       )}
       <script>
         $(document).ready(function () {

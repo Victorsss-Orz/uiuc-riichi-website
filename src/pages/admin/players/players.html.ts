@@ -16,9 +16,12 @@ export function addPlayer({
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Manage players",
-    content: html` ${notice ? html`<p class="alert alert-success" role="status">${notice} ${mergedPlayer?.semester ? html`<a href="/semester/${mergedPlayer.semester}/player/${mergedPlayer.id}">View main profile</a>` : ""}</p>` : ""}<div style="margin-top: 1rem; margin-bottom: 1rem;">
+    content: html` ${notice ? html`<p class="alert alert-success" role="status">${notice} ${mergedPlayer?.semester ? html`<a href="/semester/${mergedPlayer.semester}/player/${mergedPlayer.id}">View main profile</a>` : ""}</p>` : ""}
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">
         <h1>Manage players</h1>
-        <a class="btn btn-primary mt-2" href="/admin/players/merge">Merge accounts</a>
+        <a class="btn btn-primary mt-2" href="/admin/players/merge"
+          >Merge accounts</a
+        >
       </div>
       <h2 class="h5">Create new account</h2>
       <form id="addPlayerForm" method="POST">
@@ -79,7 +82,7 @@ export function addPlayer({
                       </form>
                     </td>
                   </tr>
-                `
+                `,
               )}
             </tbody>
           </table>

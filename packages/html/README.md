@@ -10,7 +10,7 @@ By convention, HTML templates are located in `*.html.ts` files.
 
 ```ts
 // Hello.html.ts
-import { html } from '@prairielearn/html';
+import { html } from "@prairielearn/html";
 
 export function Hello({ name }: { name: string }) {
   return html`<div>Hello, ${name}!</div>`;
@@ -20,9 +20,9 @@ export function Hello({ name }: { name: string }) {
 This can then be used to render a string:
 
 ```ts
-import { Hello } from './Hello.html.ts';
+import { Hello } from "./Hello.html.ts";
 
-console.log(Hello({ name: 'Anjali' }).toString());
+console.log(Hello({ name: "Anjali" }).toString());
 // Prints "<div>Hello, Anjali!</div>"
 ```
 
@@ -31,10 +31,13 @@ console.log(Hello({ name: 'Anjali' }).toString());
 If you want to pre-escape some HTML, you can wrap it in `escapeHtml` to avoid escaping it twice. This is useful if you want to inline some HTML into an attribute, for instance with a Bootstrap popover.
 
 ```ts
-import { html, escapeHtml } from '@prairielearn/html';
+import { html, escapeHtml } from "@prairielearn/html";
 
 console.log(html`
-  <button data-bs-toggle="popover" data-bs-content="${escapeHtml(html`<div>Content here</div>`)}">
+  <button
+    data-bs-toggle="popover"
+    data-bs-content="${escapeHtml(html`<div>Content here</div>`)}"
+  >
     Open popover
   </button>
 `);

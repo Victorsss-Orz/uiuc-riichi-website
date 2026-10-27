@@ -55,9 +55,15 @@ export function getPlayerPointChange(
   }
 }
 
-export function getPlayerRateChange(game: GameInfo, player_id: string): number | null {
-  return [game.player_1, game.player_2, game.player_3, game.player_4]
-    .find(player => player?.player_id === player_id)?.rate_change ?? null;
+export function getPlayerRateChange(
+  game: GameInfo,
+  player_id: string,
+): number | null {
+  return (
+    [game.player_1, game.player_2, game.player_3, game.player_4].find(
+      (player) => player?.player_id === player_id,
+    )?.rate_change ?? null
+  );
 }
 
 export function getTeamPointChange(

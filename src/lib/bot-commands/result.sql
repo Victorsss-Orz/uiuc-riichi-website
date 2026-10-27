@@ -1,7 +1,7 @@
 -- BLOCK select_active_semesters
 SELECT
-    *
+  *
 FROM
-    semesters
+  semesters
 WHERE
-    active = true;
+  active = true;

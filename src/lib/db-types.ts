@@ -34,10 +34,10 @@ export type Game = {
 };
 
 export enum StartingWind {
-  "East",
-  "South",
-  "West",
-  "North",
+  East,
+  South,
+  West,
+  North,
 }
 
 export type GamePlayer = {

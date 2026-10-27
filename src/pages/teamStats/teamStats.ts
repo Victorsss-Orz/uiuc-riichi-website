@@ -32,7 +32,7 @@ router.get(
       }
     });
     res.send(teamStats({ allStats, resLocals: res.locals }));
-  })
+  }),
 );
 
 export default router;

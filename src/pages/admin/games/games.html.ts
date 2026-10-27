@@ -30,7 +30,7 @@ export function games({
             style="width: 80px; overflow: hidden;"
           >
             ${resLocals.semesters.map(
-              (row: string) => html`<option value=${row}>${row}</option>`
+              (row: string) => html`<option value=${row}>${row}</option>`,
             )}
           </select>
         </div>
@@ -77,7 +77,7 @@ export function games({
                             (row) =>
                               html`<option value=${row.id}>
                                 ${row.player_name}
-                              </option>`
+                              </option>`,
                           )}
                         </select>
                       </td>
@@ -106,7 +106,7 @@ export function games({
                         </select>
                       </td>
                     </tr>
-                  `
+                  `,
                 )}
               </tbody>
             </table>
@@ -212,7 +212,7 @@ export function games({
                         />
                       </form>
                     </td>
-                  </tr>`
+                  </tr>`,
               )}
             </tbody>
           </table>
@@ -243,7 +243,7 @@ export function games({
               {
                 method: "POST",
                 body: body,
-              }
+              },
             );
             const data = await response.json();
 
@@ -268,7 +268,7 @@ export function games({
 
 export function gameResultConfirmation(
   results: GameResult[],
-  semester: string
+  semester: string,
 ) {
   const htmlContent = html`
     <div style="margin-bottom: 1rem;">
@@ -295,12 +295,14 @@ export function gameResultConfirmation(
                   <td>${result.placement}</td>
                   <td>${result.starting_wind ?? ""}</td>
                   <td>
-                    ${result.point_change < 0
-                      ? result.point_change
-                      : `+${result.point_change}`}
+                    ${
+                      result.point_change < 0
+                        ? result.point_change
+                        : `+${result.point_change}`
+                    }
                   </td>
                 </tr>
-              `
+              `,
             )}
           </tbody>
         </table>

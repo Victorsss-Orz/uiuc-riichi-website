@@ -14,7 +14,7 @@ export const data = new SlashCommandBuilder()
   .setName("semesters")
   .setDescription("Manage semesters (only allowed by club officers)")
   .addSubcommand((sub) =>
-    sub.setName("show").setDescription("Show the list of semesters")
+    sub.setName("show").setDescription("Show the list of semesters"),
   )
   .addSubcommand((sub) =>
     sub
@@ -24,8 +24,8 @@ export const data = new SlashCommandBuilder()
         opt
           .setName("name")
           .setDescription("Semester name (e.g., fa25)")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((sub) =>
     sub
@@ -35,8 +35,8 @@ export const data = new SlashCommandBuilder()
         opt
           .setName("name")
           .setDescription("Semester name (e.g., fa25)")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
@@ -61,7 +61,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         content: `Semester ${name} already exists.`,
       });
     }
-    await withGameTransaction(() => queryWrite(sql.insert_semester, { semester: name }));
+    await withGameTransaction(() =>
+      queryWrite(sql.insert_semester, { semester: name }),
+    );
     return interaction.editReply({
       content: `Semester ${name} added!`,
     });
@@ -71,7 +73,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         content: `Semester ${name} does not exist. Available semesters:\n${semestersMsg}`,
       });
     }
-    await withGameTransaction(() => queryWrite(sql.activate_semester, { semester: name }));
+    await withGameTransaction(() =>
+      queryWrite(sql.activate_semester, { semester: name }),
+    );
     return interaction.editReply({
       content: `Semester ${name} activated!`,
     });

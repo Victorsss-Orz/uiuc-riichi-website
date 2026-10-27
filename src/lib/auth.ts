@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+export function isAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (req.session && req.session.isAdmin) {
     // User is logged in, proceed
     return next();

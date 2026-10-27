@@ -22,28 +22,30 @@ async function setupRoutes() {
       resave: false, // Prevents saving unchanged sessions
       saveUninitialized: false, // Prevents saving empty sessions
       cookie: { secure: false }, // Set to true if using HTTPS
-    })
+    }),
   );
   app.use(express.json());
   app.use(
     "/bootstrap",
-    express.static(path.join(__dirname, "../node_modules/bootstrap/dist"))
+    express.static(path.join(__dirname, "../node_modules/bootstrap/dist")),
   );
   app.use(
     "/jquery",
-    express.static(path.join(__dirname, "../node_modules/jquery/dist"))
+    express.static(path.join(__dirname, "../node_modules/jquery/dist")),
   );
   app.use(
     "/chart.js",
-    express.static(path.join(__dirname, "../node_modules/chart.js/dist"))
+    express.static(path.join(__dirname, "../node_modules/chart.js/dist")),
   );
   app.use(
     "/bootstrap-table",
-    express.static(path.join(__dirname, "../node_modules/bootstrap-table/dist"))
+    express.static(
+      path.join(__dirname, "../node_modules/bootstrap-table/dist"),
+    ),
   );
   app.use(
     "/sortablejs",
-    express.static(path.join(__dirname, "../node_modules/sortablejs"))
+    express.static(path.join(__dirname, "../node_modules/sortablejs")),
   );
   app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
@@ -52,27 +54,27 @@ async function setupRoutes() {
     "/",
     (await import("./middlewares/selectSemesters.js")).default,
     (await import("./middlewares/checkAuthentication.js")).default,
-    (await import("./pages/home/home.js")).default
+    (await import("./pages/home/home.js")).default,
   );
 
   app.use(
     "/admin",
     isAuthenticated, // TODO: remember to enable it back
-    (await import("./pages/admin/players/players.js")).default // TODO: add default admin panel page
+    (await import("./pages/admin/players/players.js")).default, // TODO: add default admin panel page
   );
   app.use("/login", (await import("./pages/admin/login/login.js")).default);
 
   app.use(
     "/admin/players",
-    (await import("./pages/admin/players/players.js")).default
+    (await import("./pages/admin/players/players.js")).default,
   );
   app.use(
     "/admin/games",
-    (await import("./pages/admin/games/games.js")).default
+    (await import("./pages/admin/games/games.js")).default,
   );
   app.use(
     "/admin/teams",
-    (await import("./pages/admin/teams/teams.js")).default
+    (await import("./pages/admin/teams/teams.js")).default,
   );
 
   app.use(
@@ -80,11 +82,11 @@ async function setupRoutes() {
     function (req: Request, res: Response, next: NextFunction) {
       res.locals.semester = req.params.semester;
       next();
-    }
+    },
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/players",
-    (await import("./pages/playerStats/playerStats.js")).default
+    (await import("./pages/playerStats/playerStats.js")).default,
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/player/:player_id(\\d+)",
@@ -92,11 +94,11 @@ async function setupRoutes() {
       res.locals.player_id = req.params.player_id;
       next();
     },
-    (await import("./pages/playerGames/playerGames.js")).default
+    (await import("./pages/playerGames/playerGames.js")).default,
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/teams",
-    (await import("./pages/teamStats/teamStats.js")).default
+    (await import("./pages/teamStats/teamStats.js")).default,
   );
   app.use(
     "/semester/:semester([a-zA-Z0-9_-]+)/team/:team_id(\\d+)",
@@ -104,7 +106,7 @@ async function setupRoutes() {
       res.locals.team_id = req.params.team_id;
       next();
     },
-    (await import("./pages/teamGames/teamGames.js")).default
+    (await import("./pages/teamGames/teamGames.js")).default,
   );
 
   app.use((req, res) => {

@@ -1,16 +1,16 @@
 -- BLOCK insert_player
 INSERT INTO
-    players (player_name)
+  players (player_name)
 VALUES
-    (:player_name);
+  (:player_name);
 
 -- BLOCK select_players
 SELECT
-    *
+  *
 FROM
-    players;
+  players;
 
 -- BLOCK remove_player
 DELETE FROM players
 WHERE
-    id = (:player_id);
+  id = (:player_id);

@@ -44,9 +44,11 @@ export function Modal({
           <div class="modal-header">
             <h2 class="modal-title h4" id="${titleId}">${title}</h2>
           </div>
-          ${body
-            ? html`<div class="modal-body" id="modal-body">${body}</div>`
-            : ""}
+          ${
+            body
+              ? html`<div class="modal-body" id="modal-body">${body}</div>`
+              : ""
+          }
           ${content ? content : ""}
           ${footer ? html`<div class="modal-footer">${footer}</div>` : ""}
         </div>

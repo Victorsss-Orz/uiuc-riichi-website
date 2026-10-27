@@ -1,0 +1,3 @@
+dist/
+databases/init.sql
+migrations/

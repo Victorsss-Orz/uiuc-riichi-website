@@ -58,48 +58,58 @@ export function teamGames({
                     html`<tr>
                       <td>${game.game_date}</td>
 
-                      ${game.player_1 &&
-                      team_players.includes(game.player_1.player_id)
-                        ? html`<td style="color: blue; font-weight: bold;">
-                            ${game.player_1?.player_name}
-                          </td>`
-                        : html`<td>${game.player_1?.player_name}</td>`}
+                      ${
+                        game.player_1 &&
+                        team_players.includes(game.player_1.player_id)
+                          ? html`<td style="color: blue; font-weight: bold;">
+                              ${game.player_1?.player_name}
+                            </td>`
+                          : html`<td>${game.player_1?.player_name}</td>`
+                      }
                       <td>${game.player_1?.score}</td>
 
-                      ${game.player_2 &&
-                      team_players.includes(game.player_2.player_id)
-                        ? html`<td style="color: blue; font-weight: bold;">
-                            ${game.player_2?.player_name}
-                          </td>`
-                        : html`<td>${game.player_2?.player_name}</td>`}
+                      ${
+                        game.player_2 &&
+                        team_players.includes(game.player_2.player_id)
+                          ? html`<td style="color: blue; font-weight: bold;">
+                              ${game.player_2?.player_name}
+                            </td>`
+                          : html`<td>${game.player_2?.player_name}</td>`
+                      }
                       <td>${game.player_2?.score}</td>
 
-                      ${game.player_3 &&
-                      team_players.includes(game.player_3.player_id)
-                        ? html`<td style="color: blue; font-weight: bold;">
-                            ${game.player_3?.player_name}
-                          </td>`
-                        : html`<td>${game.player_3?.player_name}</td>`}
+                      ${
+                        game.player_3 &&
+                        team_players.includes(game.player_3.player_id)
+                          ? html`<td style="color: blue; font-weight: bold;">
+                              ${game.player_3?.player_name}
+                            </td>`
+                          : html`<td>${game.player_3?.player_name}</td>`
+                      }
                       <td>${game.player_3?.score}</td>
 
-                      ${game.player_4 &&
-                      team_players.includes(game.player_4.player_id)
-                        ? html`<td style="color: blue; font-weight: bold;">
-                            ${game.player_4?.player_name}
-                          </td>`
-                        : html`<td>${game.player_4?.player_name}</td>`}
+                      ${
+                        game.player_4 &&
+                        team_players.includes(game.player_4.player_id)
+                          ? html`<td style="color: blue; font-weight: bold;">
+                              ${game.player_4?.player_name}
+                            </td>`
+                          : html`<td>${game.player_4?.player_name}</td>`
+                      }
                       <td>${game.player_4?.score}</td>
 
-                      ${getTeamPointChange(game, team_players) < 0
-                        ? html`<td style="color: green; font-weight: bold;">
-                            ${getTeamPointChange(game, team_players).toFixed(1)}
-                          </td>`
-                        : html`<td style="color: red; font-weight: bold;">
-                            +${getTeamPointChange(game, team_players).toFixed(
-                              1
-                            )}
-                          </td>`}
-                    </tr>`
+                      ${
+                        getTeamPointChange(game, team_players) < 0
+                          ? html`<td style="color: green; font-weight: bold;">
+                              ${getTeamPointChange(game, team_players).toFixed(1)}
+                            </td>`
+                          : html`<td style="color: red; font-weight: bold;">
+                              +${getTeamPointChange(game, team_players).toFixed(
+                                1,
+                              )}
+                            </td>`
+                      }
+                    </tr>`,
                 )}
               </tbody>
             </table>
