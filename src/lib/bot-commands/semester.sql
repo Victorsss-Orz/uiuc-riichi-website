@@ -1,16 +1,16 @@
 -- BLOCK select_semesters
 SELECT
-    *
+  *
 FROM
-    semesters;
+  semesters;
 
 -- BLOCK insert_semester
 INSERT INTO
-    semesters (semester)
+  semesters (semester)
 VALUES
-    (:semester);
+  (:semester);
 
 -- BLOCK activate_semester
 UPDATE semesters
 SET
-    active = (semester = :semester);
+  active = (semester = :semester);

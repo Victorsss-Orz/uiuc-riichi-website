@@ -1,7 +1,7 @@
 -- BLOCK select_teams
 SELECT
-    *
+  *
 FROM
-    teams
+  teams
 WHERE
-    teams.semester = :semester;
+  teams.semester = :semester;

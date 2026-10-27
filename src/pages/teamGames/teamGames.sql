@@ -1,15 +1,15 @@
 -- BLOCK select_teams
 SELECT
-    *
+  *
 FROM
-    teams
+  teams
 WHERE
-    teams.semester = :semester;
+  teams.semester = :semester;
 
 -- BLOCK select_team_players
 SELECT
-    player_id
+  player_id
 FROM
-    player_semester_data
+  player_semester_data
 WHERE
-    team_id = :team_id;
+  team_id = :team_id;
