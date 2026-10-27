@@ -22,7 +22,7 @@ router.get(
 
     const info = await getAllGames();
     res.send(games({ players, resLocals: res.locals, info }));
-  })
+  }),
 );
 router.post(
   "/calculate-game-results",
@@ -52,7 +52,7 @@ router.post(
         });
       }
     }
-  })
+  }),
 );
 
 router.post(
@@ -64,7 +64,7 @@ router.post(
         await insertGameResults(
           results,
           req.body.semester,
-          req.body.teamGame ? true : false
+          req.body.teamGame ? true : false,
         );
       });
       res.redirect(req.originalUrl);
@@ -76,7 +76,7 @@ router.post(
     } else {
       res.redirect(req.originalUrl);
     }
-  })
+  }),
 );
 
 export default router;

@@ -47,9 +47,9 @@ router.get(
         team_name,
         team_players: team_players.map((item) => item.player_id),
         resLocals: res.locals,
-      })
+      }),
     );
-  })
+  }),
 );
 
 export default router;

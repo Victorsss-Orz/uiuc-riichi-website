@@ -4,11 +4,11 @@ import { commands } from "./bot-commands/index.js";
 
 const commandsData = Object.values(commands).map((command) => command.data);
 export const commandMap = new Map(
-  Object.values(commands).map((c) => [c.data.name, c])
+  Object.values(commands).map((c) => [c.data.name, c]),
 );
 
 const rest = new REST({ version: "10" }).setToken(
-  process.env.DISCORD_TOKEN ?? ""
+  process.env.DISCORD_TOKEN ?? "",
 );
 
 export async function deployCommands({
@@ -27,7 +27,7 @@ export async function deployCommands({
       body: commandsData,
     });
     console.log(
-      `Registered ${commandsData.length} command(s) to guild ${guildId}`
+      `Registered ${commandsData.length} command(s) to guild ${guildId}`,
     );
   } else {
     await rest.put(Routes.applicationCommands(appId), { body: [] });

@@ -12,11 +12,14 @@ export async function playerExists(player_id: string): Promise<boolean> {
 export async function addPlayer(player_id: string, player_name: string) {
   return withGameTransaction(async () => {
     const result = await queryWrite(sql.add_player, { player_id, player_name });
-    if (result.affectedRows !== 1) throw new Error("This Discord ID has been merged. Use the main account.");
+    if (result.affectedRows !== 1)
+      throw new Error("This Discord ID has been merged. Use the main account.");
     return result;
   });
 }
 
 export async function updatePlayerName(player_id: string, player_name: string) {
-  return withGameTransaction(() => queryWrite(sql.update_player_name, { player_id, player_name }));
+  return withGameTransaction(() =>
+    queryWrite(sql.update_player_name, { player_id, player_name }),
+  );
 }

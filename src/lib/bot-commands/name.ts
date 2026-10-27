@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
   .setName("updatename")
   .setDescription("Update your name in the system")
   .addStringOption((opt) =>
-    opt.setName("name").setDescription("New name").setRequired(true)
+    opt.setName("name").setDescription("New name").setRequired(true),
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {

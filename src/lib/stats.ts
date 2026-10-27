@@ -13,11 +13,11 @@ export type teamSemesterStats = {
 };
 
 export async function getSemesterTeamStats(
-  team: Team
+  team: Team,
 ): Promise<teamSemesterStats | null> {
   const player_games = await queryRows<GamePlayer>(
     sql.select_team_game_history,
-    { team_id: team.id }
+    { team_id: team.id },
   );
   if (!player_games.length) {
     return null;

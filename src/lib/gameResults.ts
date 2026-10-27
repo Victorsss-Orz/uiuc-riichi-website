@@ -7,7 +7,12 @@ import {
   Player,
   PlayerSemesterData,
 } from "./db-types.js";
-import { queryRow, queryRows, queryWrite, withGameTransaction } from "./sqlDatabase.js";
+import {
+  queryRow,
+  queryRows,
+  queryWrite,
+  withGameTransaction,
+} from "./sqlDatabase.js";
 import { loadSqlEquiv } from "./sqlLoader.js";
 import { recordGameRating, removeGameRating } from "./ratingStore.js";
 
@@ -17,7 +22,9 @@ export class GameValidationError extends Error {}
 
 export function parseHundreds(value: unknown): number {
   if (typeof value !== "string" || !/^-?\d+$/.test(value.trim())) {
-    throw new GameValidationError("Scores must be whole numbers of 100 points.");
+    throw new GameValidationError(
+      "Scores must be whole numbers of 100 points.",
+    );
   }
   const score = Number(value) * 100;
   if (!Number.isSafeInteger(score)) {
@@ -26,22 +33,38 @@ export function parseHundreds(value: unknown): number {
   return score;
 }
 
-export function validateGameEntries(entries: { player_id: string; score: number }[]): void {
-  if (entries.length !== 4 || entries.some(({ player_id }) =>
-    typeof player_id !== "string" || !/^[1-9]\d*$/.test(player_id) ||
-    BigInt(player_id) > 18446744073709551615n)) {
+export function validateGameEntries(
+  entries: { player_id: string; score: number }[],
+): void {
+  if (
+    entries.length !== 4 ||
+    entries.some(
+      ({ player_id }) =>
+        typeof player_id !== "string" ||
+        !/^[1-9]\d*$/.test(player_id) ||
+        BigInt(player_id) > 18446744073709551615n,
+    )
+  ) {
     throw new GameValidationError("You must select 4 valid players.");
   }
   if (new Set(entries.map(({ player_id }) => player_id)).size !== 4) {
     throw new GameValidationError("You must select 4 distinct players.");
   }
-  if (entries.some(({ score }) => !Number.isSafeInteger(score) || score % 100 !== 0)) {
-    throw new GameValidationError("Scores must be whole multiples of 100 points.");
+  if (
+    entries.some(
+      ({ score }) => !Number.isSafeInteger(score) || score % 100 !== 0,
+    )
+  ) {
+    throw new GameValidationError(
+      "Scores must be whole multiples of 100 points.",
+    );
   }
   // BigInt keeps even unusually large, but valid, integer inputs exact.
   const total = entries.reduce((sum, { score }) => sum + BigInt(score), 0n);
   if (total !== 100000n) {
-    throw new GameValidationError(`Total score does not add up to 100000. Current total score: ${total}`);
+    throw new GameValidationError(
+      `Total score does not add up to 100000. Current total score: ${total}`,
+    );
   }
 }
 
@@ -77,24 +100,22 @@ export function findTeamById(teams: Team[], id: number): string {
   return team_name;
 }
 
-export async function processGameResults(
-  data: {
-    player1ID: string;
-    player2ID: string;
-    player3ID: string;
-    player4ID: string;
-    player1Score: string;
-    player2Score: string;
-    player3Score: string;
-    player4Score: string;
-    player1Wind: StartingWind | null;
-    player2Wind: StartingWind | null;
-    player3Wind: StartingWind | null;
-    player4Wind: StartingWind | null;
-    teamGame: boolean;
-    semester: string;
-  },
-): Promise<GameResult[]> {
+export async function processGameResults(data: {
+  player1ID: string;
+  player2ID: string;
+  player3ID: string;
+  player4ID: string;
+  player1Score: string;
+  player2Score: string;
+  player3Score: string;
+  player4Score: string;
+  player1Wind: StartingWind | null;
+  player2Wind: StartingWind | null;
+  player3Wind: StartingWind | null;
+  player4Wind: StartingWind | null;
+  teamGame: boolean;
+  semester: string;
+}): Promise<GameResult[]> {
   const {
     player1ID,
     player2ID,
@@ -303,11 +324,15 @@ export async function insertGameResults(
   semester: string,
   is_team_game: boolean,
 ): Promise<void> {
-  return withGameTransaction(() => insertGameResultsInTransaction(results, semester, is_team_game));
+  return withGameTransaction(() =>
+    insertGameResultsInTransaction(results, semester, is_team_game),
+  );
 }
 
 async function insertGameResultsInTransaction(
-  results: GameResult[], semester: string, is_team_game: boolean,
+  results: GameResult[],
+  semester: string,
+  is_team_game: boolean,
 ): Promise<void> {
   // Create game
   const inserted_game = await queryWrite(sql.insert_game, {

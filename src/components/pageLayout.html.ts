@@ -93,37 +93,49 @@ function navBar({ resLocals }: { resLocals: PageLocals }) {
                         href="/semester/${semester}/players"
                         >${semester}</a
                       >
-                    </li>`
+                    </li>`,
                 )}
               </ul>
             </li>
-            ${resLocals.semester
-              ? html`<li class="nav-item">
-                  <a class="nav-link" href="/semester/${resLocals.semester}/players">Player Stats</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/semester/${resLocals.semester}/teams">Team Stats</a>
-                </li>`
-              : ""}
+            ${
+              resLocals.semester
+                ? html`<li class="nav-item">
+                      <a
+                        class="nav-link"
+                        href="/semester/${resLocals.semester}/players"
+                        >Player Stats</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        class="nav-link"
+                        href="/semester/${resLocals.semester}/teams"
+                        >Team Stats</a
+                      >
+                    </li>`
+                : ""
+            }
           </ul>
           <ul class="nav navbar-nav" id="admin-nav">
-            ${resLocals.isAdmin
-              ? html`
-                  <li class="nav-item">
-                    <a class="nav-link" href="/admin/games">Games</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/admin/players">Players</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/admin/teams">Teams</a>
-                  </li>
-                `
-              : html`
-                  <li class="nav-item">
-                    <a class="nav-link" href="/login">Admin Login</a>
-                  </li>
-                `}
+            ${
+              resLocals.isAdmin
+                ? html`
+                    <li class="nav-item">
+                      <a class="nav-link" href="/admin/games">Games</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/admin/players">Players</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/admin/teams">Teams</a>
+                    </li>
+                  `
+                : html`
+                    <li class="nav-item">
+                      <a class="nav-link" href="/login">Admin Login</a>
+                    </li>
+                  `
+            }
           </ul>
         </div>
       </div>

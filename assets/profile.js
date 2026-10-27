@@ -3,15 +3,35 @@
     const narrow = window.matchMedia("(max-width: 379px)").matches;
     const itemWidth = narrow ? 28 : 32;
     const gapWidth = narrow ? 1.6 : 2.4;
-    const slots = Math.min(11, Math.floor((available + gapWidth) / (itemWidth + gapWidth)));
-    if (pages + 2 <= slots) return Array.from({ length: pages }, (_, i) => i + 1);
-    const candidates = page <= 3
-      ? [[1, 2, 3, 4, 5, pages], [1, 2, 3, pages], [1, 2, pages]]
-      : page >= pages - 2
-        ? [[1, pages - 4, pages - 3, pages - 2, pages - 1, pages], [1, pages - 2, pages - 1, pages], [1, pages - 1, pages]]
-        : [[1, page - 1, page, page + 1, pages], [1, page, page + 1, pages], [1, page - 1, page, pages], [1, page, pages]];
+    const slots = Math.min(
+      11,
+      Math.floor((available + gapWidth) / (itemWidth + gapWidth)),
+    );
+    if (pages + 2 <= slots)
+      return Array.from({ length: pages }, (_, i) => i + 1);
+    const candidates =
+      page <= 3
+        ? [
+            [1, 2, 3, 4, 5, pages],
+            [1, 2, 3, pages],
+            [1, 2, pages],
+          ]
+        : page >= pages - 2
+          ? [
+              [1, pages - 4, pages - 3, pages - 2, pages - 1, pages],
+              [1, pages - 2, pages - 1, pages],
+              [1, pages - 1, pages],
+            ]
+          : [
+              [1, page - 1, page, page + 1, pages],
+              [1, page, page + 1, pages],
+              [1, page - 1, page, pages],
+              [1, page, pages],
+            ];
     const fillGaps = (values) => {
-      const sorted = [...new Set(values.filter(n => n >= 1 && n <= pages))].sort((a, b) => a - b);
+      const sorted = [
+        ...new Set(values.filter((n) => n >= 1 && n <= pages)),
+      ].sort((a, b) => a - b);
       const result = [];
       sorted.forEach((n, i) => {
         if (i && n - sorted[i - 1] === 2) result.push(n - 1);
@@ -20,22 +40,35 @@
       });
       return result;
     };
-    return candidates.map(fillGaps).find(items => items.length + 2 <= slots) ?? fillGaps([1, page, pages]);
+    return (
+      candidates.map(fillGaps).find((items) => items.length + 2 <= slots) ??
+      fillGaps([1, page, pages])
+    );
   };
 
   const renderPagination = (nav, page, pages, kind) => {
     nav.dataset.page = String(page);
     const controls = nav.querySelector(".pagination-controls");
-    const countWidth = nav.querySelector(".pagination-count")?.getBoundingClientRect().width ?? 0;
+    const countWidth =
+      nav.querySelector(".pagination-count")?.getBoundingClientRect().width ??
+      0;
     const available = window.matchMedia("(max-width: 650px)").matches
-      ? nav.clientWidth : Math.max(0, nav.clientWidth - countWidth - 12);
+      ? nav.clientWidth
+      : Math.max(0, nav.clientWidth - countWidth - 12);
     const target = kind === "history" ? "history-heading" : "opponents-heading";
     const control = (number, label, arrow = false) => {
       const valid = number >= 1 && number <= pages;
-      const item = document.createElement(kind === "history" && valid ? "a" : "button");
+      const item = document.createElement(
+        kind === "history" && valid ? "a" : "button",
+      );
       item.className = arrow ? "pagination-arrow" : "pagination-page";
       item.textContent = label;
-      item.setAttribute("aria-label", arrow ? `${number < page ? "Previous" : "Next"} page` : `Page ${number}`);
+      item.setAttribute(
+        "aria-label",
+        arrow
+          ? `${number < page ? "Previous" : "Next"} page`
+          : `Page ${number}`,
+      );
       if (valid) {
         item.dataset.page = String(number);
         if (kind === "history") item.href = `?page=${number}#${target}`;
@@ -75,7 +108,9 @@
     let page = 1;
     const pages = Math.ceil(opponentRows.length / 10);
     const update = () => {
-      opponentRows.forEach((row, index) => { row.hidden = index < (page - 1) * 10 || index >= page * 10; });
+      opponentRows.forEach((row, index) => {
+        row.hidden = index < (page - 1) * 10 || index >= page * 10;
+      });
       renderPagination(opponentPagination, page, pages, "opponents");
     };
     opponentPagination.hidden = false;
@@ -85,17 +120,31 @@
       if (!button) return;
       page = Number(button.dataset.page);
       update();
-      opponentPagination.querySelector(".pagination-current")?.focus({ preventScroll: true });
+      opponentPagination
+        .querySelector(".pagination-current")
+        ?.focus({ preventScroll: true });
     });
   }
 
   const enhanceHistoryPagination = (root = document) => {
     const nav = root.querySelector(".history-pagination");
-    if (nav) renderPagination(nav, Number(nav.dataset.page), Number(nav.dataset.pages), "history");
+    if (nav)
+      renderPagination(
+        nav,
+        Number(nav.dataset.page),
+        Number(nav.dataset.pages),
+        "history",
+      );
   };
   enhanceHistoryPagination();
   window.addEventListener("resize", () => {
-    if (opponentPagination) renderPagination(opponentPagination, Number(opponentPagination.dataset.page), Number(opponentPagination.dataset.pages), "opponents");
+    if (opponentPagination)
+      renderPagination(
+        opponentPagination,
+        Number(opponentPagination.dataset.page),
+        Number(opponentPagination.dataset.pages),
+        "opponents",
+      );
     enhanceHistoryPagination();
   });
 
@@ -108,8 +157,12 @@
     if (loading) return;
     const content = document.getElementById("match-history-content");
     const status = document.getElementById("history-load-status");
-    if (!content || !status) { window.location.assign(link.href); return; }
-    const horizontalPosition = content.querySelector(".match-table-wrap")?.scrollLeft ?? 0;
+    if (!content || !status) {
+      window.location.assign(link.href);
+      return;
+    }
+    const horizontalPosition =
+      content.querySelector(".match-table-wrap")?.scrollLeft ?? 0;
 
     loading = true;
     window.clearTimeout(statusTimer);
@@ -120,8 +173,10 @@
       url.pathname = `${url.pathname.replace(/\/$/, "")}/history`;
       url.hash = "";
       const response = await fetch(url, { headers: { Accept: "text/html" } });
-      if (!response.ok) throw new Error(`History request failed: ${response.status}`);
-      const next = new DOMParser().parseFromString(await response.text(), "text/html")
+      if (!response.ok)
+        throw new Error(`History request failed: ${response.status}`);
+      const next = new DOMParser()
+        .parseFromString(await response.text(), "text/html")
         .getElementById("match-history-content");
       if (!next) throw new Error("History response is missing its content");
       content.replaceWith(next);
@@ -131,12 +186,16 @@
       const nav = next.querySelector(".history-pagination");
       status.textContent = `Page ${nav.dataset.page} of ${nav.dataset.pages} loaded.`;
       nav.querySelector(".pagination-current")?.focus({ preventScroll: true });
-      statusTimer = window.setTimeout(() => { status.textContent = ""; }, 2000);
+      statusTimer = window.setTimeout(() => {
+        status.textContent = "";
+      }, 2000);
     } catch {
       window.location.assign(link.href);
     } finally {
       loading = false;
-      document.getElementById("match-history-content")?.removeAttribute("aria-busy");
+      document
+        .getElementById("match-history-content")
+        ?.removeAttribute("aria-busy");
     }
   });
 })();

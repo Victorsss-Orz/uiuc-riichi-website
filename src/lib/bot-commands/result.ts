@@ -7,7 +7,12 @@ import {
 import { queryRows, withGameTransaction } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
 import { Semester } from "../db-types.js";
-import { insertGameResults, processGameResults, GameValidationError, validateGameEntries } from "../gameResults.js";
+import {
+  insertGameResults,
+  processGameResults,
+  GameValidationError,
+  validateGameEntries,
+} from "../gameResults.js";
 import { addPlayer, playerExists } from "../addPlayer.js";
 import { getPlayerRedirects } from "../playerMerge.js";
 
@@ -17,28 +22,40 @@ export const data = new SlashCommandBuilder()
   .setName("result")
   .setDescription("Report the result of a ranked game")
   .addUserOption((opt) =>
-    opt.setName("player1").setDescription("Player 1").setRequired(true)
+    opt.setName("player1").setDescription("Player 1").setRequired(true),
   )
   .addIntegerOption((opt) =>
-    opt.setName("score1").setDescription("Score for player 1").setRequired(true)
+    opt
+      .setName("score1")
+      .setDescription("Score for player 1")
+      .setRequired(true),
   )
   .addUserOption((opt) =>
-    opt.setName("player2").setDescription("Player 2").setRequired(true)
+    opt.setName("player2").setDescription("Player 2").setRequired(true),
   )
   .addIntegerOption((opt) =>
-    opt.setName("score2").setDescription("Score for player 2").setRequired(true)
+    opt
+      .setName("score2")
+      .setDescription("Score for player 2")
+      .setRequired(true),
   )
   .addUserOption((opt) =>
-    opt.setName("player3").setDescription("Player 3").setRequired(true)
+    opt.setName("player3").setDescription("Player 3").setRequired(true),
   )
   .addIntegerOption((opt) =>
-    opt.setName("score3").setDescription("Score for player 3").setRequired(true)
+    opt
+      .setName("score3")
+      .setDescription("Score for player 3")
+      .setRequired(true),
   )
   .addUserOption((opt) =>
-    opt.setName("player4").setDescription("Player 4").setRequired(true)
+    opt.setName("player4").setDescription("Player 4").setRequired(true),
   )
   .addIntegerOption((opt) =>
-    opt.setName("score4").setDescription("Score for player 4").setRequired(true)
+    opt
+      .setName("score4")
+      .setDescription("Score for player 4")
+      .setRequired(true),
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
@@ -48,7 +65,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     score: interaction.options.getInteger(`score${idx}`, true),
   }));
   try {
-    validateGameEntries(entries.map(({ player, score }) => ({ player_id: player.id, score })));
+    validateGameEntries(
+      entries.map(({ player, score }) => ({ player_id: player.id, score })),
+    );
   } catch (error) {
     return interaction.reply({
       content: error instanceof Error ? error.message : "Invalid game results.",
@@ -61,13 +80,25 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   let saved;
   try {
     saved = await withGameTransaction(async () => {
-      const redirects = await getPlayerRedirects(entries.map(({ player }) => player.id));
-      const ids = entries.map(({ player }) => redirects.find(m => m.source_id === player.id)?.target_id ?? player.id);
+      const redirects = await getPlayerRedirects(
+        entries.map(({ player }) => player.id),
+      );
+      const ids = entries.map(
+        ({ player }) =>
+          redirects.find((m) => m.source_id === player.id)?.target_id ??
+          player.id,
+      );
       // Different Discord IDs can resolve to the same player after a merge.
-      validateGameEntries(entries.map(({ score }, i) => ({ player_id: ids[i], score })));
-      const activeSemesters = await queryRows<Semester>(sql.select_active_semesters);
+      validateGameEntries(
+        entries.map(({ score }, i) => ({ player_id: ids[i], score })),
+      );
+      const activeSemesters = await queryRows<Semester>(
+        sql.select_active_semesters,
+      );
       if (activeSemesters.length !== 1) {
-        throw new GameValidationError("Exactly one semester must be active. Please contact a club officer.");
+        throw new GameValidationError(
+          "Exactly one semester must be active. Please contact a club officer.",
+        );
       }
       const semester = activeSemesters[0].semester;
       for (const [i, { player }] of entries.entries()) {
@@ -96,30 +127,42 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   } catch (error) {
     if (!(error instanceof GameValidationError)) console.error(error);
-    return interaction.editReply(error instanceof GameValidationError
-      ? error.message
-      : "Unable to save the game. Please ask an officer to check the game history before resubmitting.");
+    return interaction.editReply(
+      error instanceof GameValidationError
+        ? error.message
+        : "Unable to save the game. Please ask an officer to check the game history before resubmitting.",
+    );
   }
   // Reply only after the transaction commits. A Discord delivery failure must
   // not be reported as a database rollback.
   await interaction.editReply(
-    "Game result:\n" + saved.results.map((result) =>
-      `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change.toFixed(1)}`,
-    ).join("\n") +
-    `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semester/${saved.semester}/players`,
+    "Game result:\n" +
+      saved.results
+        .map(
+          (result) =>
+            `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change.toFixed(1)}`,
+        )
+        .join("\n") +
+      `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semester/${saved.semester}/players`,
   );
   if (saved.redirects.length) {
     try {
       await interaction.followUp({
-        content: saved.redirects.map(m =>
-          `Account <@${m.source_id}> has been merged into <@${m.target_id}>.\n` +
-          `This result is recorded under <@${m.target_id}>.`,
-        ).join("\n\n"),
+        content: saved.redirects
+          .map(
+            (m) =>
+              `Account <@${m.source_id}> has been merged into <@${m.target_id}>.\n` +
+              `This result is recorded under <@${m.target_id}>.`,
+          )
+          .join("\n\n"),
         flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
       // The result is already saved and public; a failed notice must not imply a failed save.
-      console.error("Game saved, but merged-account notice could not be delivered.", error);
+      console.error(
+        "Game saved, but merged-account notice could not be delivered.",
+        error,
+      );
     }
   }
 }
