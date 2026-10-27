@@ -111,22 +111,20 @@ function mergeForm(
 }
 
 export function mergeSearchResults(players: MergeCandidate[]): HtmlSafeString {
-  return html`${players
-    .slice(0, 20)
-    .map(
-      (p) =>
-        html`<button
-          class="list-group-item list-group-item-action"
-          type="button"
-          data-player-id="${p.id}"
-          data-player-name="${p.player_name}"
+  return html`${players.slice(0, 20).map(
+    (p) =>
+      html`<button
+        class="list-group-item list-group-item-action"
+        type="button"
+        data-player-id="${p.id}"
+        data-player-name="${p.player_name}"
+      >
+        <strong>${p.player_name}</strong>
+        <span class="d-block small"
+          >${p.id} · ${p.rate_games} games · Rate ${p.rate.toFixed(0)}</span
         >
-          <strong>${p.player_name}</strong>
-          <span class="d-block small"
-            >${p.id} · ${p.rate_games} games · Rate ${p.rate.toFixed(0)}</span
-          >
-        </button>`,
-    )}
+      </button>`,
+  )}
   ${players.length ? "" : html`<p class="small p-2 mb-0">No matching accounts.</p>`}
   ${players.length > 20 ? html`<p class="small p-2 mb-0">Refine your search to see more accounts.</p>` : ""}`;
 }

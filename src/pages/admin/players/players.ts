@@ -90,15 +90,13 @@ router.post(
       );
     } catch (error) {
       if (!(error instanceof PlayerMergeError)) throw error;
-      res
-        .status(error.status)
-        .send(
-          mergePreviewPage({
-            resLocals: res.locals,
-            token: mergeToken(req),
-            error: error.message,
-          }),
-        );
+      res.status(error.status).send(
+        mergePreviewPage({
+          resLocals: res.locals,
+          token: mergeToken(req),
+          error: error.message,
+        }),
+      );
     }
   }),
 );
@@ -130,15 +128,13 @@ router.post(
       res.redirect(303, "/admin/players");
     } catch (error) {
       if (!(error instanceof PlayerMergeError)) throw error;
-      res
-        .status(error.status)
-        .send(
-          mergePreviewPage({
-            resLocals: res.locals,
-            token: mergeToken(req),
-            error: error.message,
-          }),
-        );
+      res.status(error.status).send(
+        mergePreviewPage({
+          resLocals: res.locals,
+          token: mergeToken(req),
+          error: error.message,
+        }),
+      );
     }
   }),
 );

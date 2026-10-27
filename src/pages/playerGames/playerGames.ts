@@ -23,15 +23,13 @@ router.get(
       res.status(404).send(error({ resLocals: res.locals }));
       return;
     }
-    res
-      .type("html")
-      .send(
-        playerHistoryContent({
-          ...history,
-          id: player_id,
-          semester,
-        }).toString(),
-      );
+    res.type("html").send(
+      playerHistoryContent({
+        ...history,
+        id: player_id,
+        semester,
+      }).toString(),
+    );
   }),
 );
 router.get(

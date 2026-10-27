@@ -95,12 +95,10 @@ try {
       for (const row of rows) {
         const id = String(row.game_id);
         if (games.at(-1)?.id !== id) games.push({ id, players: [] });
-        games
-          .at(-1)
-          .players.push({
-            id: String(row.player_id),
-            placement: Number(row.placement),
-          });
+        games.at(-1).players.push({
+          id: String(row.player_id),
+          placement: Number(row.placement),
+        });
       }
       const state = new Map();
       for (const game of games) {
