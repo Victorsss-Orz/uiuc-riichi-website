@@ -5,10 +5,10 @@ import { fileURLToPath } from "url";
 
 import { isAuthenticated } from "./lib/auth.js";
 import { error } from "./pages/error/error.html.js";
-import { startBot } from "./lib/bot.js";
-import { acquireSingleton } from "./lib/sqlDatabase.js";
+import { createInteractionsRouter } from "./lib/bot.js";
 
 const app = express();
+app.use("/discord/interactions", createInteractionsRouter());
 app.use(express.urlencoded({ extended: false }));
 const PORT = process.env.PORT || 3001;
 // const PORT = 3001;
@@ -118,16 +118,15 @@ async function setupRoutes() {
 setupRoutes().then(() => {
   app.listen(PORT, async () => {
     console.log(`Server running at http://localhost:${PORT}`);
-    try {
-      const canStartBot = await acquireSingleton();
-      // const canStartBot = false; // This is only for local testing that doesn't require the bot
-      if (canStartBot) {
-        await startBot();
-      } else {
-        console.log("Bot already running.");
+    if (process.env.DEPLOY_COMMANDS === "1") {
+      try {
+        const { deployCommands } = await import("./lib/deploy-commands.js");
+        await deployCommands({
+          guildId: process.env.DISCORD_GUILD_ID ?? "1292212177171779657",
+        });
+      } catch {
+        console.error("Discord command registration failed.");
       }
-    } catch (e) {
-      console.log(`Bot failed to start: ${e}`);
     }
   });
 });

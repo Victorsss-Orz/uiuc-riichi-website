@@ -1,14 +1,11 @@
-import {
-  ChatInputCommandInteraction,
-  MessageFlags,
-  SlashCommandBuilder,
-} from "discord.js";
+import { CommandInteraction } from "../discord-interaction.js";
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
   .setName("website")
   .setDescription("Get club website link");
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+export async function execute(interaction: CommandInteraction) {
   return interaction.reply({
     content: "Website is live at https://uiucriichi.web.illinois.edu",
     flags: MessageFlags.Ephemeral,

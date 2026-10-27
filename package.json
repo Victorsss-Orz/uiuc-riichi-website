@@ -20,7 +20,8 @@
     "db:migrate:rate": "npm run build && node scripts/migrate-rate.mjs",
     "db:migrate:merge": "npm run build && node scripts/migrate-player-merges.mjs",
     "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/",
-    "format:prettier": "prettier . --write"
+    "format:prettier": "prettier . --write",
+    "test:discord": "npm run build && node --test tests/discord-interactions.test.mjs"
   },
   "dependencies": {
     "@types/express": "^5.0.1",
