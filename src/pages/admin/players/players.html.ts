@@ -5,16 +5,22 @@ import { html } from "../../../../packages/html/dist/index.js";
 export function addPlayer({
   players,
   resLocals,
+  notice,
+  mergedPlayer,
 }: {
   players: Player[];
   resLocals: PageLocals;
+  notice?: string;
+  mergedPlayer?: { id: string; semester: string };
 }) {
   const htmlContent = PageLayout({
     resLocals,
     pageTitle: "Manage players",
-    content: html` <div style="margin-top: 1rem; margin-bottom: 1rem;">
+    content: html` ${notice ? html`<p class="alert alert-success" role="status">${notice} ${mergedPlayer?.semester ? html`<a href="/semester/${mergedPlayer.semester}/player/${mergedPlayer.id}">View main profile</a>` : ""}</p>` : ""}<div style="margin-top: 1rem; margin-bottom: 1rem;">
         <h1>Manage players</h1>
+        <a class="btn btn-primary mt-2" href="/admin/players/merge">Merge accounts</a>
       </div>
+      <h2 class="h5">Create new account</h2>
       <form id="addPlayerForm" method="POST">
         <label for="playerName">Player Name:</label>
         <input type="text" id="playerName" name="playerName" required />

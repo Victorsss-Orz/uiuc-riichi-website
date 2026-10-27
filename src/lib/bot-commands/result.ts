@@ -9,6 +9,7 @@ import { loadSqlEquiv } from "../sqlLoader.js";
 import { Semester } from "../db-types.js";
 import { insertGameResults, processGameResults, GameValidationError, validateGameEntries } from "../gameResults.js";
 import { addPlayer, playerExists } from "../addPlayer.js";
+import { getPlayerRedirects } from "../playerMerge.js";
 
 const sql = loadSqlEquiv(import.meta.url);
 
@@ -60,21 +61,25 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   let saved;
   try {
     saved = await withGameTransaction(async () => {
+      const redirects = await getPlayerRedirects(entries.map(({ player }) => player.id));
+      const ids = entries.map(({ player }) => redirects.find(m => m.source_id === player.id)?.target_id ?? player.id);
+      // Different Discord IDs can resolve to the same player after a merge.
+      validateGameEntries(entries.map(({ score }, i) => ({ player_id: ids[i], score })));
       const activeSemesters = await queryRows<Semester>(sql.select_active_semesters);
       if (activeSemesters.length !== 1) {
         throw new GameValidationError("Exactly one semester must be active. Please contact a club officer.");
       }
       const semester = activeSemesters[0].semester;
-      for (const { player } of entries) {
-        if (!(await playerExists(player.id))) {
-          await addPlayer(player.id, player.displayName);
+      for (const [i, { player }] of entries.entries()) {
+        if (!(await playerExists(ids[i]))) {
+          await addPlayer(ids[i], player.displayName);
         }
       }
       const results = await processGameResults({
-        player1ID: entries[0].player.id,
-        player2ID: entries[1].player.id,
-        player3ID: entries[2].player.id,
-        player4ID: entries[3].player.id,
+        player1ID: ids[0],
+        player2ID: ids[1],
+        player3ID: ids[2],
+        player4ID: ids[3],
         player1Score: `${entries[0].score / 100}`,
         player2Score: `${entries[1].score / 100}`,
         player3Score: `${entries[2].score / 100}`,
@@ -87,7 +92,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         semester,
       });
       await insertGameResults(results, semester, false);
-      return { results, semester };
+      return { results, semester, redirects };
     });
   } catch (error) {
     if (!(error instanceof GameValidationError)) console.error(error);
@@ -97,10 +102,24 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   }
   // Reply only after the transaction commits. A Discord delivery failure must
   // not be reported as a database rollback.
-  return interaction.editReply(
+  await interaction.editReply(
     "Game result:\n" + saved.results.map((result) =>
       `<@${result.player_id}> Score: ${result.score} Point change: ${result.point_change.toFixed(1)}`,
     ).join("\n") +
     `\nUpdated ranking can be found at https://uiucriichi.web.illinois.edu/semester/${saved.semester}/players`,
   );
+  if (saved.redirects.length) {
+    try {
+      await interaction.followUp({
+        content: saved.redirects.map(m =>
+          `Account <@${m.source_id}> has been merged into <@${m.target_id}>.\n` +
+          `This result is recorded under <@${m.target_id}>.`,
+        ).join("\n\n"),
+        flags: MessageFlags.Ephemeral,
+      });
+    } catch (error) {
+      // The result is already saved and public; a failed notice must not imply a failed save.
+      console.error("Game saved, but merged-account notice could not be delivered.", error);
+    }
+  }
 }
