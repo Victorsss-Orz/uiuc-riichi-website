@@ -18,7 +18,8 @@
     "start": "node app.js",
     "db:migrate:rate": "npm run build && node scripts/migrate-rate.mjs",
     "db:migrate:merge": "npm run build && node scripts/migrate-player-merges.mjs",
-    "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/"
+    "postbundle": "copyfiles -u 1 'src/**/*.sql' dist/",
+    "format:prettier": "prettier . --write"
   },
   "dependencies": {
     "@types/express": "^5.0.1",
