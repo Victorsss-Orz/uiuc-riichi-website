@@ -1,8 +1,5 @@
-import {
-  ChatInputCommandInteraction,
-  MessageFlags,
-  SlashCommandBuilder,
-} from "discord.js";
+import { CommandInteraction } from "../discord-interaction.js";
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 import { withGameTransaction } from "../sqlDatabase.js";
 import { addPlayer, playerExists, updatePlayerName } from "../addPlayer.js";
@@ -15,7 +12,7 @@ export const data = new SlashCommandBuilder()
     opt.setName("name").setDescription("New name").setRequired(true),
   );
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+export async function execute(interaction: CommandInteraction) {
   const id = interaction.user.id;
   const name = interaction.options.getString("name", true);
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });

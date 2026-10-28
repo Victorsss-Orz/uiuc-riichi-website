@@ -1,8 +1,5 @@
-import {
-  ChatInputCommandInteraction,
-  MessageFlags,
-  SlashCommandBuilder,
-} from "discord.js";
+import { CommandInteraction } from "../discord-interaction.js";
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 import { queryRows, withGameTransaction } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
@@ -58,7 +55,7 @@ export const data = new SlashCommandBuilder()
       .setRequired(true),
   );
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+export async function execute(interaction: CommandInteraction) {
   // Keep entries in an array: a map keyed by ID silently overwrites duplicates.
   const entries = [1, 2, 3, 4].map((idx) => ({
     player: interaction.options.getUser(`player${idx}`, true),

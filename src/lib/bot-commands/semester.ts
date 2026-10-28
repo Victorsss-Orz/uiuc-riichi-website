@@ -1,8 +1,5 @@
-import {
-  ChatInputCommandInteraction,
-  MessageFlags,
-  SlashCommandBuilder,
-} from "discord.js";
+import { CommandInteraction } from "../discord-interaction.js";
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 import { queryRows, queryWrite, withGameTransaction } from "../sqlDatabase.js";
 import { loadSqlEquiv } from "../sqlLoader.js";
@@ -39,22 +36,22 @@ export const data = new SlashCommandBuilder()
       ),
   );
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+export async function execute(interaction: CommandInteraction) {
   const sub = interaction.options.getSubcommand();
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
   const semesters = await queryRows<Semester>(sql.select_semesters);
   const semestersMsg = semesters
     .map((semester) => semester.semester + (semester.active ? " (active)" : ""))
     .join("\n");
   if (sub === "show") {
-    return interaction.reply({
+    return interaction.editReply({
       content: "Available semesters:\n" + semestersMsg,
       flags: MessageFlags.Ephemeral,
     });
   }
   const semester_names = semesters.map((semester) => semester.semester);
   const name = interaction.options.getString("name", true);
-  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
   if (sub === "add") {
     if (semester_names.includes(name)) {
       return interaction.editReply({
