@@ -46,7 +46,8 @@ DEPLOY_COMMANDS=0
 `DB_SOCKET` can optionally specify a MySQL Unix socket. The database settings are
 read in `src/lib/sqlDatabase.ts`; the admin credentials are used by `/login`.
 Use the token and application ID from a separate test Discord application for the
-Discord values above.
+Discord values above. See [bot account setup](#bot-account-setup) below for the
+Developer Portal steps.
 There is currently no environment setting for the session secret: session settings
 are configured directly in `src/server.ts`.
 
@@ -105,6 +106,28 @@ The current implementation receives slash commands through a persistent Gateway
 connection in `src/lib/bot.ts`. It runs inside the website process. A MySQL named
 lock (`discord-bot-singleton`) allows only one Passenger worker to start the bot,
 preventing multiple workers from handling the same command.
+
+### Bot account setup
+
+Follow the account creation and installation sections of Discord's official
+[Building your first Discord Bot guide](https://docs.discord.com/developers/quick-start/getting-started#step-1-creating-an-app).
+Use the [Discord Developer Portal](https://discord.com/developers/applications) to
+create a separate application for local testing:
+
+1. On **General Information**, copy **Application ID** into `DISCORD_CLIENT_ID` in
+   your `.env` file. This is the application ID, not the client secret.
+2. On **Bot**, generate a token with **Reset Token** and put it in `DISCORD_TOKEN`.
+   Keep the token private and out of Git.
+3. On **Installation**, enable **Guild Install**, include the `bot` and
+   `applications.commands` scopes, and use the install link to add the bot to your
+   test server.
+
+This repository already implements the bot, so use the guide for account setup
+and installation, then return here for running and registering its commands. The
+current Gateway implementation uses only the standard `Guilds` intent; it does
+not require privileged intents or an **Interactions Endpoint URL**.
+
+### Configuration and commands
 
 | Variable            | Purpose                                                                        |
 | ------------------- | ------------------------------------------------------------------------------ |
