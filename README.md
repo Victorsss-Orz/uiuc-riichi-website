@@ -100,6 +100,31 @@ There is currently no environment flag that disables bot startup. For bot testin
 use a separate Discord application and test server so local commands cannot alter
 the club's live data.
 
+## Home page content
+
+Edit `src/pages/home/homeContent.ts` to fill in the club's meeting time and place
+in `meetingDetails`. The home page shows placeholder text until you replace it.
+
+Both galleries appear below the semester links: Club meeting gallery, then
+Yakuman gallery. Put photos in `assets/gallery/` and add an entry to
+`clubMeetingPhotos` or `yakumanPhotos` for each photo. Enter only the path inside
+that folder; `/assets/gallery/` is added automatically:
+
+```ts
+{
+  src: "meetings/club-meeting.jpg",
+  alt: "Club members playing mahjong",
+  caption: "Club meeting",
+}
+```
+
+Use descriptive alternative text for each image. Photos appear in array order in
+a horizontal strip, with left and right buttons to move one photo at a time.
+Visitors can also scroll or swipe the strip. Three photos fit on wider screens;
+one fits on mobile. Clicking a photo opens the full image. An empty array shows gallery
+placeholders without requesting any missing images. Run `npm run build` after
+editing the content file and deploy the updated assets with the compiled output.
+
 ## Discord bot
 
 The current implementation receives slash commands through a persistent Gateway
